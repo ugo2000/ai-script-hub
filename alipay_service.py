@@ -12,10 +12,14 @@ alipay = None
 alipay_ready = False
 
 try:
-    from alipay_config import ALIPAY_APP_ID, APP_PRIVATE_KEY_PATH, ALIPAY_PUBLIC_KEY, NOTIFY_URL, TRADE_TIMEOUT_MINUTES
+    from alipay_config import ALIPAY_APP_ID, APP_PRIVATE_KEY_PATH, APP_PRIVATE_KEY_ENV, ALIPAY_PUBLIC_KEY, NOTIFY_URL, TRADE_TIMEOUT_MINUTES
 
-    with open(APP_PRIVATE_KEY_PATH, "r", encoding="utf-8") as f:
-        app_private_key = f.read()
+    # 优先使用环境变量中的私钥（云部署），否则从文件读取（本地开发）
+    if APP_PRIVATE_KEY_ENV:
+        app_private_key = APP_PRIVATE_KEY_ENV
+    else:
+        with open(APP_PRIVATE_KEY_PATH, "r", encoding="utf-8") as f:
+            app_private_key = f.read()
 
     alipay = AliPay(
         appid=ALIPAY_APP_ID,

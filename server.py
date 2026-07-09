@@ -10,7 +10,7 @@ import secrets
 import re
 from pathlib import Path
 
-PORT = 3722
+PORT = int(os.environ.get("PORT", "3722"))
 DEEPSEEK_API_URL = "https://api.deepseek.com/v1/chat/completions"
 
 # 支付宝当面付（可选，无密钥时降级）
@@ -32,8 +32,8 @@ FREE_DAILY_LIMIT = 2
 
 # ── 用户系统（文件持久化） ──────────────────────────────────────
 USERS_FILE = Path(__file__).parent / "users.json"
-# 启动时生成一个随机密钥，重启后所有 token 失效
-AUTH_SECRET = secrets.token_hex(32)
+# 持久密钥（优先从环境变量读取，保证重启后 token 仍有效）
+AUTH_SECRET = os.environ.get("AUTH_SECRET", secrets.token_hex(32))
 
 
 def _load_users():

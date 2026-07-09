@@ -39,6 +39,5 @@ app_private_key.pem
 alipay_keys.py
 gen_alipay_keys.py
 
-
 # User data
 users.json
