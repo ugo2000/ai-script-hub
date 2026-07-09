@@ -4,6 +4,10 @@ import urllib.request
 import os
 import sys
 import datetime
+import hashlib
+import hmac
+import secrets
+import re
 from pathlib import Path
 
 PORT = 3722
@@ -25,7 +29,82 @@ except ImportError:
     QR_READY = False
 API_KEY = os.environ.get("DEEPSEEK_KEY", "")
 FREE_DAILY_LIMIT = 2
-RATE_LIMIT_FILE = Path(__file__).parent / "rate_limit.json"
+
+# ── 用户系统（文件持久化） ──────────────────────────────────────
+USERS_FILE = Path(__file__).parent / "users.json"
+# 启动时生成一个随机密钥，重启后所有 token 失效
+AUTH_SECRET = secrets.token_hex(32)
+
+
+def _load_users():
+    if USERS_FILE.exists():
+        try:
+            return json.loads(USERS_FILE.read_text("utf-8"))
+        except:
+            return {}
+    return {}
+
+
+def _save_users(users):
+    USERS_FILE.write_text(json.dumps(users, ensure_ascii=False, indent=2), "utf-8")
+
+
+def _hash_password(password, salt=None):
+    if salt is None:
+        salt = secrets.token_hex(16)
+    h = hashlib.sha256((salt + password).encode()).hexdigest()
+    return f"{salt}:{h}"
+
+
+def _verify_password(password, stored):
+    try:
+        salt, h = stored.split(":", 1)
+        return _hash_password(password, salt) == stored
+    except:
+        return False
+
+
+def _make_token(user_id):
+    """生成 HMAC-SHA256 token"""
+    ts = str(int(datetime.datetime.now().timestamp()))
+    msg = f"{user_id}:{ts}"
+    sig = hmac.new(AUTH_SECRET.encode(), msg.encode(), hashlib.sha256).hexdigest()
+    return f"{msg}:{sig}"
+
+
+def _verify_token(token):
+    """验证 token，返回 user_id 或 None"""
+    try:
+        parts = token.split(":")
+        if len(parts) != 3:
+            return None
+        user_id, ts, sig = parts
+        expected = hmac.new(AUTH_SECRET.encode(), f"{user_id}:{ts}".encode(), hashlib.sha256).hexdigest()
+        if not hmac.compare_digest(sig, expected):
+            return None
+        # 检查有效期（7天）
+        token_ts = int(ts)
+        if datetime.datetime.now().timestamp() - token_ts > 7 * 24 * 3600:
+            return None
+        return user_id
+    except:
+        return None
+
+
+def _get_user_from_auth(headers):
+    """从请求头提取登录用户信息"""
+    auth = headers.get("Authorization", "")
+    if not auth.startswith("Bearer "):
+        return None
+    token = auth[7:]
+    user_id = _verify_token(token)
+    if not user_id:
+        return None
+    users = _load_users()
+    user = users.get(user_id)
+    if not user:
+        return None
+    return user
 
 # ── Prompt templates ──────────────────────────────────────────
 
@@ -164,12 +243,24 @@ class APIHandler(http.server.BaseHTTPRequestHandler):
                 self._send_json(400, {"error": "Missing trade_no"})
         elif self.path.startswith("/api/alipay/qrcode"):
             self._handle_qrcode()
+        elif self.path == "/api/auth/check":
+            self._handle_auth_check()
+        elif self.path == "/api/auth/me":
+            user = _get_user_from_auth(self.headers)
+            if user:
+                self._send_json(200, {"authenticated": True, "user": {"id": user["id"], "email": user.get("email", ""), "created_at": user.get("created_at", ""), "premium": user.get("premium", False)}})
+            else:
+                self._send_json(401, {"authenticated": False, "error": "未登录或 token 已过期"})
         else:
             self._serve_static()
 
     def do_POST(self):
         if self.path == "/api/generate":
             self._handle_generate()
+        elif self.path == "/api/auth/register":
+            self._handle_register()
+        elif self.path == "/api/auth/login":
+            self._handle_login()
         elif self.path == "/api/alipay/create":
             self._handle_create_payment()
         elif self.path == "/api/alipay/notify":
@@ -178,45 +269,71 @@ class APIHandler(http.server.BaseHTTPRequestHandler):
             self._send_json(404, {"error": "Not found"})
 
     def _get_client_ip(self):
+        # 如果经过 Cloudflare，取真实 IP
+        cf_ip = self.headers.get("CF-Connecting-IP")
+        if cf_ip:
+            return cf_ip
         return self.client_address[0]
 
-    def _load_rate_limit(self):
-        if RATE_LIMIT_FILE.exists():
-            try:
-                return json.loads(RATE_LIMIT_FILE.read_text("utf-8"))
-            except:
-                return {}
-        return {}
+    def _require_auth(self):
+        """要求登录，未登录返回 401"""
+        user = _get_user_from_auth(self.headers)
+        if not user:
+            self._send_json(401, {"error": "请先登录", "needs_auth": True})
+            return None
+        return user
 
-    def _save_rate_limit(self, data):
-        RATE_LIMIT_FILE.write_text(json.dumps(data, ensure_ascii=False), "utf-8")
-
-    def _check_daily_limit(self, ip):
+    def _check_daily_limit(self, user):
+        """按用户检查每日使用次数"""
         today = datetime.date.today().isoformat()
-        data = self._load_rate_limit()
-        key = f"{ip}:{today}"
-        used = data.get(key, 0)
+        user_usage = user.get("_usage", {})
+        used = user_usage.get(today, 0)
+        is_premium = user.get("premium", False)
+        if is_premium or user.get("premium_expires_at"):
+            expiry = user.get("premium_expires_at", "")
+            if expiry and expiry >= today:
+                return 999999, used, True  # 无限
+            if expiry and expiry < today:
+                # 过期了，降级
+                users = _load_users()
+                if user["id"] in users:
+                    users[user["id"]]["premium"] = False
+                    _save_users(users)
         remaining = max(0, FREE_DAILY_LIMIT - used)
-        return remaining, used
+        return remaining, used, False
 
-    def _increment_usage(self, ip):
+    def _increment_usage(self, user):
+        """增加用户使用次数"""
         today = datetime.date.today().isoformat()
-        data = self._load_rate_limit()
-        key = f"{ip}:{today}"
-        data[key] = data.get(key, 0) + 1
-        self._save_rate_limit(data)
+        users = _load_users()
+        uid = user["id"]
+        if uid not in users:
+            return
+        if "_usage" not in users[uid]:
+            users[uid]["_usage"] = {}
+        users[uid]["_usage"][today] = users[uid]["_usage"].get(today, 0) + 1
+        _save_users(users)
 
     def _handle_usage(self):
-        ip = self._get_client_ip()
-        remaining, used = self._check_daily_limit(ip)
+        user = _get_user_from_auth(self.headers)
+        if not user:
+            self._send_json(200, {"authenticated": False, "needs_auth": True})
+            return
+        remaining, used, premium = self._check_daily_limit(user)
         self._send_json(200, {
-            "plan": "free",
+            "authenticated": True,
+            "plan": "premium" if premium else "free",
             "daily_limit": FREE_DAILY_LIMIT,
             "used": used,
             "remaining": remaining
         })
 
     def _handle_generate(self):
+        # 要求登录
+        user = self._require_auth()
+        if not user:
+            return
+
         try:
             body = self._read_body()
         except Exception:
@@ -229,9 +346,8 @@ class APIHandler(http.server.BaseHTTPRequestHandler):
         characters = body.get("characters", "").strip()
         special = body.get("special", "").strip()
 
-        # Check rate limit
-        client_ip = self._get_client_ip()
-        remaining, used = self._check_daily_limit(client_ip)
+        # Check rate limit (by user)
+        remaining, used, premium = self._check_daily_limit(user)
         if remaining <= 0:
             self._send_json(429, {"error": f"今日免费次数已用完（{FREE_DAILY_LIMIT}/{FREE_DAILY_LIMIT}），升级专业版可无限使用", "usage": {"plan": "free", "daily_limit": FREE_DAILY_LIMIT, "used": used, "remaining": 0}})
             return
@@ -332,7 +448,7 @@ DeepSeek V4 API 价格：输入 ¥2/百万tokens，输出 ¥6/百万tokens
         content = data.get("choices", [{}])[0].get("message", {}).get("content", "")
 
         # Deduct one usage on success
-        self._increment_usage(client_ip)
+        self._increment_usage(user)
         usage = data.get("usage", {})
         input_tokens = usage.get("prompt_tokens", 0)
         output_tokens = usage.get("completion_tokens", 0)
@@ -471,12 +587,115 @@ DeepSeek V4 API 价格：输入 ¥2/百万tokens，输出 ¥6/百万tokens
         b64 = base64.b64encode(buf.getvalue()).decode()
         self._send_json(200, {"success": True, "qr_base64": b64})
 
+    def _handle_auth_check(self):
+        """GET /api/auth/check - 检查 token 有效性（前端页面加载时调用）"""
+        user = _get_user_from_auth(self.headers)
+        if user:
+            remaining, used, premium = self._check_daily_limit(user)
+            self._send_json(200, {
+                "authenticated": True,
+                "nickname": user.get("nickname", "用户"),
+                "plan": "premium" if premium else "free",
+                "remaining": remaining
+            })
+        else:
+            self._send_json(200, {"authenticated": False})
+
+    def _handle_register(self):
+        """POST /api/auth/register - 注册"""
+        try:
+            body = self._read_body()
+        except Exception:
+            self._send_json(400, {"error": "无效的请求体"})
+            return
+
+        email = (body.get("email") or "").strip().lower()
+        password = (body.get("password") or "").strip()
+        nickname = (body.get("nickname") or "").strip()
+
+        if not email or not password:
+            self._send_json(400, {"error": "邮箱和密码不能为空"})
+            return
+        if len(password) < 6:
+            self._send_json(400, {"error": "密码至少6位"})
+            return
+        if not re.match(r"^[^@\s]+@[^@\s]+\.[^@\s]+$", email):
+            self._send_json(400, {"error": "邮箱格式不正确"})
+            return
+
+        users = _load_users()
+        # 检查邮箱是否已注册
+        for uid, u in users.items():
+            if u.get("email", "").lower() == email:
+                self._send_json(409, {"error": "该邮箱已注册"})
+                return
+
+        user_id = f"user_{secrets.token_hex(8)}"
+        users[user_id] = {
+            "id": user_id,
+            "email": email,
+            "nickname": nickname or email.split("@")[0],
+            "password": _hash_password(password),
+            "created_at": datetime.datetime.now().isoformat(),
+            "premium": False,
+            "premium_expires_at": "",
+            "_usage": {}
+        }
+        _save_users(users)
+
+        token = _make_token(user_id)
+        self._send_json(200, {
+            "success": True,
+            "token": token,
+            "user": {"id": user_id, "email": email, "nickname": users[user_id]["nickname"]}
+        })
+
+    def _handle_login(self):
+        """POST /api/auth/login - 登录"""
+        try:
+            body = self._read_body()
+        except Exception:
+            self._send_json(400, {"error": "无效的请求体"})
+            return
+
+        email = (body.get("email") or "").strip().lower()
+        password = (body.get("password") or "").strip()
+
+        if not email or not password:
+            self._send_json(400, {"error": "邮箱和密码不能为空"})
+            return
+
+        users = _load_users()
+        found_user = None
+        for uid, u in users.items():
+            if u.get("email", "").lower() == email:
+                found_user = u
+                break
+
+        if not found_user or not _verify_password(password, found_user["password"]):
+            self._send_json(401, {"error": "邮箱或密码错误"})
+            return
+
+        # 检查 premium 是否过期
+        expiry = found_user.get("premium_expires_at", "")
+        today = datetime.date.today().isoformat()
+        is_premium = found_user.get("premium", False) and expiry >= today
+
+        token = _make_token(found_user["id"])
+        self._send_json(200, {
+            "success": True,
+            "token": token,
+            "user": {"id": found_user["id"], "email": found_user["email"], "nickname": found_user.get("nickname", ""), "premium": is_premium}
+        })
+
     def _handle_check_subscription(self):
         """检查当前用户的订阅状态"""
-        ip = self._get_client_ip()
-        premium = alipay_service.is_premium(ip)
-        expiry = alipay_service.get_expiry(ip)
-        self._send_json(200, {"premium": premium, "expires_at": expiry})
+        user = _get_user_from_auth(self.headers)
+        if not user:
+            self._send_json(401, {"error": "未登录"})
+            return
+        remaining, _, premium = self._check_daily_limit(user)
+        self._send_json(200, {"premium": premium, "expires_at": user.get("premium_expires_at", ""), "remaining": remaining, "plan": "premium" if premium else "free"})
 
 
 # ── Main ────────────────────────────────────────────────────────

@@ -513,6 +513,43 @@ body {
   .nav-links a:not(.nav-btn) { display: none; }
 }
 
+/* ── Auth Modal ───────────────────────────── */
+.auth-tabs {
+  display: flex;
+  gap: 0;
+  background: rgba(255,255,255,0.04);
+  border-radius: 10px;
+  padding: 4px;
+  margin-bottom: 20px;
+}
+.auth-tab {
+  flex: 1;
+  padding: 10px 20px;
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 15px;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+.auth-tab.active {
+  background: var(--gradient);
+  color: white;
+}
+.auth-error {
+  color: #e74c3c;
+  font-size: 13px;
+  margin-top: 12px;
+  padding: 8px 12px;
+  background: rgba(231,76,60,0.08);
+  border-radius: 8px;
+  display: none;
+}
+.auth-error.show { display: block; }
+.form-group { text-align: left; }
+
 /* ── Payment Modal ─────────────────────────── */
 .modal-overlay {
   position: fixed;
@@ -689,7 +726,11 @@ body {
       <a href="#pricing">定价</a>
       <a href="#about">关于</a>
       <a href="#contact">联系</a>
-      <button class="nav-btn" onclick="document.getElementById('generator').scrollIntoView({behavior:'smooth'})">开始创作</button>
+      <button class="nav-btn" id="navLoginBtn" onclick="showAuthModal('login')">登录</button>
+      <span id="navUserInfo" style="display:none">
+        <span id="navNickname" style="font-size:14px;color:var(--text)"></span>
+        <button class="nav-btn" onclick="logout()" style="background:transparent;border:1px solid var(--border);padding:6px 14px;font-size:13px">退出</button>
+      </span>
     </div>
   </div>
 </nav>
@@ -928,6 +969,53 @@ body {
   <p style="margin-top:4px">© 2026 · 让每个人都能成为短剧编剧</p>
 </footer>
 
+<!-- Auth Modal -->
+<div class="modal-overlay" id="authModal">
+  <div class="modal-card" style="max-width:400px">
+    <button class="modal-close" onclick="closeAuthModal()">✕</button>
+    <div class="modal-header">
+      <div class="auth-tabs">
+        <button class="auth-tab active" id="authTabLogin" onclick="switchAuthTab('login')">登录</button>
+        <button class="auth-tab" id="authTabRegister" onclick="switchAuthTab('register')">注册</button>
+      </div>
+    </div>
+    <div class="modal-body">
+      <!-- Login form -->
+      <form id="loginForm" onsubmit="event.preventDefault();login()">
+        <div class="form-group">
+          <label class="form-label">邮箱</label>
+          <input class="form-input" id="loginEmail" type="email" placeholder="请输入邮箱" required>
+        </div>
+        <div class="form-group" style="margin-top:16px">
+          <label class="form-label">密码</label>
+          <input class="form-input" id="loginPassword" type="password" placeholder="请输入密码" required>
+        </div>
+        <div class="auth-error" id="loginError"></div>
+        <button type="submit" class="submit-btn" style="width:100%;margin-top:20px;justify-content:center" id="loginBtn">登录</button>
+      </form>
+
+      <!-- Register form -->
+      <form id="registerForm" style="display:none" onsubmit="event.preventDefault();register()">
+        <div class="form-group">
+          <label class="form-label">邮箱</label>
+          <input class="form-input" id="regEmail" type="email" placeholder="请输入邮箱" required>
+        </div>
+        <div class="form-group" style="margin-top:16px">
+          <label class="form-label">昵称 <small>可选</small></label>
+          <input class="form-input" id="regNickname" type="text" placeholder="怎么称呼？">
+        </div>
+        <div class="form-group" style="margin-top:16px">
+          <label class="form-label">密码 <small>至少6位</small></label>
+          <input class="form-input" id="regPassword" type="password" placeholder="设置密码" required>
+        </div>
+        <div class="auth-error" id="regError"></div>
+        <button type="submit" class="submit-btn" style="width:100%;margin-top:20px;justify-content:center" id="regBtn">注册并开始使用</button>
+        <p style="font-size:12px;color:var(--text-secondary);margin-top:12px;text-align:center">注册即表示同意服务条款和隐私政策</p>
+      </form>
+    </div>
+  </div>
+</div>
+
 <!-- Payment Modal -->
 <div class="modal-overlay" id="paymentModal">
   <div class="modal-card">
@@ -975,7 +1063,96 @@ body {
 <div class="toast" id="toast"></div>
 
 <script>
-// Genre selection
+// ── Auth / Token ──────────────────────────────────────────────
+
+function getToken() { return localStorage.getItem('jgc_token'); }
+function setToken(t) { localStorage.setItem('jgc_token', t); }
+function removeToken() { localStorage.removeItem('jgc_token'); }
+
+function getAuthHeaders() {
+  const h = { 'Content-Type': 'application/json' };
+  const t = getToken();
+  if (t) h['Authorization'] = 'Bearer ' + t;
+  return h;
+}
+
+function showAuthModal(tab) {
+  document.getElementById('authModal').classList.add('show');
+  switchAuthTab(tab || 'login');
+}
+function closeAuthModal() { document.getElementById('authModal').classList.remove('show'); }
+
+function switchAuthTab(tab) {
+  document.getElementById('authTabLogin').classList.toggle('active', tab === 'login');
+  document.getElementById('authTabRegister').classList.toggle('active', tab === 'register');
+  document.getElementById('loginForm').style.display = tab === 'login' ? 'block' : 'none';
+  document.getElementById('registerForm').style.display = tab === 'register' ? 'block' : 'none';
+}
+
+function showAuthError(id, msg) {
+  const el = document.getElementById(id);
+  el.textContent = '⚠️ ' + msg;
+  el.classList.add('show');
+}
+function clearAuthError(id) { document.getElementById(id).classList.remove('show'); }
+
+async function login() {
+  clearAuthError('loginError');
+  const email = document.getElementById('loginEmail').value.trim();
+  const password = document.getElementById('loginPassword').value;
+  const btn = document.getElementById('loginBtn');
+  btn.disabled = true; btn.textContent = '登录中...';
+  try {
+    const res = await fetch('/api/auth/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, password }) });
+    const data = await res.json();
+    if (!data.success) { showAuthError('loginError', data.error || '登录失败'); return; }
+    setToken(data.token);
+    closeAuthModal();
+    updateNavbar(data.user.nickname);
+    fetchUsage();
+    showToast('✅ 登录成功，欢迎回来！');
+  } catch (e) { showAuthError('loginError', '网络错误'); }
+  finally { btn.disabled = false; btn.textContent = '登录'; }
+}
+
+async function register() {
+  clearAuthError('regError');
+  const email = document.getElementById('regEmail').value.trim();
+  const password = document.getElementById('regPassword').value;
+  const nickname = document.getElementById('regNickname').value.trim();
+  const btn = document.getElementById('regBtn');
+  btn.disabled = true; btn.textContent = '注册中...';
+  try {
+    const res = await fetch('/api/auth/register', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, password, nickname }) });
+    const data = await res.json();
+    if (!data.success) { showAuthError('regError', data.error || '注册失败'); return; }
+    setToken(data.token);
+    closeAuthModal();
+    updateNavbar(data.user.nickname);
+    fetchUsage();
+    showToast('🎉 注册成功，开始创作吧！');
+  } catch (e) { showAuthError('regError', '网络错误'); }
+  finally { btn.disabled = false; btn.textContent = '注册并开始使用'; }
+}
+
+function logout() {
+  removeToken();
+  location.reload();
+}
+
+function updateNavbar(nickname) {
+  if (nickname) {
+    document.getElementById('navLoginBtn').style.display = 'none';
+    document.getElementById('navUserInfo').style.display = 'inline';
+    document.getElementById('navNickname').textContent = '👤 ' + nickname;
+  } else {
+    document.getElementById('navLoginBtn').style.display = 'inline';
+    document.getElementById('navUserInfo').style.display = 'none';
+  }
+}
+
+// ── Genre selection ───────────────────────────────────────────
+
 document.querySelectorAll('.genre-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     document.querySelectorAll('.genre-btn').forEach(b => b.classList.remove('active'));
@@ -983,31 +1160,28 @@ document.querySelectorAll('.genre-btn').forEach(btn => {
   });
 });
 
-// Enter key to submit
 document.getElementById('plotInput').addEventListener('keydown', (e) => {
-  if (e.key === 'Enter' && e.shiftKey === false) {
-    e.preventDefault();
-    generate();
-  }
+  if (e.key === 'Enter' && e.shiftKey === false) { e.preventDefault(); generate(); }
 });
 
+// ── Generate ──────────────────────────────────────────────────
+
 async function generate() {
+  if (!getToken()) {
+    showAuthModal('login');
+    showError('请先登录后使用');
+    return;
+  }
+
   const genre = document.querySelector('.genre-btn.active')?.dataset.genre || 'niixi';
   const plot = document.getElementById('plotInput').value.trim();
   const style = document.getElementById('styleSelect').value;
   const characters = document.getElementById('charactersInput').value.trim();
   const special = document.getElementById('specialInput').value.trim();
 
-  if (!plot) {
-    showError('请先输入核心梗概');
-    return;
-  }
-  if (plot.length < 5) {
-    showError('梗概太短了，请输入至少5个字');
-    return;
-  }
+  if (!plot) { showError('请先输入核心梗概'); return; }
+  if (plot.length < 5) { showError('梗概太短了，请输入至少5个字'); return; }
 
-  // UI state
   document.getElementById('loading').classList.add('active');
   document.getElementById('result').classList.remove('active');
   document.getElementById('errorBanner').classList.remove('show');
@@ -1017,35 +1191,35 @@ async function generate() {
 
   try {
     await delay(500);
-
     document.getElementById('loadingProgress').textContent = '📝 正在编写分镜表和台词...';
 
     const res = await fetch('/api/generate', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: getAuthHeaders(),
       body: JSON.stringify({ genre, plot, extra: style, characters, special })
     });
 
+    if (res.status === 401) {
+      removeToken();
+      updateNavbar(null);
+      showAuthModal('login');
+      throw new Error('登录已过期，请重新登录');
+    }
+
     if (!res.ok) {
       const err = await res.json().catch(() => ({ error: '请求失败' }));
-      if (res.status === 429) {
-        // Also update remaining count display
-        if (err.usage) {
-          updateFreeRemaining(err.usage.remaining, err.usage.used);
-        }
-        throw new Error(err.error || '免费次数已用完，升级专业版可无限使用');
+      if (res.status === 429 && err.usage) {
+        updateFreeRemaining(err.usage.remaining, err.usage.used);
       }
-      throw new Error(err.error || `服务器错误 (${res.status})`);
+      throw new Error(err.error || `请求失败 (${res.status})`);
     }
 
     const data = await res.json();
-
     document.getElementById('loadingProgress').textContent = '✅ 生成完成！渲染中...';
     await delay(300);
 
     if (data.success) {
       displayResult(data.data);
-      // Refresh usage count after successful generation
       fetchUsage();
     } else {
       throw new Error(data.error || '生成失败');
@@ -1060,46 +1234,32 @@ async function generate() {
 }
 
 function displayResult(data) {
-  const content = document.getElementById('resultContent');
-  const meta = document.getElementById('resultMeta');
-
-  // Format the script nicely
-  content.textContent = data.script;
-
-  const cost = data.usage ? (data.usage.estimated_cost).toFixed(4) : '~0.005';
+  document.getElementById('resultContent').textContent = data.script;
+  const cost = data.usage ? data.usage.estimated_cost.toFixed(4) : '~0.005';
   const tokens = data.usage ? `${data.usage.input_tokens + data.usage.output_tokens} tokens` : '--';
-  meta.textContent = `💰 估算成本: ¥${cost} · 📊 ${tokens} · 🕐 ${new Date().toLocaleTimeString()}`;
-
+  document.getElementById('resultMeta').textContent = `💰 ￥${cost} · 📊 ${tokens} · 🕐 ${new Date().toLocaleTimeString()}`;
   document.getElementById('result').classList.add('active');
-
-  // Scroll to result
   document.getElementById('result').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 function copyScript() {
-  const text = document.getElementById('resultContent').textContent;
-  navigator.clipboard.writeText(text).then(() => {
-    showToast('✅ 已复制到剪贴板');
-  }).catch(() => {
-    showToast('复制失败，请手动选择复制');
-  });
+  navigator.clipboard.writeText(document.getElementById('resultContent').textContent).then(
+    () => showToast('✅ 已复制'),
+    () => showToast('复制失败，请手动选择复制')
+  );
 }
 
 function downloadScript() {
   const text = document.getElementById('resultContent').textContent;
-  const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
-  const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
-  a.href = url;
-  a.download = `短剧脚本_${new Date().toISOString().slice(0, 10)}.txt`;
+  a.href = URL.createObjectURL(new Blob([text], { type: 'text/plain;charset=utf-8' }));
+  a.download = `短剧脚本_${new Date().toISOString().slice(0,10)}.txt`;
   a.click();
-  URL.revokeObjectURL(url);
+  URL.revokeObjectURL(a.href);
   showToast('💾 下载成功');
 }
 
-function generateAgain() {
-  generate();
-}
+function generateAgain() { generate(); }
 
 function showError(msg) {
   const banner = document.getElementById('errorBanner');
@@ -1132,7 +1292,6 @@ const PLANS = {
 function showPayment(planId) {
   const plan = PLANS[planId];
   if (!plan) return;
-  
   currentPaymentPlanId = planId;
   currentPaymentTradeNo = null;
 
@@ -1140,26 +1299,18 @@ function showPayment(planId) {
   document.getElementById('paymentDesc').textContent = `${plan.period} · ¥${plan.price}/月 · 无限次生成`;
   document.getElementById('paymentAmount').textContent = plan.price;
 
-  // Reset display
   document.querySelector('.qr-loading').style.display = 'block';
   document.getElementById('qrDisplay').style.display = 'none';
   document.getElementById('qrExpired').style.display = 'none';
   document.getElementById('qrSuccess').style.display = 'none';
-  document.getElementById('paymentStatus').className = 'payment-status';
-  document.getElementById('paymentStatus').innerHTML = '<span class="status-dot"></span><span>等待扫码...</span>';
 
   document.getElementById('paymentModal').classList.add('show');
-
-  // Create payment
   createPaymentOrder(planId);
 }
 
 function closePayment() {
   document.getElementById('paymentModal').classList.remove('show');
-  if (paymentPollTimer) {
-    clearInterval(paymentPollTimer);
-    paymentPollTimer = null;
-  }
+  if (paymentPollTimer) { clearInterval(paymentPollTimer); paymentPollTimer = null; }
   currentPaymentTradeNo = null;
   currentPaymentPlanId = null;
 }
@@ -1168,38 +1319,26 @@ async function createPaymentOrder(planId) {
   try {
     const res = await fetch('/api/alipay/create', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: getAuthHeaders(),
       body: JSON.stringify({ plan_id: planId })
     });
     const data = await res.json();
-
-    if (!data.success) {
-      throw new Error(data.error || '创建订单失败');
-    }
-
+    if (!data.success) throw new Error(data.error || '创建订单失败');
     currentPaymentTradeNo = data.out_trade_no;
 
-    // Show QR code
     document.querySelector('.qr-loading').style.display = 'none';
     document.getElementById('qrDisplay').style.display = 'block';
 
-    // Generate QR image server-side (no external API dependency)
     try {
       const qrRes = await fetch(`/api/alipay/qrcode?data=${encodeURIComponent(data.qr_code)}`);
       const qrData = await qrRes.json();
-      if (qrData.success) {
-        document.getElementById('qrImg').src = `data:image/png;base64,${qrData.qr_base64}`;
-      } else {
-        // fallback: raw alipay link
-        document.getElementById('qrImg').src = data.qr_code;
-      }
+      document.getElementById('qrImg').src = qrData.success
+        ? `data:image/png;base64,${qrData.qr_base64}`
+        : data.qr_code;
     } catch (e) {
       document.getElementById('qrImg').src = data.qr_code;
     }
-
-    // Start polling
     startPaymentPoll(data.out_trade_no);
-
   } catch (err) {
     document.querySelector('.qr-loading').style.display = 'none';
     document.getElementById('qrExpired').style.display = 'block';
@@ -1210,24 +1349,19 @@ async function createPaymentOrder(planId) {
 
 function startPaymentPoll(tradeNo) {
   if (paymentPollTimer) clearInterval(paymentPollTimer);
-
   let attempts = 0;
-  const maxAttempts = 120; // 10分钟
-
   paymentPollTimer = setInterval(async () => {
     attempts++;
-    if (attempts > maxAttempts) {
+    if (attempts > 120) {
       clearInterval(paymentPollTimer);
       paymentPollTimer = null;
       document.getElementById('qrDisplay').style.display = 'none';
       document.getElementById('qrExpired').style.display = 'block';
       return;
     }
-
     try {
       const res = await fetch(`/api/alipay/query?trade_no=${tradeNo}`);
       const data = await res.json();
-
       if (data.paid) {
         clearInterval(paymentPollTimer);
         paymentPollTimer = null;
@@ -1236,15 +1370,9 @@ function startPaymentPoll(tradeNo) {
         fetchUsage();
         return;
       }
-
-      // Update status
-      const statusEl = document.getElementById('paymentStatus');
-      const elapsed = Math.floor(attempts * 5 / 60);
-      statusEl.innerHTML = '<span class="status-dot"></span><span>等待扫码... ' + elapsed + '分钟';
-
-    } catch (err) {
-      // silent retry
-    }
+      document.getElementById('paymentStatus').innerHTML =
+        '<span class="status-dot"></span><span>等待扫码... ' + Math.floor(attempts * 5 / 60) + '分钟';
+    } catch (e) { /* silent */ }
   }, 5000);
 }
 
@@ -1260,28 +1388,46 @@ function retryPayment() {
 
 function updateFreeRemaining(remaining, used) {
   const el = document.getElementById('freeRemaining');
-  if (el) {
-    el.textContent = `每日${used}/2次 · 剩余${remaining}次`;
-  }
+  if (el) el.textContent = `每日${used}/2次 · 剩余${remaining}次`;
 }
 
 async function fetchUsage() {
   try {
-    const res = await fetch('/api/usage');
+    const res = await fetch('/api/usage', { headers: getAuthHeaders() });
     if (!res.ok) return;
     const data = await res.json();
+    if (!data.authenticated) {
+      updateNavbar(null);
+      return;
+    }
     updateFreeRemaining(data.remaining, data.used);
-  } catch (e) {
-    // silently fail
-  }
+  } catch (e) { /* silent */ }
 }
 
-// Load on page start
-document.addEventListener('DOMContentLoaded', () => {
-  fetchUsage();
+// ── Init ──────────────────────────────────────────────────────
+
+document.addEventListener('DOMContentLoaded', async () => {
   if (!document.getElementById('plotInput').value) {
     document.getElementById('plotInput').placeholder = '例如：女主是隐藏的顶级黑客，被公司辞退后创立AI公司，前总裁跪求合作...';
   }
+
+  // 检查已有 token
+  const token = getToken();
+  if (token) {
+    try {
+      const res = await fetch('/api/auth/check', { headers: getAuthHeaders() });
+      const data = await res.json();
+      if (data.authenticated) {
+        updateNavbar(data.nickname || '用户');
+        updateFreeRemaining(data.remaining, data.remaining === 999999 ? '无限' : 0);
+      } else {
+        removeToken();
+      }
+    } catch (e) {
+      removeToken();
+    }
+  }
+  fetchUsage();
 });
 </script>
 </body>
