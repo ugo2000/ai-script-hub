@@ -1183,8 +1183,19 @@ async function createPaymentOrder(planId) {
     document.querySelector('.qr-loading').style.display = 'none';
     document.getElementById('qrDisplay').style.display = 'block';
 
-    // Convert alipay qr link to image
-    document.getElementById('qrImg').src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(data.qr_code)}`;
+    // Generate QR image server-side (no external API dependency)
+    try {
+      const qrRes = await fetch(`/api/alipay/qrcode?data=${encodeURIComponent(data.qr_code)}`);
+      const qrData = await qrRes.json();
+      if (qrData.success) {
+        document.getElementById('qrImg').src = `data:image/png;base64,${qrData.qr_base64}`;
+      } else {
+        // fallback: raw alipay link
+        document.getElementById('qrImg').src = data.qr_code;
+      }
+    } catch (e) {
+      document.getElementById('qrImg').src = data.qr_code;
+    }
 
     // Start polling
     startPaymentPoll(data.out_trade_no);

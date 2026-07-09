@@ -8,6 +8,21 @@ from pathlib import Path
 
 PORT = 3722
 DEEPSEEK_API_URL = "https://api.deepseek.com/v1/chat/completions"
+
+# 支付宝当面付（可选，无密钥时降级）
+try:
+    import alipay_service
+    ALIPAY_READY = alipay_service.alipay_ready
+except ImportError:
+    alipay_service = None
+    ALIPAY_READY = False
+try:
+    import qrcode
+    from io import BytesIO
+    import base64
+    QR_READY = True
+except ImportError:
+    QR_READY = False
 API_KEY = os.environ.get("DEEPSEEK_KEY", "")
 FREE_DAILY_LIMIT = 2
 RATE_LIMIT_FILE = Path(__file__).parent / "rate_limit.json"
@@ -137,13 +152,28 @@ class APIHandler(http.server.BaseHTTPRequestHandler):
             self._send_json(200, {"genres": genres})
         elif self.path == "/api/usage":
             self._handle_usage()
+        elif self.path == "/api/alipay/status":
+            self._handle_check_subscription()
+        elif self.path.startswith("/api/alipay/query?"):
+            from urllib.parse import urlparse, parse_qs
+            qs = parse_qs(urlparse(self.path).query)
+            trade_no = qs.get("trade_no", [None])[0]
+            if trade_no:
+                self._handle_payment_query(trade_no)
+            else:
+                self._send_json(400, {"error": "Missing trade_no"})
+        elif self.path.startswith("/api/alipay/qrcode"):
+            self._handle_qrcode()
         else:
-            # Try static files
             self._serve_static()
 
     def do_POST(self):
         if self.path == "/api/generate":
             self._handle_generate()
+        elif self.path == "/api/alipay/create":
+            self._handle_create_payment()
+        elif self.path == "/api/alipay/notify":
+            self._handle_alipay_notify()
         else:
             self._send_json(404, {"error": "Not found"})
 
@@ -371,6 +401,82 @@ DeepSeek V4 API 价格：输入 ¥2/百万tokens，输出 ¥6/百万tokens
 
     def log_message(self, format, *args):
         print(f"[{self.log_date_time_string()}] {args[0]} {args[1]} {args[2]}")
+
+    # ── 支付宝支付接口 ──────────────────────────────────────────
+
+    def _handle_create_payment(self):
+        from urllib.parse import urlparse, parse_qs
+        body = self._read_body()
+        plan_id = body.get("plan_id", "")
+        if plan_id not in ("pro_monthly", "studio_monthly"):
+            self._send_json(400, {"error": "无效套餐"})
+            return
+        result = alipay_service.create_qr_payment(plan_id)
+        if result.get("success"):
+            self._send_json(200, {
+                "success": True,
+                "qr_code": result["qr_code"],
+                "out_trade_no": result["out_trade_no"],
+                "total_amount": result["total_amount"],
+                "plan_name": alipay_service.PLANS[plan_id]["name"],
+            })
+        else:
+            self._send_json(500, {"success": False, "error": result.get("error", "支付创建失败")})
+
+    def _handle_payment_query(self, out_trade_no):
+        result = alipay_service.query_payment(out_trade_no)
+        self._send_json(200, result)
+
+    def _handle_alipay_notify(self):
+        """支付宝异步通知回调"""
+        length = int(self.headers.get("Content-Length", 0))
+        raw = self.rfile.read(length).decode("utf-8")
+        # 支付宝 POST 是 form-encoded
+        from urllib.parse import parse_qs
+        data = {k: v[0] for k, v in parse_qs(raw).items()}
+
+        if alipay_service.verify_notification(data):
+            trade_status = data.get("trade_status", "")
+            out_trade_no = data.get("out_trade_no", "")
+            if trade_status == "TRADE_SUCCESS":
+                # 提取 plan_id 从 out_trade_no (jgc_时间戳_pro_monthly)
+                parts = out_trade_no.split("_")
+                plan_id = parts[-1] if len(parts) >= 3 else "pro_monthly"
+                alipay_service.activate_subscription(
+                    out_trade_no, plan_id, data.get("buyer_id", "unknown")
+                )
+                print(f"[ALIPAY] 订阅激活成功: {out_trade_no} ({plan_id})")
+            self.send_response(200)
+            self.send_header("Content-Type", "text/plain")
+            self.end_headers()
+            self.wfile.write(b"success")
+        else:
+            print(f"[ALIPAY] 通知验签失败: {data}")
+            self.send_response(403)
+            self.end_headers()
+
+    def _handle_qrcode(self):
+        from urllib.parse import urlparse, parse_qs
+        qs = parse_qs(urlparse(self.path).query)
+        data = qs.get("data", [None])[0]
+        if not data:
+            self._send_json(400, {"error": "Missing data param"})
+            return
+        if not QR_READY:
+            self._send_json(500, {"error": "QR module not available"})
+            return
+        img = qrcode.make(data)
+        buf = BytesIO()
+        img.save(buf, format="PNG")
+        b64 = base64.b64encode(buf.getvalue()).decode()
+        self._send_json(200, {"success": True, "qr_base64": b64})
+
+    def _handle_check_subscription(self):
+        """检查当前用户的订阅状态"""
+        ip = self._get_client_ip()
+        premium = alipay_service.is_premium(ip)
+        expiry = alipay_service.get_expiry(ip)
+        self._send_json(200, {"premium": premium, "expires_at": expiry})
 
 
 # ── Main ────────────────────────────────────────────────────────
