@@ -513,6 +513,78 @@ body {
   .nav-links a:not(.nav-btn) { display: none; }
 }
 
+/* ── Payment Modal ─────────────────────────── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 3000;
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+  padding: 20px;
+}
+.modal-overlay.show { opacity: 1; pointer-events: all; }
+.modal-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  max-width: 420px;
+  width: 100%;
+  position: relative;
+  padding: 32px;
+  animation: modalIn 0.3s ease;
+}
+@keyframes modalIn { from { transform: scale(0.9) translateY(20px); opacity: 0; } to { transform: scale(1) translateY(0); opacity: 1; } }
+.modal-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: rgba(255,255,255,0.06);
+  border: none;
+  color: var(--text-secondary);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+.modal-close:hover { background: rgba(255,255,255,0.12); color: var(--text); }
+.modal-header { text-align: center; margin-bottom: 24px; }
+.modal-header h3 { font-size: 22px; margin-bottom: 4px; }
+.modal-body { text-align: center; }
+.qr-wrapper { min-height: 300px; display: flex; align-items: center; justify-content: center; }
+.qr-display { text-align: center; }
+.payment-status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 16px;
+  padding: 8px 16px;
+  background: rgba(108,92,231,0.08);
+  border-radius: 20px;
+  font-size: 13px;
+  color: var(--primary-light);
+}
+.status-dot {
+  width: 8px;
+  height: 8px;
+  background: var(--primary-light);
+  border-radius: 50%;
+  animation: pulse 1.5s infinite;
+}
+@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+.modal-footer { text-align: center; margin-top: 20px; }
+
 /* ── About Section ─────────────────────────── */
 .about-section {
   padding: 60px 0;
@@ -789,7 +861,7 @@ body {
           <li>标准短剧脚本输出</li>
           <li>分镜表+完整剧本+下集钩子</li>
         </ul>
-        <a href="#" class="pricing-btn primary">即将推出（支付宝接入中）</a>
+        <a href="#" class="pricing-btn primary" onclick="event.preventDefault();showPayment('pro_monthly')">✅ 立即开通 ¥39/月</a>
       </div>
 
       <div class="pricing-card">
@@ -805,7 +877,7 @@ body {
           <li>Word/PDF导出</li>
           <li>高级Prompt配方</li>
         </ul>
-        <a href="#" class="pricing-btn">开发计划中</a>
+        <a href="#" class="pricing-btn" onclick="event.preventDefault();showPayment('studio_monthly')">✅ 立即开通 ¥199/月</a>
       </div>
     </div>
   </div>
@@ -855,6 +927,49 @@ body {
   <p>🎬 剧工厂 - AI短剧脚本生成器 · Powered by DeepSeek V4</p>
   <p style="margin-top:4px">© 2026 · 让每个人都能成为短剧编剧</p>
 </footer>
+
+<!-- Payment Modal -->
+<div class="modal-overlay" id="paymentModal">
+  <div class="modal-card">
+    <button class="modal-close" onclick="closePayment()">✕</button>
+    <div class="modal-header">
+      <h3 id="paymentTitle">扫码支付</h3>
+      <p id="paymentDesc" style="color:var(--text-secondary);font-size:14px"></p>
+    </div>
+    <div class="modal-body" id="paymentBody">
+      <!-- QR Code area -->
+      <div class="qr-wrapper" id="qrWrapper">
+        <div class="qr-loading">
+          <div class="spinner" style="width:32px;height:32px;border-width:2px"></div>
+          <p style="color:var(--text-secondary);font-size:13px;margin-top:12px">正在生成付款码...</p>
+        </div>
+        <div class="qr-display" id="qrDisplay" style="display:none">
+          <img id="qrImg" src="" alt="支付宝付款码" style="width:200px;height:200px;border-radius:12px;display:block;margin:0 auto">
+          <p style="margin-top:16px;font-weight:600;font-size:15px">打开支付宝扫一扫付款</p>
+          <p style="color:var(--text-secondary);font-size:13px">¥ <span id="paymentAmount">0</span></p>
+          <div class="payment-status" id="paymentStatus">
+            <span class="status-dot"></span>
+            <span>等待扫码...</span>
+          </div>
+        </div>
+        <div class="qr-expired" id="qrExpired" style="display:none">
+          <p style="font-size:36px;margin-bottom:12px">⏰</p>
+          <p style="color:var(--text-secondary);font-size:14px">二维码已过期</p>
+          <button class="submit-btn" onclick="retryPayment()" style="margin-top:16px">重新生成</button>
+        </div>
+        <div class="qr-success" id="qrSuccess" style="display:none">
+          <p style="font-size:48px;margin-bottom:12px">🎉</p>
+          <p style="font-weight:700;font-size:18px;color:var(--success)">支付成功！</p>
+          <p style="color:var(--text-secondary);font-size:14px;margin-top:4px">专业版已激活，尽情使用吧</p>
+          <button class="submit-btn" onclick="closePayment()" style="margin-top:20px;background:var(--gradient)">开始创作 🚀</button>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer" id="paymentFooter">
+      <p style="font-size:12px;color:var(--text-secondary)">由支付宝提供服务 · 未支付可随时关闭</p>
+    </div>
+  </div>
+</div>
 
 <!-- Toast -->
 <div class="toast" id="toast"></div>
@@ -1002,6 +1117,133 @@ function showToast(msg, type = 'success') {
 }
 
 function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+// ── Payment ──────────────────────────────────────────────
+
+let currentPaymentTradeNo = null;
+let currentPaymentPlanId = null;
+let paymentPollTimer = null;
+
+const PLANS = {
+  'pro_monthly': { name: '剧工厂专业版', price: '39', period: '月付' },
+  'studio_monthly': { name: '剧工厂工作室版', price: '199', period: '月付' }
+};
+
+function showPayment(planId) {
+  const plan = PLANS[planId];
+  if (!plan) return;
+  
+  currentPaymentPlanId = planId;
+  currentPaymentTradeNo = null;
+
+  document.getElementById('paymentTitle').textContent = plan.name;
+  document.getElementById('paymentDesc').textContent = `${plan.period} · ¥${plan.price}/月 · 无限次生成`;
+  document.getElementById('paymentAmount').textContent = plan.price;
+
+  // Reset display
+  document.querySelector('.qr-loading').style.display = 'block';
+  document.getElementById('qrDisplay').style.display = 'none';
+  document.getElementById('qrExpired').style.display = 'none';
+  document.getElementById('qrSuccess').style.display = 'none';
+  document.getElementById('paymentStatus').className = 'payment-status';
+  document.getElementById('paymentStatus').innerHTML = '<span class="status-dot"></span><span>等待扫码...</span>';
+
+  document.getElementById('paymentModal').classList.add('show');
+
+  // Create payment
+  createPaymentOrder(planId);
+}
+
+function closePayment() {
+  document.getElementById('paymentModal').classList.remove('show');
+  if (paymentPollTimer) {
+    clearInterval(paymentPollTimer);
+    paymentPollTimer = null;
+  }
+  currentPaymentTradeNo = null;
+  currentPaymentPlanId = null;
+}
+
+async function createPaymentOrder(planId) {
+  try {
+    const res = await fetch('/api/alipay/create', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ plan_id: planId })
+    });
+    const data = await res.json();
+
+    if (!data.success) {
+      throw new Error(data.error || '创建订单失败');
+    }
+
+    currentPaymentTradeNo = data.out_trade_no;
+
+    // Show QR code
+    document.querySelector('.qr-loading').style.display = 'none';
+    document.getElementById('qrDisplay').style.display = 'block';
+
+    // Convert alipay qr link to image
+    document.getElementById('qrImg').src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(data.qr_code)}`;
+
+    // Start polling
+    startPaymentPoll(data.out_trade_no);
+
+  } catch (err) {
+    document.querySelector('.qr-loading').style.display = 'none';
+    document.getElementById('qrExpired').style.display = 'block';
+    document.querySelector('#qrExpired p:last-child').textContent = err.message;
+    showToast('⚠️ ' + err.message, 'error');
+  }
+}
+
+function startPaymentPoll(tradeNo) {
+  if (paymentPollTimer) clearInterval(paymentPollTimer);
+
+  let attempts = 0;
+  const maxAttempts = 120; // 10分钟
+
+  paymentPollTimer = setInterval(async () => {
+    attempts++;
+    if (attempts > maxAttempts) {
+      clearInterval(paymentPollTimer);
+      paymentPollTimer = null;
+      document.getElementById('qrDisplay').style.display = 'none';
+      document.getElementById('qrExpired').style.display = 'block';
+      return;
+    }
+
+    try {
+      const res = await fetch(`/api/alipay/query?trade_no=${tradeNo}`);
+      const data = await res.json();
+
+      if (data.paid) {
+        clearInterval(paymentPollTimer);
+        paymentPollTimer = null;
+        document.getElementById('qrDisplay').style.display = 'none';
+        document.getElementById('qrSuccess').style.display = 'block';
+        fetchUsage();
+        return;
+      }
+
+      // Update status
+      const statusEl = document.getElementById('paymentStatus');
+      const elapsed = Math.floor(attempts * 5 / 60);
+      statusEl.innerHTML = '<span class="status-dot"></span><span>等待扫码... ' + elapsed + '分钟';
+
+    } catch (err) {
+      // silent retry
+    }
+  }, 5000);
+}
+
+function retryPayment() {
+  if (currentPaymentPlanId) {
+    document.getElementById('qrExpired').style.display = 'none';
+    document.querySelector('.qr-loading').style.display = 'block';
+    createPaymentOrder(currentPaymentPlanId);
+  }
+}
 
 // ── Usage tracking ──────────────────────────────────────
 
