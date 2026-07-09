@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>剧工厂 - AI短剧脚本生成器 | 30秒生成爆款短剧</title>
+<meta name="description" content="AI驱动的短剧脚本生成器。输入题材，30秒生成专业级竖屏短剧剧本，含分镜表、完整对白、人物设定。支持都市逆袭、甜宠言情、悬疑惊悚等热门题材。">
+<meta name="keywords" content="AI短剧,短剧脚本,AI剧本,短剧编剧,短剧生成器,竖屏短剧">
+<style>
+:root {
+  --primary: #6C5CE7;
+  --primary-light: #A29BFE;
+  --primary-dark: #5A4BD1;
+  --accent: #FD79A8;
+  --accent-light: #FDCB6E;
+  --bg: #0A0A1A;
+  --bg-card: #12122A;
+  --bg-card-hover: #1A1A3A;
+  --text: #E8E8F0;
+  --text-secondary: #9B9BB0;
+  --border: #2A2A4A;
+  --success: #00B894;
+  --warning: #FDCB6E;
+  --gradient: linear-gradient(135deg, #6C5CE7, #FD79A8);
+  --shadow: 0 8px 32px rgba(108, 92, 231, 0.15);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--primary); }
+
+/* Navigation */
+.nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background: rgba(10, 10, 26, 0.85);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 20px;
+}
+.nav-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text);
+  text-decoration: none;
+}
+.nav-logo span { background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.nav-links { display: flex; gap: 24px; align-items: center; }
+.nav-links a { color: var(--text-secondary); text-decoration: none; font-size: 14px; transition: color 0.3s; }
+.nav-links a:hover { color: var(--text); }
+.nav-btn {
+  background: var(--gradient);
+  color: white;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 20px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.nav-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 15px rgba(108, 92, 231, 0.4); }
+
+/* Hero */
+.hero {
+  padding: 120px 20px 80px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.hero-bg {
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(ellipse at 50% 0%, rgba(108, 92, 231, 0.08) 0%, transparent 60%),
+              radial-gradient(ellipse at 80% 50%, rgba(253, 121, 168, 0.05) 0%, transparent 50%);
+  pointer-events: none;
+}
+.hero-content { position: relative; max-width: 700px; margin: 0 auto; }
+.hero-badge {
+  display: inline-block;
+  background: rgba(108, 92, 231, 0.15);
+  border: 1px solid rgba(108, 92, 231, 0.3);
+  color: var(--primary-light);
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 13px;
+  margin-bottom: 20px;
+}
+.hero h1 { font-size: 48px; font-weight: 800; line-height: 1.2; margin-bottom: 16px; }
+.hero h1 span { background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.hero p { color: var(--text-secondary); font-size: 18px; max-width: 500px; margin: 0 auto 32px; }
+.hero-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--gradient);
+  color: white;
+  border: none;
+  padding: 14px 36px;
+  border-radius: 30px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.hero-cta:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(108, 92, 231, 0.5); }
+.hero-stats {
+  display: flex;
+  justify-content: center;
+  gap: 48px;
+  margin-top: 48px;
+}
+.hero-stat { text-align: center; }
+.hero-stat-number { font-size: 28px; font-weight: 700; background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.hero-stat-label { font-size: 13px; color: var(--text-secondary); margin-top: 4px; }
+
+/* Generator Panel */
+.generator {
+  padding: 0 20px 80px;
+}
+.generator-inner {
+  max-width: 900px;
+  margin: 0 auto;
+}
+.generator-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 40px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+.form-full { grid-column: 1 / -1; }
+
+.form-label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: var(--text);
+}
+.form-label small { color: var(--text-secondary); font-weight: 400; font-size: 12px; }
+
+.form-select, .form-input, .form-textarea {
+  width: 100%;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--text);
+  padding: 12px 16px;
+  font-size: 14px;
+  transition: border-color 0.3s, box-shadow 0.3s;
+  font-family: inherit;
+}
+.form-select:focus, .form-input:focus, .form-textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.15);
+}
+.form-select option { background: var(--bg-card); color: var(--text); }
+.form-textarea { resize: vertical; min-height: 100px; }
+
+.genre-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.genre-btn {
+  padding: 10px 8px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-secondary);
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: all 0.3s;
+  text-align: center;
+}
+.genre-btn:hover { border-color: var(--primary); color: var(--text); }
+.genre-btn.active {
+  background: rgba(108, 92, 231, 0.15);
+  border-color: var(--primary);
+  color: var(--primary-light);
+}
+
+.submit-row {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 16px;
+  margin-top: 20px;
+}
+.cost-hint { font-size: 12px; color: var(--text-secondary); }
+.submit-btn {
+  background: var(--gradient);
+  color: white;
+  border: none;
+  padding: 12px 32px;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.submit-btn:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 4px 15px rgba(108, 92, 231, 0.4); }
+.submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* Loading */
+.loading {
+  display: none;
+  text-align: center;
+  padding: 40px;
+}
+.loading.active { display: block; }
+.spinner {
+  width: 48px;
+  height: 48px;
+  border: 3px solid var(--border);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin: 0 auto 16px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.loading-text { color: var(--text-secondary); font-size: 14px; }
+.loading-progress {
+  margin-top: 12px;
+  color: var(--primary-light);
+  font-size: 13px;
+  font-family: monospace;
+}
+
+/* Result */
+.result {
+  display: none;
+  margin-top: 32px;
+}
+.result.active { display: block; }
+.result-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+.result-header h3 { font-size: 18px; }
+.result-actions {
+  display: flex;
+  gap: 8px;
+}
+.result-actions button {
+  padding: 6px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-secondary);
+  transition: all 0.3s;
+}
+.result-actions button:hover { background: var(--bg-card-hover); color: var(--text); border-color: var(--primary); }
+
+.result-content {
+  background: rgba(0,0,0,0.3);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+  white-space: pre-wrap;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', monospace;
+  font-size: 14px;
+  line-height: 1.7;
+  max-height: 600px;
+  overflow-y: auto;
+}
+.result-meta {
+  display: flex;
+  gap: 16px;
+  margin-top: 12px;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+/* Pricing */
+.pricing {
+  padding: 60px 20px;
+  background: linear-gradient(180deg, var(--bg) 0%, rgba(108, 92, 231, 0.03) 100%);
+}
+.pricing-inner { max-width: 900px; margin: 0 auto; text-align: center; }
+.pricing h2 { font-size: 32px; font-weight: 700; margin-bottom: 8px; }
+.pricing p { color: var(--text-secondary); margin-bottom: 40px; }
+.pricing-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+.pricing-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 32px 24px;
+  text-align: left;
+  position: relative;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+.pricing-card:hover { transform: translateY(-4px); box-shadow: var(--shadow); }
+.pricing-card.popular {
+  border-color: var(--primary);
+  box-shadow: 0 0 30px rgba(108, 92, 231, 0.1);
+}
+.pricing-card.popular::before {
+  content: '最受欢迎';
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--gradient);
+  color: white;
+  padding: 4px 16px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+}
+.pricing-name { font-size: 18px; font-weight: 600; margin-bottom: 4px; }
+.pricing-desc { font-size: 13px; color: var(--text-secondary); margin-bottom: 16px; }
+.pricing-price { font-size: 36px; font-weight: 800; margin-bottom: 4px; }
+.pricing-price small { font-size: 14px; font-weight: 400; color: var(--text-secondary); }
+.pricing-period { font-size: 13px; color: var(--text-secondary); margin-bottom: 20px; }
+.pricing-features { list-style: none; margin-bottom: 24px; }
+.pricing-features li {
+  padding: 6px 0;
+  font-size: 14px;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.pricing-features li::before { content: '✓'; color: var(--success); font-weight: 700; }
+.pricing-btn {
+  display: block;
+  text-align: center;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  color: var(--text);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.3s;
+}
+.pricing-btn:hover { background: var(--bg-card-hover); border-color: var(--primary); }
+.pricing-btn.primary { background: var(--gradient); border: none; color: white; }
+.pricing-btn.primary:hover { box-shadow: 0 4px 15px rgba(108, 92, 231, 0.4); }
+
+/* Features */
+.features {
+  padding: 80px 20px;
+}
+.features-inner { max-width: 900px; margin: 0 auto; text-align: center; }
+.features h2 { font-size: 32px; font-weight: 700; margin-bottom: 40px; }
+.features-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 24px;
+}
+.feature-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 32px 24px;
+  text-align: left;
+  transition: transform 0.3s;
+}
+.feature-card:hover { transform: translateY(-4px); }
+.feature-icon { font-size: 32px; margin-bottom: 16px; }
+.feature-card h3 { font-size: 16px; margin-bottom: 8px; }
+.feature-card p { font-size: 14px; color: var(--text-secondary); line-height: 1.6; }
+
+/* Footer */
+.footer {
+  border-top: 1px solid var(--border);
+  padding: 32px 20px;
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+.footer a { color: var(--primary-light); text-decoration: none; }
+
+/* Toast */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px 24px;
+  font-size: 14px;
+  opacity: 0;
+  transition: all 0.3s;
+  z-index: 2000;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.toast.error { border-color: #e74c3c; }
+.toast.success { border-color: var(--success); }
+
+/* Error state */
+.error-banner {
+  background: rgba(231, 76, 60, 0.1);
+  border: 1px solid rgba(231, 76, 60, 0.3);
+  border-radius: 10px;
+  padding: 12px 16px;
+  color: #e74c3c;
+  font-size: 14px;
+  display: none;
+  margin-top: 16px;
+}
+.error-banner.show { display: block; }
+
+@media (max-width: 768px) {
+  .hero h1 { font-size: 32px; }
+  .hero p { font-size: 16px; }
+  .hero-stats { gap: 24px; }
+  .hero-stat-number { font-size: 22px; }
+  .form-grid { grid-template-columns: 1fr; }
+  .genre-grid { grid-template-columns: repeat(3, 1fr); }
+  .pricing-grid, .features-grid { grid-template-columns: 1fr; }
+  .generator-card { padding: 24px; }
+  .submit-row { flex-direction: column; align-items: stretch; }
+  .nav-links a:not(.nav-btn) { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- Nav -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="#" class="nav-logo">🎬 <span>剧工厂</span></a>
+    <div class="nav-links">
+      <a href="#generator">创作</a>
+      <a href="#features">功能</a>
+      <a href="#pricing">定价</a>
+      <button class="nav-btn" onclick="document.getElementById('generator').scrollIntoView({behavior:'smooth'})">开始创作</button>
+    </div>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-content">
+    <div class="hero-badge">🔥 2026 AI短剧风口 · 3个月增长700%</div>
+    <h1>输入一句话<br><span>30秒生成爆款短剧脚本</span></h1>
+    <p>专业级竖屏短剧剧本 · 含分镜表 + 完整对白 + 人物设定 + 下集钩子</p>
+    <button class="hero-cta" onclick="document.getElementById('generator').scrollIntoView({behavior:'smooth'})">
+      🚀 免费开始创作
+    </button>
+    <div class="hero-stats">
+      <div class="hero-stat"><div class="hero-stat-number">30秒</div><div class="hero-stat-label">生成一集脚本</div></div>
+      <div class="hero-stat"><div class="hero-stat-number">5种</div><div class="hero-stat-label">热门题材模板</div></div>
+      <div class="hero-stat"><div class="hero-stat-number">&lt;¥0.01</div><div class="hero-stat-label">单次生成成本</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- Generator -->
+<section class="generator" id="generator">
+  <div class="generator-inner">
+    <div class="generator-card">
+      <h2 style="margin-bottom:24px">✍️ 开始创作你的短剧</h2>
+
+      <!-- Genre selection -->
+      <div class="form-full">
+        <div class="form-label">选择题材</div>
+        <div class="genre-grid" id="genreGrid">
+          <button class="genre-btn active" data-genre="niixi">🔥 都市逆袭</button>
+          <button class="genre-btn" data-genre="yanqing">💕 甜宠言情</button>
+          <button class="genre-btn" data-genre="xuanyi">🔪 悬疑惊悚</button>
+          <button class="genre-btn" data-genre="chuanyue">🌀 穿越重生</button>
+          <button class="genre-btn" data-genre="tianchong">💍 先婚后爱</button>
+        </div>
+      </div>
+
+      <div class="form-grid">
+        <div class="form-full">
+          <div class="form-label">核心梗概 <small>一句话描述你的短剧</small></div>
+          <textarea class="form-textarea" id="plotInput" placeholder="例如：女主是隐藏的顶级黑客，被公司辞退后创立AI公司，前总裁跪求合作..." style="min-height:80px"></textarea>
+        </div>
+
+        <div>
+          <div class="form-label">节奏风格</div>
+          <select class="form-select" id="styleSelect">
+            <option value="hot">🔥 热门爆款（高速爽文节奏）</option>
+            <option value="short">⚡ 极简快节奏（8秒一切换）</option>
+            <option value="long">📖 深度剧情（细腻情感线）</option>
+          </select>
+        </div>
+
+        <div>
+          <div class="form-label">人物设定 <small>可选，留空AI自动生成</small></div>
+          <input class="form-input" id="charactersInput" placeholder="主角：林雪，26岁，天才黑客，外表柔弱内心强大">
+        </div>
+
+        <div class="form-full">
+          <div class="form-label">特殊要求 <small>可选</small></div>
+          <input class="form-input" id="specialInput" placeholder="例如：每集结尾必须有一个反转；要用方言对白；加入幽默元素">
+        </div>
+      </div>
+
+      <div class="submit-row">
+        <span class="cost-hint">💡 每次生成约 ¥0.005（使用DeepSeek API）</span>
+        <button class="submit-btn" id="submitBtn" onclick="generate()">
+          ⚡ 生成短剧脚本
+        </button>
+      </div>
+
+      <!-- Loading -->
+      <div class="loading" id="loading">
+        <div class="spinner"></div>
+        <div class="loading-text">AI 正在构思剧情...</div>
+        <div class="loading-progress" id="loadingProgress">调用 DeepSeek V4...</div>
+      </div>
+
+      <!-- Error -->
+      <div class="error-banner" id="errorBanner"></div>
+
+      <!-- Result -->
+      <div class="result" id="result">
+        <div class="result-header">
+          <h3>📜 生成的短剧脚本</h3>
+          <div class="result-actions">
+            <button onclick="copyScript()">📋 复制</button>
+            <button onclick="downloadScript()">💾 下载</button>
+            <button onclick="generateAgain()">🔄 重新生成</button>
+          </div>
+        </div>
+        <div class="result-content" id="resultContent"></div>
+        <div class="result-meta" id="resultMeta"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Features -->
+<section class="features" id="features">
+  <div class="features-inner">
+    <h2>为什么选择剧工厂？</h2>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">🎯</div>
+        <h3>专为短剧优化</h3>
+        <p>内置5大热门题材模板，严格遵循竖屏短剧节奏公式：每15秒一个爽点，结尾必留钩子。</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📊</div>
+        <h3>分镜表 + 完整剧本</h3>
+        <p>输出专业级分镜表（镜头/景别/时长/台词），可直接用于拍摄团队。</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🤖</div>
+        <h3>DeepSeek V4 驱动</h3>
+        <p>底层使用国产最强模型，单次生成成本不到1分钱，无限免费试用。</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">⚡</div>
+        <h3>30秒极速交付</h3>
+        <p>无需等待，输入梗概后30秒内拿到完整短剧脚本。</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📱</div>
+        <h3>竖屏原生思维</h3>
+        <p>每个镜头都为手机竖屏设计，特写/半身为主，避免无效的大全景。</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">💰</div>
+        <h3>适合批量生产</h3>
+        <p>一天可生成100+集脚本，适合短剧工作室/个人创作者批量生产内容。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Pricing -->
+<section class="pricing" id="pricing">
+  <div class="pricing-inner">
+    <h2>简单透明的定价</h2>
+    <p>先用再说，满意再升级</p>
+    <div class="pricing-grid">
+      <div class="pricing-card">
+        <div class="pricing-name">🌱 免费版</div>
+        <div class="pricing-desc">先体验效果</div>
+        <div class="pricing-price">¥0<small>/月</small></div>
+        <div class="pricing-period">每日10次生成</div>
+        <ul class="pricing-features">
+          <li>全部5种题材模板</li>
+          <li>标准短剧脚本输出</li>
+          <li>分镜表+完整剧本</li>
+          <li>社区交流</li>
+        </ul>
+        <a href="#generator" class="pricing-btn primary">立即使用</a>
+      </div>
+
+      <div class="pricing-card popular">
+        <div class="pricing-name">🚀 专业版</div>
+        <div class="pricing-desc">创作者必备</div>
+        <div class="pricing-price">¥39<small>/月</small></div>
+        <div class="pricing-period">或¥299/年（省36%）</div>
+        <ul class="pricing-features">
+          <li>无限次生成</li>
+          <li>自定义题材模板</li>
+          <li>批量生成模式</li>
+          <li>导出Word/PDF</li>
+          <li>高级Prompt配方</li>
+          <li>A/B测试风格</li>
+        </ul>
+        <a href="#" class="pricing-btn primary">即将开放</a>
+      </div>
+
+      <div class="pricing-card">
+        <div class="pricing-name">🏢 工作室版</div>
+        <div class="pricing-desc">团队/批量生产</div>
+        <div class="pricing-price">¥199<small>/月</small></div>
+        <div class="pricing-period">支持5个账号</div>
+        <ul class="pricing-features">
+          <li>专业版全部功能</li>
+          <li>5个独立账号</li>
+          <li>专属AI模型微调</li>
+          <li>API接入</li>
+          <li>优先技术支持</li>
+          <li>定制化输出格式</li>
+        </ul>
+        <a href="#" class="pricing-btn">即将开放</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+  <p>🎬 剧工厂 - AI短剧脚本生成器 · Powered by DeepSeek V4</p>
+  <p style="margin-top:4px">© 2026 · 让每个人都能成为短剧编剧</p>
+</footer>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+// Genre selection
+document.querySelectorAll('.genre-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.genre-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  });
+});
+
+// Enter key to submit
+document.getElementById('plotInput').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' && e.shiftKey === false) {
+    e.preventDefault();
+    generate();
+  }
+});
+
+async function generate() {
+  const genre = document.querySelector('.genre-btn.active')?.dataset.genre || 'niixi';
+  const plot = document.getElementById('plotInput').value.trim();
+  const style = document.getElementById('styleSelect').value;
+  const characters = document.getElementById('charactersInput').value.trim();
+  const special = document.getElementById('specialInput').value.trim();
+
+  if (!plot) {
+    showError('请先输入核心梗概');
+    return;
+  }
+  if (plot.length < 5) {
+    showError('梗概太短了，请输入至少5个字');
+    return;
+  }
+
+  // UI state
+  document.getElementById('loading').classList.add('active');
+  document.getElementById('result').classList.remove('active');
+  document.getElementById('errorBanner').classList.remove('show');
+  document.getElementById('submitBtn').disabled = true;
+  document.getElementById('submitBtn').innerHTML = '⏳ 生成中...';
+  document.getElementById('loadingProgress').textContent = '🧠 AI 正在构思剧情结构...';
+
+  try {
+    await delay(500);
+
+    document.getElementById('loadingProgress').textContent = '📝 正在编写分镜表和台词...';
+
+    const res = await fetch('/api/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ genre, plot, extra: style, characters, special })
+    });
+
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({ error: '请求失败' }));
+      throw new Error(err.error || `服务器错误 (${res.status})`);
+    }
+
+    const data = await res.json();
+
+    document.getElementById('loadingProgress').textContent = '✅ 生成完成！渲染中...';
+    await delay(300);
+
+    if (data.success) {
+      displayResult(data.data);
+    } else {
+      throw new Error(data.error || '生成失败');
+    }
+  } catch (err) {
+    showError(err.message);
+  } finally {
+    document.getElementById('loading').classList.remove('active');
+    document.getElementById('submitBtn').disabled = false;
+    document.getElementById('submitBtn').innerHTML = '⚡ 生成短剧脚本';
+  }
+}
+
+function displayResult(data) {
+  const content = document.getElementById('resultContent');
+  const meta = document.getElementById('resultMeta');
+
+  // Format the script nicely
+  content.textContent = data.script;
+
+  const cost = data.usage ? (data.usage.estimated_cost).toFixed(4) : '~0.005';
+  const tokens = data.usage ? `${data.usage.input_tokens + data.usage.output_tokens} tokens` : '--';
+  meta.textContent = `💰 估算成本: ¥${cost} · 📊 ${tokens} · 🕐 ${new Date().toLocaleTimeString()}`;
+
+  document.getElementById('result').classList.add('active');
+
+  // Scroll to result
+  document.getElementById('result').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function copyScript() {
+  const text = document.getElementById('resultContent').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    showToast('✅ 已复制到剪贴板');
+  }).catch(() => {
+    showToast('复制失败，请手动选择复制');
+  });
+}
+
+function downloadScript() {
+  const text = document.getElementById('resultContent').textContent;
+  const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `短剧脚本_${new Date().toISOString().slice(0, 10)}.txt`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('💾 下载成功');
+}
+
+function generateAgain() {
+  generate();
+}
+
+function showError(msg) {
+  const banner = document.getElementById('errorBanner');
+  banner.textContent = '⚠️ ' + msg;
+  banner.classList.add('show');
+  banner.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function showToast(msg, type = 'success') {
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.className = 'toast ' + type;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 3000);
+}
+
+function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+// Load sample on first visit
+document.addEventListener('DOMContentLoaded', () => {
+  if (!document.getElementById('plotInput').value) {
+    document.getElementById('plotInput').placeholder = '例如：女主是隐藏的顶级黑客，被公司辞退后创立AI公司，前总裁跪求合作...';
+  }
+});
+</script>
+</body>
+</html>
