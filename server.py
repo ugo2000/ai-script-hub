@@ -3,11 +3,14 @@ import json
 import urllib.request
 import os
 import sys
+import datetime
 from pathlib import Path
 
 PORT = 3722
 DEEPSEEK_API_URL = "https://api.deepseek.com/v1/chat/completions"
 API_KEY = os.environ.get("DEEPSEEK_KEY", "")
+FREE_DAILY_LIMIT = 2
+RATE_LIMIT_FILE = Path(__file__).parent / "rate_limit.json"
 
 # ── Prompt templates ──────────────────────────────────────────
 
@@ -132,6 +135,8 @@ class APIHandler(http.server.BaseHTTPRequestHandler):
         if self.path == "/api/genres":
             genres = [{"id": k, "name": v["name"], "desc": v["desc"]} for k, v in GENRE_CONFIG.items()]
             self._send_json(200, {"genres": genres})
+        elif self.path == "/api/usage":
+            self._handle_usage()
         else:
             # Try static files
             self._serve_static()
@@ -141,6 +146,45 @@ class APIHandler(http.server.BaseHTTPRequestHandler):
             self._handle_generate()
         else:
             self._send_json(404, {"error": "Not found"})
+
+    def _get_client_ip(self):
+        return self.client_address[0]
+
+    def _load_rate_limit(self):
+        if RATE_LIMIT_FILE.exists():
+            try:
+                return json.loads(RATE_LIMIT_FILE.read_text("utf-8"))
+            except:
+                return {}
+        return {}
+
+    def _save_rate_limit(self, data):
+        RATE_LIMIT_FILE.write_text(json.dumps(data, ensure_ascii=False), "utf-8")
+
+    def _check_daily_limit(self, ip):
+        today = datetime.date.today().isoformat()
+        data = self._load_rate_limit()
+        key = f"{ip}:{today}"
+        used = data.get(key, 0)
+        remaining = max(0, FREE_DAILY_LIMIT - used)
+        return remaining, used
+
+    def _increment_usage(self, ip):
+        today = datetime.date.today().isoformat()
+        data = self._load_rate_limit()
+        key = f"{ip}:{today}"
+        data[key] = data.get(key, 0) + 1
+        self._save_rate_limit(data)
+
+    def _handle_usage(self):
+        ip = self._get_client_ip()
+        remaining, used = self._check_daily_limit(ip)
+        self._send_json(200, {
+            "plan": "free",
+            "daily_limit": FREE_DAILY_LIMIT,
+            "used": used,
+            "remaining": remaining
+        })
 
     def _handle_generate(self):
         try:
@@ -154,6 +198,13 @@ class APIHandler(http.server.BaseHTTPRequestHandler):
         extra = body.get("extra", "hot")
         characters = body.get("characters", "").strip()
         special = body.get("special", "").strip()
+
+        # Check rate limit
+        client_ip = self._get_client_ip()
+        remaining, used = self._check_daily_limit(client_ip)
+        if remaining <= 0:
+            self._send_json(429, {"error": f"今日免费次数已用完（{FREE_DAILY_LIMIT}/{FREE_DAILY_LIMIT}），升级专业版可无限使用", "usage": {"plan": "free", "daily_limit": FREE_DAILY_LIMIT, "used": used, "remaining": 0}})
+            return
 
         if not plot:
             self._send_json(400, {"error": "请提供核心梗概"})
@@ -249,6 +300,9 @@ DeepSeek V4 API 价格：输入 ¥2/百万tokens，输出 ¥6/百万tokens
             return
 
         content = data.get("choices", [{}])[0].get("message", {}).get("content", "")
+
+        # Deduct one usage on success
+        self._increment_usage(client_ip)
         usage = data.get("usage", {})
         input_tokens = usage.get("prompt_tokens", 0)
         output_tokens = usage.get("completion_tokens", 0)
@@ -286,8 +340,8 @@ DeepSeek V4 API 价格：输入 ¥2/百万tokens，输出 ¥6/百万tokens
             return
 
         if not file_path.exists() or not file_path.is_file():
-            # SPA fallback to index.html
-            file_path = public_dir / "index.html"
+            # Custom 404 page
+            file_path = public_dir / "404.html"
             if not file_path.exists():
                 self._send_json(404, {"error": "Not found"})
                 return

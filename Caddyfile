@@ -1,0 +1,7 @@
+www.jugongchang.icu {
+    reverse_proxy localhost:3722
+}
+
+jugongchang.icu {
+    redir https://www.jugongchang.icu{uri} permanent
+}

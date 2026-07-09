@@ -5,7 +5,60 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>剧工厂 - AI短剧脚本生成器 | 30秒生成爆款短剧</title>
 <meta name="description" content="AI驱动的短剧脚本生成器。输入题材，30秒生成专业级竖屏短剧剧本，含分镜表、完整对白、人物设定。支持都市逆袭、甜宠言情、悬疑惊悚等热门题材。">
-<meta name="keywords" content="AI短剧,短剧脚本,AI剧本,短剧编剧,短剧生成器,竖屏短剧">
+<meta name="keywords" content="AI短剧,短剧脚本,AI剧本,短剧编剧,短剧生成器,竖屏短剧,AI剧本生成,短剧创作">
+<!-- Canonical URL -->
+<link rel="canonical" href="https://www.jugongchang.icu/">
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="剧工厂 - AI短剧脚本生成器 | 30秒生成爆款短剧">
+<meta property="og:description" content="输入题材，30秒生成专业级竖屏短剧剧本。含分镜表、对白、人物设定。免费试用。">
+<meta property="og:url" content="https://www.jugongchang.icu/">
+<meta property="og:image" content="https://www.jugongchang.icu/app-icon-320.png">
+<meta property="og:site_name" content="剧工厂">
+<meta property="og:locale" content="zh_CN">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="剧工厂 - AI短剧脚本生成器">
+<meta name="twitter:description" content="输入题材，30秒生成专业级竖屏短剧剧本，免费试用。">
+<meta name="twitter:image" content="https://www.jugongchang.icu/app-icon-320.png">
+
+<!-- JSON-LD Structured Data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "剧工厂 - AI短剧脚本生成器",
+  "description": "AI驱动的短剧脚本生成器。输入题材，30秒生成专业级竖屏短剧剧本。",
+  "url": "https://www.jugongchang.icu/",
+  "applicationCategory": "Multimedia",
+  "operatingSystem": "All",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "CNY"
+  },
+  "author": {
+    "@type": "Organization",
+    "name": "北京筑傲科技有限公司"
+  }
+}
+</script>
+
+<!-- Google Analytics / Search Console -->
+<meta name="google-site-verification" content="">
+
+<!-- 百度统计 (替换 YOUR_BAIDU_ID 为你的百度统计ID) -->
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?YOUR_BAIDU_ID";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
 <style>
 :root {
   --primary: #6C5CE7;
@@ -459,6 +512,97 @@ body {
   .submit-row { flex-direction: column; align-items: stretch; }
   .nav-links a:not(.nav-btn) { display: none; }
 }
+
+/* ── About Section ─────────────────────────── */
+.about-section {
+  padding: 60px 0;
+  background: var(--bg-main);
+  border-top: 1px solid var(--border);
+}
+.about-inner {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 0 24px;
+  text-align: center;
+}
+.about-inner h2 {
+  font-size: 28px;
+  margin-bottom: 12px;
+}
+
+/* ── Contact Section ────────────────────────── */
+.contact-section {
+  padding: 60px 0;
+  background: var(--bg-card);
+  border-top: 1px solid var(--border);
+}
+.contact-inner {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0 24px;
+  text-align: center;
+}
+.contact-inner h2 {
+  font-size: 28px;
+  margin-bottom: 8px;
+}
+.contact-inner > p {
+  color: var(--text-secondary);
+  margin-bottom: 36px;
+}
+.contact-grid {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.contact-card {
+  background: var(--bg-main);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 28px 32px;
+  flex: 1;
+  min-width: 240px;
+  max-width: 320px;
+  transition: border-color 0.2s;
+}
+.contact-card:hover {
+  border-color: var(--primary);
+}
+.qrcode-placeholder {
+  width: 140px;
+  height: 140px;
+  margin: 0 auto 16px;
+  background: var(--bg-card);
+  border: 2px dashed var(--border);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.qrcode-placeholder img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.qrcode-fallback {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-secondary);
+}
+.qrcode-icon { font-size: 36px; }
+.qrcode-hint { font-size: 12px; }
+.contact-info p { margin: 4px 0; }
+.contact-alt-icon { font-size: 36px; margin-bottom: 12px; }
+.contact-alt p { margin: 4px 0; }
+
+@media (max-width: 768px) {
+  .contact-grid { flex-direction: column; align-items: center; }
+  .contact-card { max-width: 100%; }
+}
 </style>
 </head>
 <body>
@@ -471,6 +615,8 @@ body {
       <a href="#generator">创作</a>
       <a href="#features">功能</a>
       <a href="#pricing">定价</a>
+      <a href="#about">关于</a>
+      <a href="#contact">联系</a>
       <button class="nav-btn" onclick="document.getElementById('generator').scrollIntoView({behavior:'smooth'})">开始创作</button>
     </div>
   </div>
@@ -621,12 +767,11 @@ body {
         <div class="pricing-name">🌱 免费版</div>
         <div class="pricing-desc">先体验效果</div>
         <div class="pricing-price">¥0<small>/月</small></div>
-        <div class="pricing-period">每日10次生成</div>
+        <div class="pricing-period" id="freeRemaining">每日2次生成</div>
         <ul class="pricing-features">
           <li>全部5种题材模板</li>
           <li>标准短剧脚本输出</li>
           <li>分镜表+完整剧本</li>
-          <li>社区交流</li>
         </ul>
         <a href="#generator" class="pricing-btn primary">立即使用</a>
       </div>
@@ -635,32 +780,71 @@ body {
         <div class="pricing-name">🚀 专业版</div>
         <div class="pricing-desc">创作者必备</div>
         <div class="pricing-price">¥39<small>/月</small></div>
-        <div class="pricing-period">或¥299/年（省36%）</div>
+        <div class="pricing-period">无限次生成</div>
         <ul class="pricing-features">
-          <li>无限次生成</li>
-          <li>自定义题材模板</li>
-          <li>批量生成模式</li>
-          <li>导出Word/PDF</li>
-          <li>高级Prompt配方</li>
-          <li>A/B测试风格</li>
+          <li>无限次生成（无每日限制）</li>
+          <li>所有5种题材模板</li>
+          <li>4种节奏风格</li>
+          <li>自定义人物设定</li>
+          <li>标准短剧脚本输出</li>
+          <li>分镜表+完整剧本+下集钩子</li>
         </ul>
-        <a href="#" class="pricing-btn primary">即将开放</a>
+        <a href="#" class="pricing-btn primary">即将推出（支付宝接入中）</a>
       </div>
 
       <div class="pricing-card">
         <div class="pricing-name">🏢 工作室版</div>
-        <div class="pricing-desc">团队/批量生产</div>
+        <div class="pricing-desc">批量生产力</div>
         <div class="pricing-price">¥199<small>/月</small></div>
-        <div class="pricing-period">支持5个账号</div>
+        <div class="pricing-period">开发计划中</div>
         <ul class="pricing-features">
           <li>专业版全部功能</li>
-          <li>5个独立账号</li>
-          <li>专属AI模型微调</li>
-          <li>API接入</li>
-          <li>优先技术支持</li>
-          <li>定制化输出格式</li>
+          <li>无限次生成</li>
+          <li>打包输出/批处理</li>
+          <li>更多题材持续更新</li>
+          <li>Word/PDF导出</li>
+          <li>高级Prompt配方</li>
         </ul>
-        <a href="#" class="pricing-btn">即将开放</a>
+        <a href="#" class="pricing-btn">开发计划中</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- About -->
+<section class="about-section" id="about">
+  <div class="about-inner">
+    <h2>关于我们</h2>
+    <p style="color:var(--text-secondary);margin-bottom:0;max-width:560px;margin-left:auto;margin-right:auto;line-height:1.8">
+      <a href="https://www.zhuaotech.com.cn" target="_blank" rel="noopener noreferrer" style="color:var(--primary);text-decoration:none">北京筑傲科技有限公司</a>下属软件开发部
+    </p>
+  </div>
+</section>
+
+<!-- Contact -->
+<section class="contact-section" id="contact">
+  <div class="contact-inner">
+    <h2>联系我们</h2>
+    <p>如有问题、建议或合作意向，欢迎扫码添加客服微信</p>
+    <div class="contact-grid">
+      <div class="contact-card">
+        <div class="qrcode-placeholder">
+          <img src="/wechat.png" alt="客服微信二维码" id="qrcodeImg" onerror="this.style.display='none';document.getElementById('qrcodeFallback').style.display='flex'">
+          <div class="qrcode-fallback" id="qrcodeFallback" style="display:none">
+            <span class="qrcode-icon">💬</span>
+            <span class="qrcode-hint">扫码添加客服微信</span>
+          </div>
+        </div>
+        <div class="contact-info">
+          <p><strong>客服微信</strong></p>
+          <p style="font-size:13px;color:var(--text-secondary)">工作日 10:00-22:00 在线</p>
+        </div>
+      </div>
+      <div class="contact-card contact-alt">
+        <div class="contact-alt-icon">📧</div>
+        <p><strong>商务合作</strong></p>
+        <p style="font-size:13px;color:var(--text-secondary)">coop@jugongchang.icu</p>
+        <p style="font-size:12px;color:var(--text-tertiary);margin-top:4px">其他联系方式陆续开通中</p>
       </div>
     </div>
   </div>
@@ -729,6 +913,13 @@ async function generate() {
 
     if (!res.ok) {
       const err = await res.json().catch(() => ({ error: '请求失败' }));
+      if (res.status === 429) {
+        // Also update remaining count display
+        if (err.usage) {
+          updateFreeRemaining(err.usage.remaining, err.usage.used);
+        }
+        throw new Error(err.error || '免费次数已用完，升级专业版可无限使用');
+      }
       throw new Error(err.error || `服务器错误 (${res.status})`);
     }
 
@@ -739,6 +930,8 @@ async function generate() {
 
     if (data.success) {
       displayResult(data.data);
+      // Refresh usage count after successful generation
+      fetchUsage();
     } else {
       throw new Error(data.error || '生成失败');
     }
@@ -810,8 +1003,29 @@ function showToast(msg, type = 'success') {
 
 function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
 
-// Load sample on first visit
+// ── Usage tracking ──────────────────────────────────────
+
+function updateFreeRemaining(remaining, used) {
+  const el = document.getElementById('freeRemaining');
+  if (el) {
+    el.textContent = `每日${used}/2次 · 剩余${remaining}次`;
+  }
+}
+
+async function fetchUsage() {
+  try {
+    const res = await fetch('/api/usage');
+    if (!res.ok) return;
+    const data = await res.json();
+    updateFreeRemaining(data.remaining, data.used);
+  } catch (e) {
+    // silently fail
+  }
+}
+
+// Load on page start
 document.addEventListener('DOMContentLoaded', () => {
+  fetchUsage();
   if (!document.getElementById('plotInput').value) {
     document.getElementById('plotInput').placeholder = '例如：女主是隐藏的顶级黑客，被公司辞退后创立AI公司，前总裁跪求合作...';
   }
