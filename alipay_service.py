@@ -132,11 +132,12 @@ def cancel_order(out_trade_no: str) -> dict:
     return {"success": result.get("code") == "10000", "msg": result.get("sub_msg", "")}
 
 
-# ===== 用户订阅管理（内存/文件版，正式应该用数据库）=====
+# ===== 用户订阅管理（文件版，支持 FC NAS 挂载）=====
 import json, os, datetime
 from pathlib import Path
 
-SUBS_FILE = Path(__file__).parent / "subscriptions.json"
+DATA_DIR = os.environ.get("DATA_DIR", str(Path(__file__).parent))
+SUBS_FILE = Path(DATA_DIR) / "subscriptions.json"
 
 def _load_subs() -> dict:
     if SUBS_FILE.exists():

@@ -10,7 +10,9 @@ import secrets
 import re
 from pathlib import Path
 
-PORT = int(os.environ.get("PORT", "3722"))
+# FC 环境要求端口 9000；本地开发默认 3722
+FC_PORT = os.environ.get("FC_SERVER_PORT", "")
+PORT = int(FC_PORT or os.environ.get("PORT", "3722"))
 DEEPSEEK_API_URL = "https://api.deepseek.com/v1/chat/completions"
 
 # 支付宝当面付（可选，无密钥时降级）
@@ -30,8 +32,10 @@ except ImportError:
 API_KEY = os.environ.get("DEEPSEEK_KEY", "")
 FREE_DAILY_LIMIT = 2
 
-# ── 用户系统（文件持久化） ──────────────────────────────────────
-USERS_FILE = Path(__file__).parent / "users.json"
+# ── 用户系统（文件持久化，支持 FC NAS 挂载） ────────────────────
+DATA_DIR = os.environ.get("DATA_DIR", str(Path(__file__).parent))
+Path(DATA_DIR).mkdir(parents=True, exist_ok=True)
+USERS_FILE = Path(DATA_DIR) / "users.json"
 # 持久密钥（优先从环境变量读取，保证重启后 token 仍有效）
 AUTH_SECRET = os.environ.get("AUTH_SECRET", secrets.token_hex(32))
 
