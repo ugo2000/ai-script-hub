@@ -38,6 +38,13 @@ git_*.txt
 app_private_key.pem
 alipay_keys.py
 gen_alipay_keys.py
+alipay_config.py
+app_public_key.pem
+
+# Internal docs
+promotion_guide_*.md
+promotion_posts_*.md
+launch_and_promotion_*.md
 
 # User data
 users.json
