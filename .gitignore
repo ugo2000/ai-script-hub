@@ -1,50 +1,26 @@
-# Dependencies
-node_modules/
-npm-debug.log*
-
 # Python
 __pycache__/
 *.pyc
 *.pyo
-*.egg-info/
-.venv/
+env/
 venv/
 
-# Environment
-.env
-.env.local
-.env.*.local
+# Keys / secrets (do NOT commit real keys)
+*_key.pem
+alipay_*.pem
+*.pem
+
+# Node
+node_modules/
+
+# IDE
+.vscode/
+.idea/
 
 # OS
 .DS_Store
 Thumbs.db
 
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-
-# Runtime
-*.log
-
-# Temp scripts
-*.bat
-*.ps1
-!run_server.bat
-git_*.txt
-
-# Alipay secrets
-app_private_key.pem
-alipay_keys.py
-gen_alipay_keys.py
-alipay_config.py
-app_public_key.pem
-
-# Internal docs
-promotion_guide_*.md
-promotion_posts_*.md
-launch_and_promotion_*.md
-
-# User data
-users.json
+# Temp
+_*.py
+_temp/

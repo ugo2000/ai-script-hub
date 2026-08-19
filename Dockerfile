@@ -3,15 +3,14 @@ FROM python:3.12-slim
 
 WORKDIR /app
 
-# 安装依赖
+# 安装依赖（阿里云镜像加速）
 COPY requirements.txt .
 RUN pip install --no-cache-dir -i https://mirrors.aliyun.com/pypi/simple/ -r requirements.txt
 
 # 复制项目文件
 COPY . .
 
-# Zeabur 通过 PORT 环境变量指定端口
 EXPOSE 3722
 
-# 启动服务
+# 通过 PORT 环境变量指定端口，默认 3722
 CMD ["python", "server.py"]

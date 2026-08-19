@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>剧工厂 - 支付</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: system-ui, -apple-system, sans-serif; background: #f8fafc; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+  .pay-box { background: #fff; border-radius: 16px; padding: 40px; max-width: 420px; width: 100%; box-shadow: 0 4px 24px rgba(0,0,0,0.08); text-align: center; }
+  .pay-box h2 { font-size: 20px; margin-bottom: 8px; color: #1e293b; }
+  .pay-box .sub { color: #64748b; font-size: 14px; margin-bottom: 24px; }
+  .plan-name { font-size: 24px; font-weight: 700; color: #4f46e5; margin: 12px 0; }
+  .price { font-size: 36px; font-weight: 800; color: #1e293b; }
+  .price span { font-size: 16px; color: #64748b; }
+  .trade-no { font-size: 12px; color: #94a3b8; margin-top: 8px; }
+  .qr-area { margin: 24px 0; padding: 20px; background: #f8fafc; border-radius: 12px; }
+  .qr-area img { max-width: 200px; border-radius: 8px; }
+  .qr-placeholder { width: 200px; height: 200px; background: #e2e8f0; border-radius: 8px; margin: 0 auto; display: flex; align-items: center; justify-content: center; color: #64748b; font-size: 14px; }
+  .status { padding: 12px; border-radius: 8px; font-size: 14px; margin: 16px 0; }
+  .status.pending { background: #fef3c7; color: #92400e; }
+  .status.paid { background: #d1fae5; color: #065f46; }
+  .status.error { background: #fee2e2; color: #991b1b; }
+  .btn { display: inline-block; padding: 12px 24px; background: #4f46e5; color: #fff; border: none; border-radius: 8px; font-size: 14px; cursor: pointer; text-decoration: none; margin-top: 12px; }
+  .btn:hover { background: #4338ca; }
+  .note { font-size: 12px; color: #94a3b8; margin-top: 16px; }
+  .methods { display: flex; gap: 12px; justify-content: center; margin: 16px 0; }
+  .method { padding: 8px 16px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 13px; cursor: pointer; }
+  .method.active { border-color: #4f46e5; color: #4f46e5; background: #eef2ff; }
+</div>
+</style>
+</head>
+<body>
+<div class="pay-box">
+  <h2>🎬 剧工厂</h2>
+  <div class="sub">订单确认</div>
+
+  <div class="plan-name" id="planName">专业版</div>
+  <div class="price" id="price">¥39<span>/月</span></div>
+  <div class="trade-no" id="tradeNo">订单号: --</div>
+
+  <div class="methods">
+    <div class="method active" onclick="selectMethod('alipay')">💳 支付宝</div>
+    <div class="method" onclick="selectMethod('wechat')">💚 微信支付</div>
+  </div>
+
+  <div class="qr-area">
+    <div class="qr-placeholder" id="qrPlaceholder">支付系统接入中...</div>
+    <img id="qrCode" style="display:none" />
+  </div>
+
+  <div class="status pending" id="status">⏳ 等待支付...</div>
+
+  <div class="note">
+    请使用支付宝扫码支付<br>
+    支付成功后页面将自动更新<br>
+    如支付遇到问题，联系客服
+  </div>
+
+  <a href="index.html" class="btn">← 返回首页</a>
+</div>
+
+<script type="module">
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+const SUPABASE_URL = 'https://mqvygeoqjfylgdmklvrb.supabase.co';
+const supabase = createClient(SUPABASE_URL, 'YOUR_ANON_KEY_HERE');
+
+const params = new URLSearchParams(window.location.search);
+const plan = params.get('plan') || 'premium';
+const tradeNo = params.get('trade_no') || localStorage.getItem('pay_trade_no') || 'JGC_' + Date.now();
+
+// 显示订单信息
+const planInfo = {
+  free: { name: '免费版', price: 0 },
+  premium: { name: '专业版', price: 39 },
+  studio: { name: '工作室版', price: 199 }
+};
+const info = planInfo[plan] || planInfo.premium;
+document.getElementById('planName').textContent = info.name;
+document.getElementById('price').innerHTML = info.price === 0 ? '免费' : `¥${info.price}<span>/月</span>`;
+document.getElementById('tradeNo').textContent = '订单号: ' + tradeNo;
+localStorage.setItem('pay_trade_no', tradeNo);
+
+// 轮询支付状态
+async function checkPayment() {
+  const { data, error } = await supabase
+    .from('payments')
+    .select('status, plan')
+    .eq('out_trade_no', tradeNo)
+    .single();
+
+  if (data && data.status === 'paid') {
+    document.getElementById('status').className = 'status paid';
+    document.getElementById('status').textContent = '✅ 支付成功！正在跳转...';
+    // 更新用户 plan
+    const { data: session } = await supabase.auth.getSession();
+    if (session?.session?.user) {
+      await supabase.from('profiles')
+        .update({
+          plan: data.plan,
+          premium_until: new Date(Date.now() + 30*24*3600*1000).toISOString()
+        })
+        .eq('id', session.session.user.id);
+    }
+    setTimeout(() => window.location.href = 'index.html?paid=1', 2000);
+    return true;
+  }
+  return false;
+}
+
+// 每5秒检查一次
+let done = false;
+async function poll() {
+  if (done) return;
+  const success = await checkPayment();
+  if (!success) setTimeout(poll, 5000);
+  else done = true;
+}
+poll();
+
+// 3分钟超时
+setTimeout(() => {
+  if (!done) {
+    document.getElementById('status').textContent = '⏰ 支付超时，请刷新页面重试';
+  }
+}, 3 * 60 * 1000);
+
+// 方法选择
+window.selectMethod = function(m) {
+  document.querySelectorAll('.method').forEach(el => el.classList.remove('active'));
+  event.target.classList.add('active');
+};
+</script>
+</body>
+</html>

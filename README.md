@@ -1,86 +1,53 @@
-# 🎬 剧工厂 · AI 短剧脚本生成器
+# 剧工厂 - AI短剧脚本生成器
 
-> **一句话梗概 → 30秒 → 完整短剧剧本（分镜表 + 人物设定 + 对白 + 下集钩子）**
+> 🎬 输入一句话，30秒生成爆款短剧脚本
 
-🌐 **在线体验：** [www.jugongchang.icu](https://www.jugongchang.icu)
-📦 **GitHub：** [github.com/ugo2000/ai-script-hub](https://github.com/ugo2000/ai-script-hub)
+**在线体验：** https://ugo2000.github.io/ai-script-hub/
 
----
+## 功能
 
-## ✨ 它能做什么
+- ✅ 5种热门题材：都市逆袭、甜宠言情、悬疑惊悚、穿越重生、先婚后爱
+- ✅ 3种节奏风格：爆款节奏、快节奏、深度剧情
+- ✅ 自动分镜表 + 完整剧本 + 下集钩子
+- ✅ 用户注册 / 登录
+- ✅ 免费版每日2次，专业版无限次
+- ✅ 支付宝/微信支付开通专业版
 
-输入一句核心梗概，比如：
+## 技术栈
 
-> *"一个被公司辞退的中年程序员，在出租屋意外发现一个能预测未来3分钟的APP"*
+- **前端**：纯 HTML/CSS/JS（静态站点，GitHub Pages 托管）
+- **数据库 + 认证**：Supabase（PostgreSQL + Auth）
+- **AI 生成**：DeepSeek API（前端直调）
+- **支付**：支付宝当面付 / 微信支付（接入中）
 
-30 秒后，你得到：
-
-| 模块 | 内容 |
-|------|------|
-| 🎭 **人物设定** | 主角性格/背景/关系表 |
-| 🎬 **分镜表** | 每镜头时长、场景、运镜、景别 |
-| 💬 **完整对白** | 竖屏短剧格式，情节推进 |
-| 🪝 **下集钩子** | 结尾反转/悬念，引导追更 |
-
-## 🎯 支持题材
-
-| 题材 | 说明 |
-|------|------|
-| 🔥 都市逆袭 | 打工人翻身、商场博弈 |
-| 💕 甜宠言情 | 先婚后爱、契约情侣 |
-| 👻 悬疑惊悚 | 反转不断、细思极恐 |
-| 🌌 穿越重生 | 古穿今、今穿古、重生虐渣 |
-| 📱 系统文 | 签到、抽奖、面板、神豪 |
-
-## 🚀 快速上手
+## 本地开发
 
 ```bash
-# 克隆
-git clone https://github.com/ugo2000/ai-script-hub.git
-cd ai-script-hub
+# 直接用浏览器打开
+open public/index.html
 
-# 安装依赖
-pip install -r requirements.txt
-
-# 设置 API Key
-export DEEPSEEK_KEY=sk-your-key-here
-
-# 启动（端口 3722）
-python3 server.py
+# 或用简单 HTTP 服务器
+python3 -m http.server 8080
+# 访问 http://localhost:8080
 ```
 
-浏览器打开 `http://localhost:3722` 即可使用。
+## 配置说明
 
-## 🧱 技术栈
+首次使用需要在 `public/index.html` 的 JS 部分（顶部）配置：
 
-```
-前端   原生 HTML/CSS/JS（暗色主题 | 响应式 | 单页应用）
-后端   Python http.server + DeepSeek Chat API
-支付   支付宝当面付（个人开发者友好）
-鉴权   HMAC-SHA256 token + SQLite
-部署   Docker + 腾讯云 + Cloudflare Tunnel（零入站端口）
+```javascript
+const SUPABASE_URL = 'https://你的项目.supabase.co';
+const SUPABASE_ANON_KEY = '你的anon-key';
+const DEEPSEEK_API_KEY = '你的DeepSeek-API-Key';
 ```
 
-## 💰 定价
+然后在 Supabase SQL Editor 中运行 `supabase/schema.sql` 创建数据表。
 
-| 版本 | 价格 | 特点 |
-|------|------|------|
-| 🆓 免费版 | ¥0 | 每日 2 次，全部题材，限 hot 风格 |
-| 🚀 专业版 | ¥39/月 | 无限次生成，全部风格 + 自定义人物 |
-| 🏢 工作室版 | ¥199/月 | 批量产出，Word/PDF 导出（开发计划中） |
+## 部署
 
-## 📸 截图
+推送到 GitHub 后自动部署到 GitHub Pages：
+https://ugo2000.github.io/ai-script-hub/
 
-![首页截图](https://www.jugongchang.icu/og-image.png)
+## 版权
 
-## 🤝 贡献
-
-欢迎提 Issue / PR。任何想法都可以来 [Discussions](https://github.com/ugo2000/ai-script-hub/discussions) 聊。
-
-## 📄 许可
-
-MIT License
-
----
-
-**剧工厂** — 让每个人都能成为短剧编剧 🎬
+© 2026 剧工厂 · 让每个人都能成为短剧编剧
