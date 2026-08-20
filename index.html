@@ -433,13 +433,21 @@
 
 <div class="toast" id="toast"></div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
 // ============ 配置 ============
 const SUPABASE_URL = 'https://mqvygeoqjfylgdmklvrb.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1xdnlnZW9xamZ5bGdkbWtsdnJiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcxNzYyNjcsImV4cCI6MjEwMjc1MjI2N30.cpKcwOSKzwz50eIcz-WIq6cmbXuQeNt3Q0Ao0CEJBPg';
 
 let supabase = null;
-try { supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY); } catch(e){ console.warn(e); }
+try {
+  if(window.supabase && window.supabase.createClient){
+    supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    console.log('Supabase initialized successfully');
+  } else {
+    console.error('Supabase SDK not loaded, window.supabase:', window.supabase);
+  }
+} catch(e){ console.error('Supabase init error:', e); }
 
 const PLANS = {
   free:    { name:'免费版',   dailyLimit:2,   color:'#94a3b8' },
