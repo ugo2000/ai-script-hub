@@ -666,6 +666,17 @@ function switchQr(type){
 }
 
 // ============ 初始化 ============
+// 检测邮箱验证完成（URL 含 #token= 或 ?token=）
+const hash = window.location.hash || '';
+const urlParams = new URLSearchParams(window.location.search);
+if(hash.includes('token=') || urlParams.has('token') || hash.includes('confirmation')){
+  const toastEl = document.getElementById('toast');
+  if(toastEl){ toastEl.textContent='\u2705 邮箱验证成功！请登录后使用'; toastEl.classList.add('show'); }
+  setTimeout(()=>{ if(toastEl) toastEl.classList.remove('show'); }, 5000);
+  // 清理 URL
+  history.replaceState({}, '', window.location.pathname);
+}
+
 if(sbClient){
   sbClient.auth.getSession().then(({data})=>{
     if(data?.session){
