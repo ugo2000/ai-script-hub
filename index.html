@@ -626,8 +626,6 @@ async function generate(){
   }
 }
 
-const DEEPSEEK_API_KEY = 'YOUR_DEEPSEEK_API_KEY_HERE';
-
 async function callDeepSeek(genre,rhythm,plot,chars,special){
   if(DEEPSEEK_API_KEY === 'YOUR_DEEPSEEK_API_KEY_HERE'){
     throw new Error('API Key 未配置，请联系管理员');
