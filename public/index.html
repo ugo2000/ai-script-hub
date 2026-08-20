@@ -3,383 +3,661 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>剧工厂 - AI短剧脚本生成器 | 30秒生成爆款短剧</title>
-<meta name="description" content="AI驱动的短剧脚本生成器。输入题材，30秒生成专业级竖屏短剧剧本，含分镜表、完整对白、人物设定。支持都市逆袭、甜宠言情、悬疑惊悚等热门题材。">
-<meta name="keywords" content="AI短剧,短剧脚本,AI剧本,短剧编剧,短剧生成器,竖屏短剧,AI剧本生成,短剧创作">
-<!-- Canonical URL -->
-<link rel="canonical" href="https://www.jugongchang.icu/">
-
-<!-- Open Graph -->
+<title>剧工厂 · AI短剧脚本生成器 | 30秒写出爆款短剧</title>
+<meta name="description" content="输入一个灵感，30秒生成专业级竖屏短剧剧本：分镜表、完整对白、人物设定一应俱全。免费可用，专业版无限生成。">
+<meta name="keywords" content="AI短剧,短剧脚本,AI剧本,短剧生成器,竖屏短剧,短剧剧本">
+<link rel="canonical" href="https://ugo2000.github.io/ai-script-hub/">
 <meta property="og:type" content="website">
-<meta property="og:title" content="剧工厂 - AI短剧脚本生成器 | 30秒生成爆款短剧">
-<meta property="og:description" content="输入题材，30秒生成专业级竖屏短剧剧本。含分镜表、对白、人物设定。免费试用。">
-<meta property="og:url" content="https://www.jugongchang.icu/">
-<meta property="og:image" content="https://www.jugongchang.icu/app-icon-320.png">
+<meta property="og:title" content="剧工厂 · AI短剧脚本生成器">
+<meta property="og:description" content="输入一个灵感，30秒生成专业级竖屏短剧剧本。免费试用，专业版无限生成。">
+<meta property="og:url" content="https://ugo2000.github.io/ai-script-hub/">
+<meta property="og:image" content="https://ugo2000.github.io/ai-script-hub/app-icon-320.png">
 <meta property="og:site_name" content="剧工厂">
-<meta property="og:locale" content="zh_CN">
-
-<!-- Twitter Card -->
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="剧工厂 - AI短剧脚本生成器">
-<meta name="twitter:description" content="输入题材，30秒生成专业级竖屏短剧剧本，免费试用。">
-<meta name="twitter:image" content="https://www.jugongchang.icu/app-icon-320.png">
 
-<!-- JSON-LD Structured Data -->
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "WebApplication",
-  "name": "剧工厂 - AI短剧脚本生成器",
-  "description": "AI驱动的短剧脚本生成器。输入题材，30秒生成专业级竖屏短剧剧本。",
-  "url": "https://www.jugongchang.icu/",
-  "applicationCategory": "Multimedia",
-  "operatingSystem": "All",
-  "offers": {
-    "@type": "Offer",
-    "price": "0",
-    "priceCurrency": "CNY"
-  },
-  "author": {
-    "@type": "Organization",
-    "name": "北京筑傲科技有限公司"
+<style>
+  :root{
+    --brand:#6366f1;
+    --brand2:#8b5cf6;
+    --brand3:#ec4899;
+    --ink:#1e1b2e;
+    --sub:#6b7280;
+    --line:#ece9f5;
+    --bg:#fbfaff;
+    --card:#ffffff;
+    --ok:#10b981;
+    --warn:#f59e0b;
+    --shadow:0 10px 30px rgba(99,102,241,.10);
+    --shadow-lg:0 20px 50px rgba(99,102,241,.18);
   }
-}
-</script>
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+    color:var(--ink);background:var(--bg);line-height:1.6;-webkit-font-smoothing:antialiased;
+  }
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:1040px;margin:0 auto;padding:0 20px}
+  .grad-text{background:linear-gradient(120deg,var(--brand),var(--brand2) 45%,var(--brand3));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .btn{cursor:pointer;border:none;border-radius:14px;font-weight:700;font-size:15px;padding:13px 22px;transition:.2s;font-family:inherit}
+  .btn-primary{background:linear-gradient(120deg,var(--brand),var(--brand2));color:#fff;box-shadow:var(--shadow)}
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:var(--shadow-lg)}
+  .btn-primary:disabled{opacity:.6;cursor:not-allowed;transform:none;box-shadow:none}
+  .btn-ghost{background:#f3f1fb;color:var(--brand)}
+  .btn-ghost:hover{background:#e9e5fb}
+  .btn-block{width:100%}
+  .pill{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:999px;font-size:13px;font-weight:600}
+  .pill-free{background:#eef2f7;color:#64748b}
+  .pill-pro{background:#eef0ff;color:var(--brand)}
+  .pill-studio{background:#fff4e5;color:#d97706}
 
-<!-- Google Analytics / Search Console -->
-<meta name="google-site-verification" content="">
+  /* Navbar */
+  nav{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.82);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+  .nav-inner{display:flex;align-items:center;justify-content:space-between;height:64px}
+  .logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:20px}
+  .logo .mark{width:34px;height:34px;border-radius:10px;background:linear-gradient(120deg,var(--brand),var(--brand3));display:grid;place-items:center;color:#fff;font-size:18px}
+  .nav-right{display:flex;align-items:center;gap:14px}
+  .usage-badge{font-size:13px;font-weight:600;color:var(--sub);background:#f3f1fb;padding:7px 13px;border-radius:999px}
+  .usage-badge b{color:var(--brand)}
+  .nav-user{display:none;align-items:center;gap:10px}
+  .nav-user .av{width:32px;height:32px;border-radius:50%;background:linear-gradient(120deg,var(--brand),var(--brand3));color:#fff;display:grid;place-items:center;font-size:14px;font-weight:700}
+  .nav-login{display:inline-block}
 
-<!-- 百度统计 (替换 YOUR_BAIDU_ID 为你的百度统计ID) -->
+  /* Hero */
+  header.hero{text-align:center;padding:64px 20px 40px;position:relative;overflow:hidden}
+  header.hero::before{content:"";position:absolute;top:-120px;left:50%;transform:translateX(-50%);width:680px;height:420px;background:radial-gradient(closest-side,rircle,rgba(139,92,246,.18),transparent);background:radial-gradient(closest-side,rgba(139,92,246,.18),transparent);pointer-events:none}
+  .hero h1{font-size:clamp(30px,6vw,52px);line-height:1.15;font-weight:850;letter-spacing:-.5px;position:relative}
+  .hero p.lead{margin:18px auto 0;max-width:560px;color:var(--sub);font-size:17px;position:relative}
+  .hero .cta{margin-top:28px;display:flex;gap:14px;justify-content:center;flex-wrap:wrap;position:relative}
+  .hero .stats{margin-top:34px;display:flex;gap:30px;justify-content:center;flex-wrap:wrap;color:var(--sub);font-size:14px;position:relative}
+  .hero .stats b{display:block;font-size:24px;color:var(--ink);font-weight:800}
+
+  /* Section */
+  section.block{padding:46px 0}
+  .sec-head{text-align:center;margin-bottom:30px}
+  .sec-head h2{font-size:clamp(24px,4vw,34px);font-weight:820}
+  .sec-head p{color:var(--sub);margin-top:8px}
+
+  /* Generator card */
+  .gen-card{background:var(--card);border:1px solid var(--line);border-radius:24px;padding:28px;box-shadow:var(--shadow)}
+  .field{margin-bottom:22px}
+  .field > label{display:block;font-weight:700;font-size:15px;margin-bottom:10px}
+  .field .hint{font-weight:400;color:var(--sub);font-size:13px;margin-left:6px}
+  .genres{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+  .genre-btn{cursor:pointer;border:2px solid var(--line);background:#fff;border-radius:16px;padding:16px 10px;text-align:center;transition:.18s;font-family:inherit}
+  .genre-btn .ic{font-size:26px;display:block;margin-bottom:6px}
+  .genre-btn .nm{font-weight:700;font-size:14px}
+  .genre-btn .ds{font-size:11px;color:var(--sub);margin-top:2px}
+  .genre-btn:hover{border-color:#d9d3f7;transform:translateY(-2px)}
+  .genre-btn.active{border-color:var(--brand);background:linear-gradient(180deg,#f6f4ff,#fff);box-shadow:0 6px 18px rgba(99,102,241,.16)}
+  .genre-btn.active .nm{color:var(--brand)}
+  textarea,input[type=text],input[type=email],input[type=password],select{
+    width:100%;border:2px solid var(--line);border-radius:14px;padding:14px 16px;font-size:15px;font-family:inherit;
+    background:#fff;color:var(--ink);transition:.18s;resize:vertical;
+  }
+  textarea:focus,input:focus,select:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 4px rgba(99,102,241,.12)}
+  textarea{min-height:110px;line-height:1.6}
+  .row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+  .demo-link{cursor:pointer;color:var(--brand);font-weight:700;font-size:14px;user-select:none}
+  .demo-link:hover{text-decoration:underline}
+  .rhythms{display:flex;gap:12px;flex-wrap:wrap}
+  .rhythm{cursor:pointer;border:2px solid var(--line);background:#fff;border-radius:14px;padding:12px 16px;flex:1;min-width:150px;transition:.18s}
+  .rhythm .rn{font-weight:700;font-size:14px}
+  .rhythm .rd{font-size:12px;color:var(--sub);margin-top:3px}
+  .rhythm:hover{border-color:#d9d3f7}
+  .rhythm.active{border-color:var(--brand);background:#f6f4ff}
+  .optional-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .err-banner{display:none;background:#fff1f0;border:1px solid #ffccc7;color:#cf1322;padding:12px 16px;border-radius:12px;margin-top:14px;font-size:14px;font-weight:600}
+  .err-banner.show{display:block}
+
+  /* Loading */
+  .loading{display:none;text-align:center;padding:30px 10px}
+  .loading.active{display:block}
+  .spinner{width:46px;height:46px;border:5px solid #ede9fe;border-top-color:var(--brand);border-radius:50%;margin:0 auto 16px;animation:spin 1s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .loading p{color:var(--sub);font-weight:600}
+  .loading .bar{height:6px;border-radius:999px;background:#ece9f5;margin:16px auto 0;max-width:340px;overflow:hidden}
+  .loading .bar i{display:block;height:100%;width:30%;background:linear-gradient(90deg,var(--brand),var(--brand3));border-radius:999px;animation:flow 1.4s ease-in-out infinite}
+  @keyframes flow{0%{margin-left:-30%}100%{margin-left:100%}}
+
+  /* Result */
+  .result{display:none;margin-top:24px;background:#fff;border:1px solid var(--line);border-radius:20px;overflow:hidden;box-shadow:var(--shadow)}
+  .result.active{display:block}
+  .result-head{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;background:linear-gradient(120deg,#f6f4ff,#fdf2f8);border-bottom:1px solid var(--line)}
+  .result-head .meta{font-size:13px;color:var(--sub);font-weight:600}
+  .result-actions{display:flex;gap:8px}
+  .result-actions .btn{padding:8px 14px;font-size:13px}
+  .result pre{white-space:pre-wrap;word-break:break-word;padding:22px;font-family:"PingFang SC","Microsoft YaHei",-apple-system,sans-serif;font-size:14.5px;line-height:1.85;max-height:520px;overflow:auto;color:#2b2740}
+
+  /* Usage panel */
+  .usage-panel{background:linear-gradient(120deg,#f6f4ff,#fdf2f8);border:1px solid #ece7fb;border-radius:20px;padding:24px}
+  .usage-top{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px}
+  .usage-top h3{font-size:18px;font-weight:800}
+  .usage-top .plan-tag{font-size:13px;font-weight:700;padding:6px 14px;border-radius:999px;background:#fff;color:var(--brand)}
+  .usage-bar{height:12px;border-radius:999px;background:#e7e2f5;margin:18px 0 10px;overflow:hidden}
+  .usage-bar i{display:block;height:100%;background:linear-gradient(90deg,var(--brand),var(--brand3));border-radius:999px;transition:width .5s}
+  .usage-nums{display:flex;justify-content:space-between;font-size:13px;color:var(--sub);font-weight:600}
+  .usage-nums b{color:var(--ink)}
+  .usage-progress-num{font-size:13px;color:var(--sub);margin-top:12px}
+  .upgrade-line{margin-top:16px;font-size:14px;color:var(--sub)}
+  .upgrade-line a{color:var(--brand);font-weight:700}
+
+  /* Pricing */
+  .plans{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;align-items:stretch}
+  .plan{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:26px;display:flex;flex-direction:column;position:relative;transition:.2s}
+  .plan:hover{transform:translateY(-4px);box-shadow:var(--shadow)}
+  .plan.featured{border-color:var(--brand);box-shadow:var(--shadow-lg)}
+  .plan.featured::after{content:"最受欢迎";position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:linear-gradient(120deg,var(--brand),var(--brand3));color:#fff;font-size:12px;font-weight:700;padding:5px 14px;border-radius:999px}
+  .plan .pname{font-size:18px;font-weight:800}
+  .plan .pprice{margin:14px 0 4px;font-size:34px;font-weight:850}
+  .plan .pprice small{font-size:14px;color:var(--sub);font-weight:600}
+  .plan .pdesc{color:var(--sub);font-size:13px;min-height:38px}
+  .plan ul{list-style:none;margin:18px 0;flex:1}
+  .plan ul li{padding:7px 0;font-size:14px;display:flex;gap:9px;align-items:flex-start}
+  .plan ul li .ck{color:var(--ok);font-weight:800}
+  .plan ul li.off{color:#b8b4c4}
+  .plan ul li.off .ck{color:#d4d0e0}
+
+  /* Modal */
+  .modal{display:none;position:fixed;inset:0;z-index:100;background:rgba(30,27,46,.55);backdrop-filter:blur(4px);align-items:center;justify-content:center;padding:18px}
+  .modal.show{display:flex}
+  .modal-box{background:#fff;border-radius:22px;padding:30px;width:100%;max-width:400px;max-height:92vh;overflow:auto;box-shadow:var(--shadow-lg);animation:pop .22s ease}
+  @keyframes pop{from{transform:scale(.94);opacity:0}to{transform:scale(1);opacity:1}}
+  .modal-box.wide{max-width:460px}
+  .modal h3{font-size:22px;font-weight:820;text-align:center;margin-bottom:6px}
+  .modal .sub{text-align:center;color:var(--sub);font-size:14px;margin-bottom:22px}
+  .modal-tabs{display:flex;background:#f3f1fb;border-radius:12px;padding:4px;margin-bottom:20px}
+  .modal-tabs button{flex:1;border:none;background:transparent;padding:10px;border-radius:9px;font-weight:700;font-size:14px;cursor:pointer;color:var(--sub);font-family:inherit}
+  .modal-tabs button.active{background:#fff;color:var(--brand);box-shadow:0 2px 8px rgba(99,102,241,.12)}
+  .modal label{display:block;font-weight:600;font-size:13px;margin:14px 0 7px}
+  .auth-err{display:none;color:#cf1322;font-size:13px;font-weight:600;margin-top:10px;text-align:center}
+  .auth-err.show{display:block}
+  .modal .close{position:absolute;top:16px;right:18px;font-size:24px;color:#aaa;cursor:pointer;line-height:1}
+  .modal-box{position:relative}
+  .or-line{text-align:center;color:var(--sub);font-size:12px;margin:16px 0}
+
+  /* Payment */
+  .pay-plan{display:flex;justify-content:space-between;align-items:center;background:#f6f4ff;border-radius:14px;padding:14px 16px;margin-bottom:18px}
+  .pay-plan .pp{font-weight:800;font-size:16px}
+  .pay-plan .pp small{display:block;color:var(--sub);font-weight:500;font-size:12px}
+  .pay-plan .amount{font-size:24px;font-weight:850;color:var(--brand)}
+  .qr-tabs{display:flex;gap:10px;margin-bottom:16px}
+  .qr-tabs button{flex:1;border:2px solid var(--line);background:#fff;border-radius:12px;padding:11px;font-weight:700;cursor:pointer;font-family:inherit;font-size:14px}
+  .qr-tabs button.active{border-color:var(--brand);background:#f6f4ff;color:var(--brand)}
+  .qr-wrap{text-align:center}
+  .qr-wrap img{width:200px;height:200px;border-radius:14px;border:1px solid var(--line);object-fit:cover}
+  .qr-wrap .tip{font-size:13px;color:var(--sub);margin-top:12px}
+  .pay-note{background:#fffbeb;border:1px solid #fde68a;color:#92400e;font-size:12.5px;padding:11px 14px;border-radius:12px;margin-top:16px;line-height:1.5}
+
+  /* Toast */
+  .toast{position:fixed;left:50%;bottom:34px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;padding:13px 22px;border-radius:14px;font-weight:600;font-size:14px;opacity:0;pointer-events:none;transition:.3s;z-index:200;box-shadow:var(--shadow-lg)}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+  footer{text-align:center;padding:40px 20px;color:var(--sub);font-size:13px;border-top:1px solid var(--line);margin-top:30px}
+
+  @media(max-width:760px){
+    .genres{grid-template-columns:repeat(2,1fr)}
+    .optional-grid{grid-template-columns:1fr}
+    .plans{grid-template-columns:1fr}
+    .plan.featured{order:-1}
+    .hero .stats{gap:20px}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap nav-inner">
+    <a href="#" class="logo"><span class="mark">🎬</span>剧工厂</a>
+    <div class="nav-right">
+      <span class="usage-badge" id="navUsage">今日剩余 <b>2</b> 次</span>
+      <a href="#" class="nav-login btn btn-primary" id="navLoginBtn" onclick="openAuth('login')">登录 / 注册</a>
+      <span class="nav-user" id="navUser">
+        <span class="av" id="navAvatar">U</span>
+        <span id="navNick">用户</span>
+        <a href="#" class="btn btn-ghost" style="padding:8px 14px;font-size:13px" onclick="logout()">退出</a>
+      </span>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <h1>30秒，写出一部<span class="grad-text">爆款短剧</span></h1>
+    <p class="lead">输入一个灵感，AI 立刻生成专业级竖屏短剧剧本——分镜表、完整对白、人物设定全都有。手机也能拍，小白也能写。</p>
+    <div class="cta">
+      <a href="#generator" class="btn btn-primary">✨ 免费开始创作</a>
+      <a href="#pricing" class="btn btn-ghost">查看会员方案</a>
+    </div>
+    <div class="stats">
+      <div><b>5</b>热门题材模板</div>
+      <div><b>30秒</b>极速成稿</div>
+      <div><b>¥0</b>免费就能用</div>
+    </div>
+  </div>
+</header>
+
+<section class="block" id="generator">
+  <div class="wrap">
+    <div class="gen-card">
+      <div class="field">
+        <label>① 选择题材<span class="hint">想写哪种短剧？</span></label>
+        <div class="genres" id="genreBox">
+          <div class="genre-btn active" data-genre="niixi"><span class="ic">🔥</span><span class="nm">都市逆袭</span><span class="ds">草根打脸装逼</span></div>
+          <div class="genre-btn" data-genre="yanqing"><span class="ic">💕</span><span class="nm">甜宠言情</span><span class="ds">霸总高糖预警</span></div>
+          <div class="genre-btn" data-genre="xuanyi"><span class="ic">😱</span><span class="nm">悬疑惊悚</span><span class="ds">反转烧脑</span></div>
+          <div class="genre-btn" data-genre="chuanyue"><span class="ic">⚡</span><span class="nm">穿越重生</span><span class="ds">重生复仇</span></div>
+          <div class="genre-btn" data-genre="tianchong"><span class="ic">💍</span><span class="nm">先婚后爱</span><span class="ds">契约甜宠</span></div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>② 核心梗概<span class="hint">用一句话说清楚你想拍什么</span></label>
+        <textarea id="plotInput" placeholder="例如：被裁员的中年程序员，在出租屋发现一个能预测未来3分钟的神秘APP，靠它在股市翻盘，却引来资本大鳄的追杀……"></textarea>
+        <div class="row" style="margin-top:10px">
+          <span class="demo-link" onclick="fillDemo()">💡 不会写？点这里填个示例</span>
+          <span style="margin-left:auto;font-size:13px;color:var(--sub)" id="charCount">0 字</span>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>③ 节奏风格</label>
+        <div class="rhythms" id="rhythmBox">
+          <div class="rhythm active" data-rhythm="hot"><div class="rn">🔥 爆款节奏</div><div class="rd">每15秒一个情绪引爆点</div></div>
+          <div class="rhythm" data-rhythm="short"><div class="rn">⚡ 快节奏</div><div class="rd">极速切换，8-10秒一镜</div></div>
+          <div class="rhythm" data-rhythm="long"><div class="rn">🎬 深度剧情</div><div class="rd">对白丰富，单集1200字+</div></div>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="optional-grid">
+          <div>
+            <label>④ 人物设定<span class="hint">选填</span></label>
+            <input type="text" id="charactersInput" placeholder="如：林明远(35岁程序员)，苏瑶(会计)">
+          </div>
+          <div>
+            <label>⑤ 特殊要求<span class="hint">选填</span></label>
+            <input type="text" id="specialInput" placeholder="如：每集结尾要有反转悬念">
+          </div>
+        </div>
+      </div>
+
+      <button class="btn btn-primary btn-block" id="submitBtn" onclick="generate()" style="font-size:17px;padding:16px">🎬 一键生成短剧脚本</button>
+      <div class="err-banner" id="errorBanner"></div>
+
+      <div class="loading" id="loading">
+        <div class="spinner"></div>
+        <p id="loadingText">🤖 AI 正在构思剧情结构…</p>
+        <div class="bar"><i></i></div>
+      </div>
+
+      <div class="result" id="result">
+        <div class="result-head">
+          <span class="meta" id="resultMeta">🎬 生成完成</span>
+          <div class="result-actions">
+            <button class="btn btn-ghost" onclick="copyScript()">📋 复制</button>
+            <button class="btn btn-ghost" onclick="downloadScript()">⬇ 下载</button>
+            <button class="btn btn-primary" onclick="generate()">🔁 再写一集</button>
+          </div>
+        </div>
+        <pre id="resultContent"></pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="usage">
+  <div class="wrap" style="max-width:680px">
+    <div class="sec-head"><h2>我的使用</h2><p>登录后查看你的创作记录</p></div>
+    <div class="usage-panel">
+      <div class="usage-top">
+        <h3>📊 创作统计</h3>
+        <span class="plan-tag" id="planTag">免费版</span>
+      </div>
+      <div class="usage-bar"><i id="usageFill" style="width:0%"></i></div>
+      <div class="usage-nums"><span>今日已用 <b id="todayUsed">0</b> 次</span><span>今日剩余 <b id="todayLeft">2</b> 次</span></div>
+      <div class="usage-progress-num">累计已生成 <b id="totalUsed">0</b> 部短剧 🎬</div>
+      <div class="upgrade-line" id="upgradeLine">想无限生成？<a href="#pricing">升级专业版 →</a></div>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="pricing">
+  <div class="wrap">
+    <div class="sec-head"><h2>选择你的方案</h2><p>从免费开始，随时升级，按月付费随时取消</p></div>
+    <div class="plans">
+      <div class="plan">
+        <div class="pname">免费版</div>
+        <div class="pprice">¥0<small> / 永久</small></div>
+        <div class="pdesc">先体验，看看 AI 写剧本有多快</div>
+        <ul>
+          <li><span class="ck">✓</span>每日 2 次生成</li>
+          <li><span class="ck">✓</span>5 大热门题材</li>
+          <li><span class="ck">✓</span>爆款节奏模板</li>
+          <li class="off"><span class="ck">✕</span>自定义人物设定</li>
+          <li class="off"><span class="ck">✕</span>无限生成</li>
+        </ul>
+        <button class="btn btn-ghost btn-block" onclick="openAuth('register')">免费注册</button>
+      </div>
+
+      <div class="plan featured">
+        <div class="pname">专业版</div>
+        <div class="pprice">¥39<small> / 月</small></div>
+        <div class="pdesc">认真做短剧的创作者首选</div>
+        <ul>
+          <li><span class="ck">✓</span><b>无限次</b>生成</li>
+          <li><span class="ck">✓</span>自定义人物设定</li>
+          <li><span class="ck">✓</span>3 种节奏风格</li>
+          <li><span class="ck">✓</span>完整剧本 + 分镜表</li>
+          <li><span class="ck">✓</span>优先生成速度</li>
+        </ul>
+        <button class="btn btn-primary btn-block" onclick="openPay('premium')">升级专业版</button>
+      </div>
+
+      <div class="plan">
+        <div class="pname">工作室版</div>
+        <div class="pprice">¥199<small> / 月</small></div>
+        <div class="pdesc">团队 / 矩阵号批量产出</div>
+        <ul>
+          <li><span class="ck">✓</span>专业版全部功能</li>
+          <li><span class="ck">✓</span>Word / PDF 导出</li>
+          <li><span class="ck">✓</span>高级 Prompt 配方</li>
+          <li><span class="ck">✓</span>更多题材持续更新</li>
+          <li><span class="ck">✓</span>批量生成</li>
+        </ul>
+        <button class="btn btn-ghost btn-block" onclick="openPay('studio')">升级工作室版</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    剧工厂 · AI 短剧脚本生成器 &nbsp;|&nbsp; 让每个人都能写爆款短剧<br>
+    © 2026 剧工厂 · 仅供创作参考
+  </div>
+</footer>
+
+<!-- Auth Modal -->
+<div class="modal" id="authModal">
+  <div class="modal-box">
+    <span class="close" onclick="closeAuth()">×</span>
+    <h3>欢迎来到剧工厂</h3>
+    <p class="sub">登录后即可开始生成你的短剧</p>
+    <div class="modal-tabs">
+      <button id="tabLogin" class="active" onclick="switchAuth('login')">登录</button>
+      <button id="tabReg" onclick="switchAuth('register')">注册</button>
+    </div>
+    <div id="loginForm">
+      <label>邮箱</label>
+      <input type="email" id="loginEmail" placeholder="you@example.com">
+      <label>密码</label>
+      <input type="password" id="loginPassword" placeholder="请输入密码">
+      <div class="auth-err" id="loginErr"></div>
+      <button class="btn btn-primary btn-block" id="loginBtn" style="margin-top:18px" onclick="doLogin()">登录</button>
+    </div>
+    <div id="registerForm" style="display:none">
+      <label>昵称</label>
+      <input type="text" id="regNick" placeholder="怎么称呼你？">
+      <label>邮箱</label>
+      <input type="email" id="regEmail" placeholder="you@example.com">
+      <label>密码</label>
+      <input type="password" id="regPassword" placeholder="至少6位">
+      <div class="auth-err" id="regErr"></div>
+      <button class="btn btn-primary btn-block" id="regBtn" style="margin-top:18px" onclick="doRegister()">注册并开启创作</button>
+    </div>
+  </div>
+</div>
+
+<!-- Payment Modal -->
+<div class="modal" id="payModal">
+  <div class="modal-box wide">
+    <span class="close" onclick="closePay()">×</span>
+    <h3>开通会员</h3>
+    <p class="sub">扫码支付，秒开通</p>
+    <div class="pay-plan">
+      <div class="pp" id="payName">专业版<small id="paySub">无限生成 · 自定义人物</small></div>
+      <div class="amount" id="payAmount">¥39</div>
+    </div>
+    <div class="qr-tabs">
+      <button id="qrAli" class="active" onclick="switchQr('ali')">💙 支付宝</button>
+      <button id="qrWx" onclick="switchQr('wx')">💚 微信</button>
+    </div>
+    <div class="qr-wrap">
+      <img id="qrImg" src="qrcode.png" alt="扫码支付">
+      <div class="tip" id="qrTip">打开支付宝扫一扫，支付后联系客服开通</div>
+    </div>
+    <div class="pay-note">⏱ 支付为人工开通：扫码付款后，把「订单号+你的注册邮箱」发给客服微信，1 分钟内为你升级会员。客服微信见付款页底部。</div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
 <script>
-// ========== 剧工厂 - Supabase + DeepSeek 版本 ==========
-
+// ============ 配置 ============
 const SUPABASE_URL = 'https://mqvygeoqjfylgdmklvrb.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1xdnlnZW9xamZ5bGdkbWtsdnJiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcxNzYyNjcsImV4cCI6MjEwMjc1MjI2N30.cpKcwOSKzwz50eIcz-WIq6cmbXuQeNt3Q0Ao0CEJBPg';
 const DEEPSEEK_API_KEY = 'YOUR_DEEPSEEK_API_KEY_HERE';
 
 let supabase = null;
-try {
-  supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-} catch(e) { console.warn('Supabase init failed', e); }
+try { supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY); } catch(e){ console.warn(e); }
 
 const PLANS = {
-  free:    { name: '免费版',   dailyLimit: 2,  color: '#94a3b8', badge: 'FREE' },
-  premium: { name: '专业版',   price: 39,      color: '#4f46e5', badge: 'PRO' },
-  studio:  { name: '工作室版', price: 199,     color: '#f59e0b', badge: 'STUDIO' }
+  free:    { name:'免费版',   dailyLimit:2,   color:'#94a3b8' },
+  premium: { name:'专业版',   dailyLimit:999, color:'#6366f1' },
+  studio:  { name:'工作室版', dailyLimit:9999,color:'#d97706' }
+};
+const GENRES = {
+  niixi:'都市逆袭', yanqing:'甜宠言情', xuanyi:'悬疑惊悚', chuanyue:'穿越重生', tianchong:'先婚后爱'
 };
 
-const GENRES = [
-  { id: 'niixi',    name: '都市逆袭', desc: '草根逆袭 · 打脸装逼', icon: '🔥' },
-  { id: 'yanqing',  name: '甜宠言情', desc: '霸道总裁 · 高糖预警', icon: '💕' },
-  { id: 'xuanyi',   name: '悬疑惊悚', desc: '反转烧脑 · 惊悚刺激', icon: '😱' },
-  { id: 'chuanyue', name: '穿越重生', desc: '今穿古/重生复仇',     icon: '⚡' },
-  { id: 'tianchong',name: '先婚后爱', desc: '契约婚姻 · 甜宠高糖', icon: '💍' }
-];
+// ============ 工具 ============
+function $(id){ return document.getElementById(id); }
+function toast(msg){ const t=$('toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove('show'),2800); }
+function delay(ms){ return new Promise(r=>setTimeout(r,ms)); }
 
-// ========== Auth ==========
-function showAuthModal(tab) { document.getElementById('authModal').classList.add('show'); switchAuthTab(tab || 'login'); }
-function closeAuthModal() { document.getElementById('authModal').classList.remove('show'); }
-function switchAuthTab(tab) {
-  document.getElementById('authTabLogin').classList.toggle('active', tab === 'login');
-  document.getElementById('authTabRegister').classList.toggle('active', tab === 'register');
-  document.getElementById('loginForm').style.display = tab === 'login' ? 'block' : 'none';
-  document.getElementById('registerForm').style.display = tab === 'register' ? 'block' : 'none';
-}
-function showAuthError(id, msg) { const el = document.getElementById(id); if(el){ el.textContent = '⚠ ' + msg; el.classList.add('show'); } }
-function clearAuthError(id) { const el = document.getElementById(id); if(el) el.classList.remove('show'); }
+// ============ 交互选择 ============
+$('genreBox').querySelectorAll('.genre-btn').forEach(b=>{
+  b.onclick=()=>{ $('genreBox').querySelectorAll('.genre-btn').forEach(x=>x.classList.remove('active')); b.classList.add('active'); };
+});
+$('rhythmBox').querySelectorAll('.rhythm').forEach(b=>{
+  b.onclick=()=>{ $('rhythmBox').querySelectorAll('.rhythm').forEach(x=>x.classList.remove('active')); b.classList.add('active'); };
+});
+$('plotInput').addEventListener('input',e=>{ $('charCount').textContent = e.target.value.length + ' 字'; });
+$('plotInput').addEventListener('keydown',e=>{ if(e.key==='Enter'&&(e.ctrlKey||e.metaKey)) generate(); });
 
-async function login() {
-  clearAuthError('loginError');
-  const email = document.getElementById('loginEmail').value.trim();
-  const password = document.getElementById('loginPassword').value;
-  const btn = document.getElementById('loginBtn');
-  if(btn){ btn.disabled = true; btn.textContent = '登录中..'; }
-  try {
-    if (!supabase) { showAuthError('loginError', '系统未配置，请稍后重试'); return; }
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) { showAuthError('loginError', error.message); return; }
-    closeAuthModal();
-    const nick = data.user?.user_metadata?.nickname || email.split('@')[0];
-    updateNavbar(nick);
-    fetchUsage();
-    showToast('✓ 登录成功，欢迎回来！');
-  } catch (e) { showAuthError('loginError', '网络错误'); }
-  finally { if(btn){ btn.disabled = false; btn.textContent = '登录'; } }
+function fillDemo(){
+  $('genreBox').querySelectorAll('.genre-btn').forEach(x=>x.classList.remove('active'));
+  $('genreBox').querySelector('[data-genre="niixi"]').classList.add('active');
+  $('plotInput').value='一个被公司裁员的中年程序员，在出租屋里发现一个能预测未来3分钟的APP，利用这个能力在股市和牌桌翻盘，却引来资本大鳄的觊觎与追杀。';
+  $('charCount').textContent=$('plotInput').value.length+' 字';
+  $('rhythmBox').querySelectorAll('.rhythm').forEach(x=>x.classList.remove('active'));
+  $('rhythmBox').querySelector('[data-rhythm="hot"]').classList.add('active');
+  $('charactersInput').value='林明远（35岁，程序员），苏瑶（30岁，会计），代明星（资本掮客）';
+  $('specialInput').value='每集最后要有反转悬念';
+  $('generator').scrollIntoView({behavior:'smooth'});
+  toast('✓ 示例已填好，点「一键生成」试试');
 }
 
-async function register() {
-  clearAuthError('regError');
-  const email = document.getElementById('regEmail').value.trim();
-  const password = document.getElementById('regPassword').value;
-  const nickname = document.getElementById('regNickname').value.trim() || email.split('@')[0];
-  const btn = document.getElementById('regBtn');
-  if(btn){ btn.disabled = true; btn.textContent = '注册中..'; }
-  try {
-    if (!supabase) { showAuthError('regError', '系统未配置，请稍后重试'); return; }
-    const { data, error } = await supabase.auth.signUp({
-      email, password,
-      options: { data: { nickname } }
-    });
-    if (error) { showAuthError('regError', error.message); return; }
-    closeAuthModal();
-    showToast('✓ 注册成功，请登录！');
-  } catch (e) { showAuthError('regError', '网络错误'); }
-  finally { if(btn){ btn.disabled = false; btn.textContent = '注册并开通'; } }
+// ============ 认证 ============
+function openAuth(tab){ $('authModal').classList.add('show'); switchAuth(tab||'login'); }
+function closeAuth(){ $('authModal').classList.remove('show'); }
+function switchAuth(tab){
+  $('tabLogin').classList.toggle('active',tab==='login');
+  $('tabReg').classList.toggle('active',tab==='register');
+  $('loginForm').style.display = tab==='login'?'block':'none';
+  $('registerForm').style.display = tab==='register'?'block':'none';
+  $('loginErr').classList.remove('show'); $('regErr').classList.remove('show');
 }
-
-function logout() {
-  if (supabase) supabase.auth.signOut();
-  localStorage.removeItem('jgc_token');
-  location.reload();
+async function doLogin(){
+  const email=$('loginEmail').value.trim(), pwd=$('loginPassword').value;
+  const btn=$('loginBtn'); btn.disabled=true; btn.textContent='登录中…';
+  try{
+    const {data,error}=await supabase.auth.signInWithPassword({email,password:pwd});
+    if(error){ $('loginErr').textContent='⚠ '+error.message; $('loginErr').classList.add('show'); return; }
+    closeAuth(); toast('✓ 登录成功，开始创作吧！');
+  }catch(e){ $('loginErr').textContent='⚠ 网络错误'; $('loginErr').classList.add('show'); }
+  finally{ btn.disabled=false; btn.textContent='登录'; }
 }
+async function doRegister(){
+  const email=$('regEmail').value.trim(), pwd=$('regPassword').value, nick=$('regNick').value.trim()||email.split('@')[0];
+  const btn=$('regBtn'); btn.disabled=true; btn.textContent='注册中…';
+  try{
+    const {data,error}=await supabase.auth.signUp({email,password:pwd,options:{data:{nickname:nick}}});
+    if(error){ $('regErr').textContent='⚠ '+error.message; $('regErr').classList.add('show'); return; }
+    closeAuth(); toast('✓ 注册成功！现在就能生成短剧');
+  }catch(e){ $('regErr').textContent='⚠ 网络错误'; $('regErr').classList.add('show'); }
+  finally{ btn.disabled=false; btn.textContent='注册并开启创作'; }
+}
+function logout(){ if(supabase) supabase.auth.signOut(); location.reload(); }
 
-function updateNavbar(nickname) {
-  const loginBtn = document.getElementById('navLoginBtn');
-  const userInfo = document.getElementById('navUserInfo');
-  const nickEl = document.getElementById('navNickname');
-  if (nickname) {
-    if(loginBtn) loginBtn.style.display = 'none';
-    if(userInfo) userInfo.style.display = 'inline';
-    if(nickEl) nickEl.textContent = '👤 ' + nickname;
-  } else {
-    if(loginBtn) loginBtn.style.display = 'inline';
-    if(userInfo) userInfo.style.display = 'none';
+function updateNav(nick, plan){
+  if(nick){
+    $('navLoginBtn').style.display='none';
+    $('navUser').style.display='inline-flex';
+    $('navNick').textContent=nick;
+    $('navAvatar').textContent=(nick[0]||'U').toUpperCase();
+  }else{
+    $('navLoginBtn').style.display='inline-block';
+    $('navUser').style.display='none';
   }
 }
 
-// ========== Usage ==========
-async function fetchUsage() {
-  if (!supabase) return;
-  const { data: session } = await supabase.auth.getSession();
-  if (!session?.session) return;
-  const uid = session.session.user.id;
-  const { data } = await supabase.from('profiles').select('plan, daily_uses, last_used_date').eq('id', uid).single();
-  if (!data) return;
-  const plan = data.plan || 'free';
-  const cfg = PLANS[plan] || PLANS.free;
-  const today = new Date().toISOString().split('T')[0];
-  const uses = data.last_used_date !== today ? 0 : (data.daily_uses || 0);
-  const remaining = Math.max(0, cfg.dailyLimit - uses);
-  updateFreeRemaining(remaining, uses);
+// ============ 使用次数 ============
+async function loadUsage(){
+  if(!supabase) return;
+  const {data:ses}=await supabase.auth.getSession();
+  if(!ses?.session) return;
+  const uid=ses.session.user.id;
+  const {data:p}=await supabase.from('profiles').select('plan,daily_uses,last_used_date').eq('id',uid).single();
+  const plan=(p&&p.plan)||'free'; const cfg=PLANS[plan]||PLANS.free;
+  const today=new Date().toISOString().split('T')[0];
+  const used=(p&&p.last_used_date===today)?(p.daily_uses||0):0;
+  const left=Math.max(0,cfg.dailyLimit-used);
+  // 累计
+  const {count}=await supabase.from('usage_logs').select('*',{count:'exact',head:true}).eq('user_id',uid);
+  renderUsage(plan,used,left,count||0);
+}
+function renderUsage(plan,used,left,total){
+  const cfg=PLANS[plan]||PLANS.free;
+  $('navUsage').innerHTML='今日剩余 <b>'+left+'</b> 次';
+  $('planTag').textContent=cfg.name;
+  $('todayUsed').textContent=used;
+  $('todayLeft').textContent=left;
+  $('totalUsed').textContent=total;
+  const pct = cfg.dailyLimit>=999 ? 100 : Math.min(100, Math.round(used/cfg.dailyLimit*100));
+  $('usageFill').style.width=pct+'%';
+  if(plan==='free'){ $('upgradeLine').style.display='block'; }
+  else { $('upgradeLine').innerHTML='🎉 你是<b style="color:var(--brand)">'+cfg.name+'</b>，已享无限生成'; }
 }
 
-function updateFreeRemaining(remaining, used) {
-  const el = document.getElementById('freeRemaining');
-  if (el) el.textContent = '每日' + used + '/2次 · 剩余' + remaining + '次';
-}
+// ============ 生成 ============
+async function generate(){
+  const {data:ses}=supabase?await supabase.auth.getSession():{data:null};
+  if(!ses?.session){ openAuth('login'); return; }
+  const uid=ses.session.user.id;
 
-// ========== Generate ==========
-document.querySelectorAll('.genre-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.genre-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-  });
-});
+  // 免费次数检查
+  const {data:p}=await supabase.from('profiles').select('plan,daily_uses,last_used_date').eq('id',uid).single();
+  const plan=(p&&p.plan)||'free'; const cfg=PLANS[plan]||PLANS.free;
+  const today=new Date().toISOString().split('T')[0];
+  const used=(p&&p.last_used_date===today)?(p.daily_uses||0):0;
+  if(used>=cfg.dailyLimit){
+    $('errorBanner').textContent='⚠ 今日免费次数已用完，升级专业版可无限生成 🚀';
+    $('errorBanner').classList.add('show');
+    $('upgradeLine').scrollIntoView({behavior:'smooth'});
+    return;
+  }
 
-const plotEl = document.getElementById('plotInput');
-if (plotEl) {
-  plotEl.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); generate(); }
-  });
-}
+  const genre=$('genreBox').querySelector('.genre-btn.active').dataset.genre;
+  const rhythm=$('rhythmBox').querySelector('.rhythm.active').dataset.rhythm;
+  const plot=$('plotInput').value.trim();
+  const chars=$('charactersInput').value.trim();
+  const special=$('specialInput').value.trim();
+  if(plot.length<5){ $('errorBanner').textContent='⚠ 请先写几句核心梗概（至少5字）'; $('errorBanner').classList.add('show'); return; }
+  $('errorBanner').classList.remove('show');
 
-function fillDemo() {
-  document.querySelectorAll('.genre-btn').forEach(b => b.classList.remove('active'));
-  const btn = document.querySelector('[data-genre="niixi"]');
-  if (btn) btn.classList.add('active');
-  const p = document.getElementById('plotInput');
-  if (p) p.value = '一个被公司裁员的中年程序员，在出租屋里发现一个能预测未来3分钟的APP，利用这个能力在股市和牌桌四方，引来资本大鳄的觊觎。';
-  const s = document.getElementById('styleSelect');
-  if (s) s.value = 'hot';
-  const c = document.getElementById('charactersInput');
-  if (c) c.value = '林明远（35岁，程序员），苏瑶（30岁，会计），代明星（资本掮客）';
-  const sp = document.getElementById('specialInput');
-  if (sp) sp.value = '每集最后要有反转悬念';
-  document.getElementById('generator') && document.getElementById('generator').scrollIntoView({behavior:'smooth'});
-  showToast('✓ 示例已填充，点击「生成短剧脚本」试试！');
-}
-
-async function generate() {
-  const { data: session } = supabase ? await supabase.auth.getSession() : { data: null };
-  if (!session?.session) { showAuthModal('login'); return; }
-
-  const genre = document.querySelector('.genre-btn.active')?.dataset.genre || 'niixi';
-  const plot = (document.getElementById('plotInput') || {}).value?.trim() || '';
-  const style = (document.getElementById('styleSelect') || {}).value || 'hot';
-  const characters = (document.getElementById('charactersInput') || {}).value?.trim() || '';
-  const special = (document.getElementById('specialInput') || {}).value?.trim() || '';
-
-  if (!plot || plot.length < 5) { showError('请先输入核心梗概（至少5字）'); return; }
-
-  const loading = document.getElementById('loading');
-  const resultEl = document.getElementById('result');
-  const errorBanner = document.getElementById('errorBanner');
-  const btn = document.getElementById('submitBtn');
-  const progress = document.getElementById('loadingProgress');
-  if(loading) loading.classList.add('active');
-  if(resultEl) resultEl.classList.remove('active');
-  if(errorBanner) errorBanner.classList.remove('show');
-  if(btn){ btn.disabled = true; btn.innerHTML = '⏳ 生成中..'; }
-  if(progress) progress.textContent = '🤖 AI 正在构思剧本题材结构..';
-
-  try {
-    await delay(500);
-    if(progress) progress.textContent = '✍ 正在编写分镜表和台词...';
-
-    const genreTpl = GENRES.find(g => g.id === genre) || GENRES[0];
-    const rhythmMap = {
-      hot: '参考热门短剧爆款公式，开头5秒必须有高能钩子，每15秒一个情绪引爆点',
-      short: '精简版，每句台词不超过15字，平均8-10秒一场景',
-      long: '深度剧情版，对白丰富，单集1200-1500字'
-    };
-
-    const systemPrompt = `你是一位专业的AI短剧编剧，精通竖屏短剧创作。
-
-## 短剧黄金法则
-1. 竖屏思维：人物半身/特写为主
-2. 节奏：每15-20秒一个情绪点
-3. 对白：一句不超过20字
-4. 爽点密集：打脸、反转、告白交替
-5. 结尾钩子：每集最后留悬念
-
-## 输出格式
-【剧名】
-【类型】${genreTpl.name}
-【集数】第1集（约3分钟，800-1000字）
-【人物表】主要角色
-【剧情概要】本集100字梗概
-
-【分镜表】
-| 镜头 | 景别 | 时长 | 画面 | 台词 | 音效 |
-
-【完整剧本】
-场景/人物/对白/动作
-
-【下集钩子】`;
-
-    const userPrompt = `## 题材\n${genreTpl.name}：${genreTpl.desc}\n\n## 核心梗概\n${plot}\n\n## 节奏风格\n${rhythmMap[style] || rhythmMap.hot}\n\n${characters ? '## 人物设定\n' + characters : ''}\n\n${special ? '## 特殊要求\n' + special : ''}`;
-
-    if (!DEEPSEEK_API_KEY || DEEPSEEK_API_KEY.includes('YOUR_')) {
-      throw new Error('AI 服务未配置，请联系管理员');
-    }
-
-    const apiRes = await fetch('https://api.deepseek.com/chat/completions', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + DEEPSEEK_API_KEY },
-      body: JSON.stringify({
-        model: 'deepseek-chat',
-        messages: [
-          { role: 'system', content: systemPrompt },
-          { role: 'user', content: userPrompt }
-        ],
-        temperature: 0.8,
-        max_tokens: 2000
-      })
-    });
-
-    if (!apiRes.ok) {
-      throw new Error('AI 服务暂时不可用 (' + apiRes.status + ')');
-    }
-
-    const apiData = await apiRes.json();
-    const script = apiData.choices[0].message.content;
-
-    if(progress) progress.textContent = '✓ 生成完成，渲染中...';
+  const btn=$('submitBtn'), loading=$('loading'), result=$('result');
+  btn.disabled=true; btn.textContent='⏳ 生成中…'; loading.classList.add('active'); result.classList.remove('active');
+  $('loadingText').textContent='🤖 AI 正在构思剧情结构…';
+  try{
+    await delay(600);
+    $('loadingText').textContent='✍ 正在编写分镜表与台词…';
+    const script=await callDeepSeek(genre,rhythm,plot,chars,special);
     await delay(300);
-
-    displayResult({ script });
-    await logUsage(session.session.user.id, genre, plot);
-    fetchUsage();
-
-  } catch (err) {
-    showError(err.message);
-  } finally {
-    if(loading) loading.classList.remove('active');
-    if(btn){ btn.disabled = false; btn.innerHTML = '🎬 生成短剧脚本'; }
+    $('loadingText').textContent='✓ 渲染完成';
+    $('resultContent').textContent=script;
+    $('resultMeta').textContent='🎬 生成完成 · '+new Date().toLocaleTimeString();
+    result.classList.add('active'); result.scrollIntoView({behavior:'smooth',block:'start'});
+    await logUsage(uid,genre);
+    loadUsage();
+  }catch(err){
+    $('errorBanner').textContent='⚠ '+err.message; $('errorBanner').classList.add('show');
+  }finally{
+    loading.classList.remove('active'); btn.disabled=false; btn.textContent='🎬 一键生成短剧脚本';
   }
 }
 
-async function logUsage(userId, genre, plot) {
-  if (!supabase || !userId) return;
-  await supabase.from('usage_logs').insert({ user_id: userId, genre, plot });
-  const { data } = await supabase.from('profiles').select('daily_uses, last_used_date').eq('id', userId).single();
-  if (!data) return;
-  const today = new Date().toISOString().split('T')[0];
-  if (data.last_used_date === today) {
-    await supabase.from('profiles').update({ daily_uses: (data.daily_uses || 0) + 1 }).eq('id', userId);
-  } else {
-    await supabase.from('profiles').update({ daily_uses: 1, last_used_date: today }).eq('id', userId);
-  }
+async function callDeepSeek(genre,rhythm,plot,chars,special){
+  if(!DEEPSEEK_API_KEY||DEEPSEEK_API_KEY.includes('YOUR_')) throw new Error('AI 服务未配置，请联系管理员');
+  const gName=GENRES[genre]||'都市逆袭';
+  const rhythmMap={
+    hot:'参考当下最火短剧爆款公式，开头5秒必须有高能钩子，每15秒一个情绪引爆点',
+    short:'精简快节奏，每句台词不超15字，平均8-10秒切换一场景',
+    long:'深度剧情版，对白丰富，铺垫人物关系，单集1200-1500字'
+  };
+  const system=`你是一位专业AI短剧编剧，精通竖屏短剧创作。\n规则：1)竖屏思维，人物半身/特写为主 2)每15-20秒一个情绪点 3)台词一句不超20字 4)爽点密集：打脸/反转/告白交替 5)每集结尾留悬念。\n输出格式：\n【剧名】\n【类型】${gName}\n【集数】第1集（约3分钟，800-1000字）\n【人物表】\n【剧情概要】100字\n【分镜表】|镜头|景别|时长|画面|台词|音效|\n【完整剧本】\n【下集钩子】`;
+  const user=`## 题材\n${gName}\n## 核心梗概\n${plot}\n## 节奏风格\n${rhythmMap[rhythm]||rhythmMap.hot}\n${chars?'## 人物设定\n'+chars:''}\n${special?'## 特殊要求\n'+special:''}`;
+  const res=await fetch('https://api.deepseek.com/chat/completions',{
+    method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+DEEPSEEK_API_KEY},
+    body:JSON.stringify({model:'deepseek-chat',messages:[{role:'system',content:system},{role:'user',content:user}],temperature:0.8,max_tokens:2000})
+  });
+  if(!res.ok) throw new Error('AI 服务暂不可用 ('+res.status+')');
+  const d=await res.json();
+  return d.choices[0].message.content;
 }
 
-function displayResult(data) {
-  const rc = document.getElementById('resultContent');
-  const rm = document.getElementById('resultMeta');
-  const r = document.getElementById('result');
-  if(rc) rc.textContent = data.script;
-  if(rm) rm.textContent = '🎬 生成完成 · ' + new Date().toLocaleTimeString();
-  if(r){ r.classList.add('active'); r.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+async function logUsage(uid,genre){
+  if(!supabase||!uid) return;
+  await supabase.from('usage_logs').insert({user_id:uid,genre,plot:$('plotInput').value.trim()});
+  const {data}=await supabase.from('profiles').select('daily_uses,last_used_date').eq('id',uid).single();
+  if(!data) return;
+  const today=new Date().toISOString().split('T')[0];
+  if(data.last_used_date===today) await supabase.from('profiles').update({daily_uses:(data.daily_uses||0)+1}).eq('id',uid);
+  else await supabase.from('profiles').update({daily_uses:1,last_used_date:today}).eq('id',uid);
+}
+function copyScript(){ const t=$('resultContent').textContent; navigator.clipboard.writeText(t).then(()=>toast('✓ 已复制'),()=>toast('复制失败，请手动选择')); }
+function downloadScript(){ const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([$('resultContent').textContent],{type:'text/plain;charset=utf-8'})); a.download='短剧脚本_'+new Date().toISOString().slice(0,10)+'.txt'; a.click(); URL.revokeObjectURL(a.href); toast('✓ 已下载'); }
+
+// ============ 支付 ============
+function openPay(plan){
+  const cfg={premium:{name:'专业版',sub:'无限生成 · 自定义人物',price:'¥39'},studio:{name:'工作室版',sub:'团队批量产出 · 多格式导出',price:'¥199'}}[plan];
+  $('payName').textContent=cfg.name; $('paySub').textContent=cfg.sub; $('payAmount').textContent=cfg.price;
+  $('payModal').classList.add('show');
+}
+function closePay(){ $('payModal').classList.remove('show'); }
+function switchQr(type){
+  $('qrAli').classList.toggle('active',type==='ali');
+  $('qrWx').classList.toggle('active',type==='wx');
+  if(type==='ali'){ $('qrImg').src='qrcode.png'; $('qrTip').textContent='打开支付宝扫一扫，支付后联系客服开通'; }
+  else { $('qrImg').src='wechat.png'; $('qrTip').textContent='打开微信扫一扫，支付后联系客服开通'; }
 }
 
-function copyScript() {
-  const rc = document.getElementById('resultContent');
-  if(rc) navigator.clipboard.writeText(rc.textContent).then(
-    () => showToast('✓ 已复制到剪贴板'),
-    () => showToast('复制失败，请手动选择复制')
-  );
-}
-
-function downloadScript() {
-  const rc = document.getElementById('resultContent');
-  if(!rc) return;
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(new Blob([rc.textContent], { type: 'text/plain;charset=utf-8' }));
-  a.download = '短剧脚本_' + new Date().toISOString().slice(0,10) + '.txt';
-  a.click();
-  URL.revokeObjectURL(a.href);
-  showToast('✓ 下载成功');
-}
-
-function generateAgain() { generate(); }
-
-function showError(msg) {
-  const banner = document.getElementById('errorBanner');
-  if(banner){ banner.textContent = '⚠ ' + msg; banner.classList.add('show'); banner.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }
-}
-
-function showToast(msg) {
-  const toast = document.getElementById('toast');
-  if(toast){ toast.textContent = msg; toast.className = 'toast show'; setTimeout(() => toast.classList.remove('show'), 3000); }
-}
-
-function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
-
-// ========== Payment ==========
-function showPayment(planId) { alert('支付功能正在接入中，请联系客服微信开通专业版'); }
-function closePayment() { const m = document.getElementById('paymentModal'); if(m) m.classList.remove('show'); }
-
-// ========== Init ==========
-document.addEventListener('DOMContentLoaded', async () => {
-  if (supabase) {
-    const { data: session } = await supabase.auth.getSession();
-    if (session?.session) {
-      const nick = session.session.user?.user_metadata?.nickname || session.session.user?.email?.split('@')[0];
-      updateNavbar(nick);
-      fetchUsage();
+// ============ 初始化 ============
+if(supabase){
+  supabase.auth.getSession().then(({data})=>{
+    if(data?.session){
+      const u=data.session.user;
+      updateNav(u.user_metadata?.nickname||u.email?.split('@')[0], null);
+      loadUsage();
     }
-    supabase.auth.onAuthStateChange(async (event, session) => {
-      if (event === 'SIGNED_IN' && session) {
-        updateNavbar(session.user?.user_metadata?.nickname || session.user?.email?.split('@')[0]);
-        fetchUsage();
-      } else if (event === 'SIGNED_OUT') {
-        updateNavbar(null);
-      }
-    });
-  }
-  fetchUsage();
-});
-
-
+  });
+  supabase.auth.onAuthStateChange((e,s)=>{
+    if(e==='SIGNED_IN'&&s){ updateNav(s.user.user_metadata?.nickname||s.user.email?.split('@')[0]); loadUsage(); }
+    if(e==='SIGNED_OUT') updateNav(null);
+  });
+}
+</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.production.js"></script>
 </body>
 </html>

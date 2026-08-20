@@ -1,83 +1,71 @@
--- ============================================================
--- Supabase SQL Schema for ai-script-hub
--- Run this in Supabase Dashboard → SQL Editor
--- ============================================================
+-- 剧工厂 · Supabase 数据库结构
+-- 在 Supabase 控制台 → SQL Editor 中粘贴全部内容并运行 (Run)
 
--- 1. 用户资料表（扩展 Supabase Auth 的 profiles）
-CREATE TABLE IF NOT EXISTS public.profiles (
-  id UUID REFERENCES auth.users(id) ON DELETE CASCADE PRIMARY KEY,
-  nickname TEXT,
-  plan TEXT DEFAULT 'free' CHECK (plan IN ('free', 'premium', 'studio')),
-  premium_until TIMESTAMPTZ,
-  daily_uses INT DEFAULT 0,
-  last_used_date DATE DEFAULT CURRENT_DATE,
-  created_at TIMESTAMPTZ DEFAULT NOW(),
-  updated_at TIMESTAMPTZ DEFAULT NOW()
+-- ============ profiles 表（用户资料 + 套餐 + 每日次数） ============
+create table if not exists public.profiles (
+  id uuid primary key references auth.users(id) on delete cascade,
+  nickname text,
+  plan text not null default 'free' check (plan in ('free','premium','studio')),
+  daily_uses integer not null default 0,
+  last_used_date date default current_date,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
 );
 
--- 触发器：新建用户时自动创建 profile
-CREATE OR REPLACE FUNCTION public.handle_new_user()
-RETURNS TRIGGER AS $$
-BEGIN
-  INSERT INTO public.profiles (id, nickname)
-  VALUES (NEW.id, COALESCE(NEW.raw_user_meta_data->>'nickname', split_part(NEW.email, '@', 1)));
-  RETURN NEW;
-END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
-
-DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
-CREATE TRIGGER on_auth_user_created
-  AFTER INSERT ON auth.users
-  FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
-
--- 2. 使用记录表
-CREATE TABLE IF NOT EXISTS public.usage_logs (
-  id BIGSERIAL PRIMARY KEY,
-  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
-  genre TEXT,
-  plot TEXT,
-  created_at TIMESTAMPTZ DEFAULT NOW()
+-- ============ usage_logs 表（每次生成记录，用于累计统计） ============
+create table if not exists public.usage_logs (
+  id bigserial primary key,
+  user_id uuid not null references auth.users(id) on delete cascade,
+  genre text,
+  plot text,
+  created_at timestamptz not null default now()
 );
 
--- 3. 支付记录表
-CREATE TABLE IF NOT EXISTS public.payments (
-  id BIGSERIAL PRIMARY KEY,
-  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
-  out_trade_no TEXT UNIQUE,
-  trade_no TEXT,
-  amount DECIMAL(10,2),
-  plan TEXT,
-  status TEXT DEFAULT 'pending' CHECK (status IN ('pending', 'paid', 'closed', 'failed')),
-  created_at TIMESTAMPTZ DEFAULT NOW(),
-  paid_at TIMESTAMPTZ
-);
+-- ============ 索引 ============
+create index if not exists idx_usage_logs_user on public.usage_logs(user_id);
+create index if not exists idx_profiles_plan on public.profiles(plan);
 
--- ============================================================
--- Row Level Security
--- ============================================================
+-- ============ 行级安全 (RLS) ============
+alter table public.profiles enable row level security;
+alter table public.usage_logs enable row level security;
 
-ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.usage_logs ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.payments ENABLE ROW LEVEL SECURITY;
+-- 用户只能看/改自己的资料
+drop policy if exists "profiles_select_own" on public.profiles;
+create policy "profiles_select_own" on public.profiles
+  for select using (auth.uid() = id);
 
--- profiles: 只有本人可读/改
-CREATE POLICY "Users can view own profile" ON public.profiles
-  FOR SELECT USING (auth.uid() = id);
-CREATE POLICY "Users can update own profile" ON public.profiles
-  FOR UPDATE USING (auth.uid() = id);
-CREATE POLICY "Users can insert own profile" ON public.profiles
-  FOR INSERT WITH CHECK (auth.uid() = id);
+drop policy if exists "profiles_insert_own" on public.profiles;
+create policy "profiles_insert_own" on public.profiles
+  for insert with check (auth.uid() = id);
 
--- usage_logs: 只有本人可读写
-CREATE POLICY "Users can manage own usage" ON public.usage_logs
-  FOR ALL USING (auth.uid() = user_id);
+drop policy if exists "profiles_update_own" on public.profiles;
+create policy "profiles_update_own" on public.profiles
+  for update using (auth.uid() = id);
 
--- payments: 只有本人可读写
-CREATE POLICY "Users can manage own payments" ON public.payments
-  FOR ALL USING (auth.uid() = user_id);
+-- 用户只能看/写自己的生成记录
+drop policy if exists "usage_select_own" on public.usage_logs;
+create policy "usage_select_own" on public.usage_logs
+  for select using (auth.uid() = user_id);
 
--- 允许匿名插入（支付回调时没有登录）
-CREATE POLICY "Allow anonymous insert for payments" ON public.payments
-  FOR INSERT WITH CHECK (true);
-CREATE POLICY "Allow anonymous update for payments" ON public.payments
-  FOR UPDATE USING (true);
+drop policy if exists "usage_insert_own" on public.usage_logs;
+create policy "usage_insert_own" on public.usage_logs
+  for insert with check (auth.uid() = user_id);
+
+-- ============ 新用户自动建资料 ============
+create or replace function public.handle_new_user()
+returns trigger
+language plpgsql
+security definer set search_path = public
+as $$
+begin
+  insert into public.profiles (id, nickname)
+  values (new.id, coalesce(new.raw_user_meta_data->>'nickname', split_part(new.email, '@', 1)))
+  on conflict (id) do nothing;
+  return new;
+end;
+$$;
+
+drop trigger if exists on_auth_user_created on auth.users;
+create trigger on_auth_user_created
+  after insert on auth.users
+  for each row execute function public.handle_new_user();
