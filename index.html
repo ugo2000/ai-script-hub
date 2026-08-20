@@ -439,15 +439,15 @@
 const SUPABASE_URL = 'https://mqvygeoqjfylgdmklvrb.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1xdnlnZW9xamZ5bGdkbWtsdnJiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcxNzYyNjcsImV4cCI6MjEwMjc1MjI2N30.cpKcwOSKzwz50eIcz-WIq6cmbXuQeNt3Q0Ao0CEJBPg';
 
-let supabase = null;
+let sbClient = null;
 try {
   if(window.supabase && window.supabase.createClient){
-    supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    console.log('Supabase initialized successfully');
+    sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    console.log('Supabase client initialized');
   } else {
-    console.error('Supabase SDK not loaded, window.supabase:', window.supabase);
+    console.error('Supabase SDK not loaded');
   }
-} catch(e){ console.error('Supabase init error:', e); }
+} catch(e){ console.error('Init error:', e); }
 
 const PLANS = {
   free:    { name:'免费版',   dailyLimit:2,   color:'#94a3b8' },
@@ -500,7 +500,7 @@ async function doLogin(){
   const email=$('loginEmail').value.trim(), pwd=$('loginPassword').value;
   const btn=$('loginBtn'); btn.disabled=true; btn.textContent='登录中…';
   try{
-    const {data,error}=await supabase.auth.signInWithPassword({email,password:pwd});
+    const {data,error}=await sbClient.auth.signInWithPassword({email,password:pwd});
     if(error){
       if(error.message.includes('not confirmed')||error.message.includes('未验证')){
         $('loginErr').textContent='⚠ 邮箱尚未验证，请先点击注册邮件中的验证链接';
@@ -517,7 +517,7 @@ async function doRegister(){
   const email=$('regEmail').value.trim(), pwd=$('regPassword').value, nick=$('regNick').value.trim()||email.split('@')[0];
   const btn=$('regBtn'); btn.disabled=true; btn.textContent='注册中…';
   try{
-    const {data,error}=await supabase.auth.signUp({email,password:pwd,options:{data:{nickname:nick}}});
+    const {data,error}=await sbClient.auth.signUp({email,password:pwd,options:{data:{nickname:nick}}});
     if(error){
       console.error('Signup error:', error);
       let msg = error.message||error.code||JSON.stringify(error);
@@ -536,7 +536,7 @@ async function doRegister(){
   }catch(e){ console.error('Signup exception:', e); $('regErr').textContent='⚠ 网络错误: '+(e.message||String(e)); $('regErr').classList.add('show'); }
   finally{ btn.disabled=false; }
 }
-function logout(){ if(supabase) supabase.auth.signOut(); location.reload(); }
+function logout(){ if(sbClient) sbClient.auth.signOut(); location.reload(); }
 
 function updateNav(nick, plan){
   if(nick){
@@ -553,16 +553,16 @@ function updateNav(nick, plan){
 // ============ 使用次数 ============
 async function loadUsage(){
   if(!supabase) return;
-  const {data:ses}=await supabase.auth.getSession();
+  const {data:ses}=await sbClient.auth.getSession();
   if(!ses?.session) return;
   const uid=ses.session.user.id;
-  const {data:p}=await supabase.from('profiles').select('plan,daily_uses,last_used_date').eq('id',uid).single();
+  const {data:p}=await sbClient.from('profiles').select('plan,daily_uses,last_used_date').eq('id',uid).single();
   const plan=(p&&p.plan)||'free'; const cfg=PLANS[plan]||PLANS.free;
   const today=new Date().toISOString().split('T')[0];
   const used=(p&&p.last_used_date===today)?(p.daily_uses||0):0;
   const left=Math.max(0,cfg.dailyLimit-used);
   // 累计
-  const {count}=await supabase.from('usage_logs').select('*',{count:'exact',head:true}).eq('user_id',uid);
+  const {count}=await sbClient.from('usage_logs').select('*',{count:'exact',head:true}).eq('user_id',uid);
   renderUsage(plan,used,left,count||0);
 }
 function renderUsage(plan,used,left,total){
@@ -580,12 +580,12 @@ function renderUsage(plan,used,left,total){
 
 // ============ 生成 ============
 async function generate(){
-  const {data:ses}=supabase?await supabase.auth.getSession():{data:null};
+  const {data:ses}=sbClient?await sbClient.auth.getSession():{data:null};
   if(!ses?.session){ openAuth('login'); return; }
   const uid=ses.session.user.id;
 
   // 免费次数检查
-  const {data:p}=await supabase.from('profiles').select('plan,daily_uses,last_used_date').eq('id',uid).single();
+  const {data:p}=await sbClient.from('profiles').select('plan,daily_uses,last_used_date').eq('id',uid).single();
   const plan=(p&&p.plan)||'free'; const cfg=PLANS[plan]||PLANS.free;
   const today=new Date().toISOString().split('T')[0];
   const used=(p&&p.last_used_date===today)?(p.daily_uses||0):0;
@@ -627,7 +627,7 @@ async function generate(){
 
 async function callDeepSeek(genre,rhythm,plot,chars,special){
   if(!supabase) throw new Error('服务连接失败，请刷新重试');
-  const { data, error } = await supabase.rpc('generate_script', {
+  const { data, error } = await sbClient.rpc('generate_script', {
     p_genre: GENRES[genre]||'都市逆袭',
     p_plot: plot,
     p_rhythm: rhythm,
@@ -641,12 +641,12 @@ async function callDeepSeek(genre,rhythm,plot,chars,special){
 
 async function logUsage(uid,genre){
   if(!supabase||!uid) return;
-  await supabase.from('usage_logs').insert({user_id:uid,genre,plot:$('plotInput').value.trim()});
-  const {data}=await supabase.from('profiles').select('daily_uses,last_used_date').eq('id',uid).single();
+  await sbClient.from('usage_logs').insert({user_id:uid,genre,plot:$('plotInput').value.trim()});
+  const {data}=await sbClient.from('profiles').select('daily_uses,last_used_date').eq('id',uid).single();
   if(!data) return;
   const today=new Date().toISOString().split('T')[0];
-  if(data.last_used_date===today) await supabase.from('profiles').update({daily_uses:(data.daily_uses||0)+1}).eq('id',uid);
-  else await supabase.from('profiles').update({daily_uses:1,last_used_date:today}).eq('id',uid);
+  if(data.last_used_date===today) await sbClient.from('profiles').update({daily_uses:(data.daily_uses||0)+1}).eq('id',uid);
+  else await sbClient.from('profiles').update({daily_uses:1,last_used_date:today}).eq('id',uid);
 }
 function copyScript(){ const t=$('resultContent').textContent; navigator.clipboard.writeText(t).then(()=>toast('✓ 已复制'),()=>toast('复制失败，请手动选择')); }
 function downloadScript(){ const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([$('resultContent').textContent],{type:'text/plain;charset=utf-8'})); a.download='短剧脚本_'+new Date().toISOString().slice(0,10)+'.txt'; a.click(); URL.revokeObjectURL(a.href); toast('✓ 已下载'); }
@@ -666,15 +666,15 @@ function switchQr(type){
 }
 
 // ============ 初始化 ============
-if(supabase){
-  supabase.auth.getSession().then(({data})=>{
+if(sbClient){
+  sbClient.auth.getSession().then(({data})=>{
     if(data?.session){
       const u=data.session.user;
       updateNav(u.user_metadata?.nickname||u.email?.split('@')[0], null);
       loadUsage();
     }
   });
-  supabase.auth.onAuthStateChange((e,s)=>{
+  sbClient.auth.onAuthStateChange((e,s)=>{
     if(e==='SIGNED_IN'&&s){ updateNav(s.user.user_metadata?.nickname||s.user.email?.split('@')[0]); loadUsage(); }
     if(e==='SIGNED_OUT') updateNav(null);
   });
