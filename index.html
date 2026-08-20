@@ -3,8 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title  const DEEPSEEK_API_KEY = 'sk-a8a…6c90';
-property="og:type" content="website">
+<title>剧工厂 · AI短剧脚本生成器 | 30秒写出爆款短剧</title>
 <meta property="og:title" content="剧工厂 · AI短剧脚本生成器">
 <meta property="og:description" content="输入一个灵感，30秒生成专业级竖屏短剧剧本。免费试用，专业版无限生成。">
 <meta property="og:url" content="https://ugo2000.github.io/ai-script-hub/">
@@ -439,8 +438,7 @@ let DEEPSEEK_API_KEY = '';
 async function loadApiKey() {
   if (DEEPSEEK_API_KEY) return DEEPSEEK_API_KEY;
   if (!sbClient) {
-    DEEPSEEK_API_KEY = 'sk-1be7d7a09abc49758b2af4f09dec4c0e';
-    return DEEPSEEK_API_KEY;
+    throw new Error('Supabase 未初始化，无法加载 API Key');
   }
   const { data, error } = await sbClient.from('config').select('value').eq('key', 'deepseek_api_key').single();
   if (error || !data) {
