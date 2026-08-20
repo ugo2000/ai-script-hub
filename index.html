@@ -627,10 +627,6 @@ async function generate(){
 }
 
 async function callDeepSeek(genre,rhythm,plot,chars,special){
-  if(DEEPSEEK_API_KEY === 'YOUR_DEEPSEEK_API_KEY_HERE'){
-    throw new Error('API Key 未配置，请联系管理员');
-  }
-  
   const rhythmMap = {
     hot: '参考当下最火短剧爆款公式，开头5秒必须有高能钩子，每15秒一个情绪引爆点',
     short: '精简快节奏，每句台词不超15字，平均8-10秒切换一场景',
