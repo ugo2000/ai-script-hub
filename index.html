@@ -502,7 +502,7 @@ async function doLogin(){
       $('loginErr').classList.add('show'); return;
     }
     closeAuth(); toast('✓ 登录成功，开始创作吧！');
-  }catch(e){ $('loginErr').textContent='⚠ 网络错误'; $('loginErr').classList.add('show'); }
+  }catch(e){ console.error('Login exception:', e); $('loginErr').textContent='⚠ 网络错误: '+(e.message||String(e)); $('loginErr').classList.add('show'); }
   finally{ btn.disabled=false; btn.textContent='登录'; }
 }
 async function doRegister(){
@@ -510,14 +510,22 @@ async function doRegister(){
   const btn=$('regBtn'); btn.disabled=true; btn.textContent='注册中…';
   try{
     const {data,error}=await supabase.auth.signUp({email,password:pwd,options:{data:{nickname:nick}}});
-    if(error){ $('regErr').textContent='⚠ '+error.message; $('regErr').classList.add('show'); return; }
+    if(error){
+      console.error('Signup error:', error);
+      let msg = error.message||error.code||JSON.stringify(error);
+      if(msg.includes('rate limit')||msg.includes('429')||msg.includes('over_email')){
+        msg='⚠ 注册太频繁了，请 '+(error.statusText||'1分钟后')+' 再试，或联系客服';
+      }
+      $('regErr').textContent=msg;
+      $('regErr').classList.add('show'); return;
+    }
     // 邮箱验证开启时，confirmation_sent_at 有值表示验证邮件已发送
     const confirmed = data?.user?.email_confirm_at || data?.confirmation_sent_at;
     $('regErr').textContent='✓ 注册成功！请去邮箱 ' + email + ' 点击验证链接完成注册，验证后即可登录。';
     $('regErr').classList.add('show');
     $('regErr').style.color='var(--brand)';
     btn.textContent='已发送验证邮件';
-  }catch(e){ $('regErr').textContent='⚠ 网络错误'; $('regErr').classList.add('show'); }
+  }catch(e){ console.error('Signup exception:', e); $('regErr').textContent='⚠ 网络错误: '+(e.message||String(e)); $('regErr').classList.add('show'); }
   finally{ btn.disabled=false; }
 }
 function logout(){ if(supabase) supabase.auth.signOut(); location.reload(); }
