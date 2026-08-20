@@ -24,3 +24,6 @@ Thumbs.db
 # Temp
 _*.py
 _temp/
+
+# Local user data (contains password hashes)
+users.json

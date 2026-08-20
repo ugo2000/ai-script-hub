@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://ugo2000.github.io/ai-script-hub/sitemap.xml

@@ -437,7 +437,6 @@
 // ============ 配置 ============
 const SUPABASE_URL = 'https://mqvygeoqjfylgdmklvrb.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1xdnlnZW9xamZ5bGdkbWtsdnJiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcxNzYyNjcsImV4cCI6MjEwMjc1MjI2N30.cpKcwOSKzwz50eIcz-WIq6cmbXuQeNt3Q0Ao0CEJBPg';
-const DEEPSEEK_API_KEY = 'YOUR_DEEPSEEK_API_KEY_HERE';
 
 let supabase = null;
 try { supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY); } catch(e){ console.warn(e); }
@@ -599,22 +598,17 @@ async function generate(){
 }
 
 async function callDeepSeek(genre,rhythm,plot,chars,special){
-  if(!DEEPSEEK_API_KEY||DEEPSEEK_API_KEY.includes('YOUR_')) throw new Error('AI 服务未配置，请联系管理员');
-  const gName=GENRES[genre]||'都市逆袭';
-  const rhythmMap={
-    hot:'参考当下最火短剧爆款公式，开头5秒必须有高能钩子，每15秒一个情绪引爆点',
-    short:'精简快节奏，每句台词不超15字，平均8-10秒切换一场景',
-    long:'深度剧情版，对白丰富，铺垫人物关系，单集1200-1500字'
-  };
-  const system=`你是一位专业AI短剧编剧，精通竖屏短剧创作。\n规则：1)竖屏思维，人物半身/特写为主 2)每15-20秒一个情绪点 3)台词一句不超20字 4)爽点密集：打脸/反转/告白交替 5)每集结尾留悬念。\n输出格式：\n【剧名】\n【类型】${gName}\n【集数】第1集（约3分钟，800-1000字）\n【人物表】\n【剧情概要】100字\n【分镜表】|镜头|景别|时长|画面|台词|音效|\n【完整剧本】\n【下集钩子】`;
-  const user=`## 题材\n${gName}\n## 核心梗概\n${plot}\n## 节奏风格\n${rhythmMap[rhythm]||rhythmMap.hot}\n${chars?'## 人物设定\n'+chars:''}\n${special?'## 特殊要求\n'+special:''}`;
-  const res=await fetch('https://api.deepseek.com/chat/completions',{
-    method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+DEEPSEEK_API_KEY},
-    body:JSON.stringify({model:'deepseek-chat',messages:[{role:'system',content:system},{role:'user',content:user}],temperature:0.8,max_tokens:2000})
+  if(!supabase) throw new Error('服务连接失败，请刷新重试');
+  const { data, error } = await supabase.rpc('generate_script', {
+    p_genre: GENRES[genre]||'都市逆袭',
+    p_plot: plot,
+    p_rhythm: rhythm,
+    p_characters: chars||'',
+    p_special: special||''
   });
-  if(!res.ok) throw new Error('AI 服务暂不可用 ('+res.status+')');
-  const d=await res.json();
-  return d.choices[0].message.content;
+  if(error) throw new Error('生成失败：'+(error.message||'未知错误'));
+  if(!data || !data.trim()) throw new Error('AI 返回为空，请重试');
+  return data;
 }
 
 async function logUsage(uid,genre){
