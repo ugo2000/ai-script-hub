@@ -1,7 +1,7 @@
 // Supabase Client 配置
 // 替换为你自己的 anon key
 const SUPABASE_URL = 'https://mqvygeoqjfylgdmklvrb.supabase.co';
-const SUPABASE_ANON_KEY = 'YOUR_ANON_KEY_HERE';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1xdnlnZW9xamZ5bGdkbWtsdnJiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcxNzYyNjcsImV4cCI6MjEwMjc1MjI2N30.cpKcwOSKzwz50eIcz-WIq6cmbXuQeNt3Q0Ao0CEJBPg';
 
 // DeepSeek API 配置
 const DEEPSEEK_API_KEY = 'YOUR_DEEPSEEK_API_KEY_HERE';
