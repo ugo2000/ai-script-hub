@@ -435,7 +435,20 @@ property="og:type" content="website">
 // ============ 配置 ============
 const SUPABASE_URL = 'https://mqvygeoqjfylgdmklvrb.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1xdnlnZW9xamZ5bGdkbWtsdnJiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcxNzYyNjcsImV4cCI6MjEwMjc1MjI2N30.cpKcwOSKzwz50eIcz-WIq6cmbXuQeNt3Q0Ao0CEJBPg';
-const DEEPSEEK_API_KEY = "e0c4ced90f4fa2b85794cba90a7d7eb1-ks".split("").reverse().join("");
+let DEEPSEEK_API_KEY = '';
+async function loadApiKey() {
+  if (DEEPSEEK_API_KEY) return DEEPSEEK_API_KEY;
+  if (!sbClient) {
+    DEEPSEEK_API_KEY = 'sk-1be7d7a09abc49758b2af4f09dec4c0e';
+    return DEEPSEEK_API_KEY;
+  }
+  const { data, error } = await sbClient.from('config').select('value').eq('key', 'deepseek_api_key').single();
+  if (error || !data) {
+    throw new Error('加载 API Key 失败：' + (error?.message || '未找到配置'));
+  }
+  DEEPSEEK_API_KEY = data.value;
+  return DEEPSEEK_API_KEY;
+}
 
 let sbClient = null;
 try {
@@ -656,11 +669,12 @@ ${plot||''}
 ## 节奏风格
 ${rhythmDesc}${chars?'\n## 人物设定\n'+chars:''}${special?'\n## 特殊要求\n'+special:''}`;
 
+  const apiKey = await loadApiKey();
   const response = await fetch('https://api.deepseek.com/chat/completions',{
     method:'POST',
     headers:{
       'Content-Type':'application/json',
-      'Authorization':'Bearer '+DEEPSEEK_API_KEY
+      'Authorization':'Bearer '+apiKey
     },
     body:JSON.stringify({
       model:'deepseek-chat',
