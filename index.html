@@ -493,7 +493,14 @@ async function doLogin(){
   const btn=$('loginBtn'); btn.disabled=true; btn.textContent='登录中…';
   try{
     const {data,error}=await supabase.auth.signInWithPassword({email,password:pwd});
-    if(error){ $('loginErr').textContent='⚠ '+error.message; $('loginErr').classList.add('show'); return; }
+    if(error){
+      if(error.message.includes('not confirmed')||error.message.includes('未验证')){
+        $('loginErr').textContent='⚠ 邮箱尚未验证，请先点击注册邮件中的验证链接';
+      }else{
+        $('loginErr').textContent='⚠ '+error.message;
+      }
+      $('loginErr').classList.add('show'); return;
+    }
     closeAuth(); toast('✓ 登录成功，开始创作吧！');
   }catch(e){ $('loginErr').textContent='⚠ 网络错误'; $('loginErr').classList.add('show'); }
   finally{ btn.disabled=false; btn.textContent='登录'; }
@@ -504,9 +511,14 @@ async function doRegister(){
   try{
     const {data,error}=await supabase.auth.signUp({email,password:pwd,options:{data:{nickname:nick}}});
     if(error){ $('regErr').textContent='⚠ '+error.message; $('regErr').classList.add('show'); return; }
-    closeAuth(); toast('✓ 注册成功！现在就能生成短剧');
+    // 邮箱验证开启时，confirmation_sent_at 有值表示验证邮件已发送
+    const confirmed = data?.user?.email_confirm_at || data?.confirmation_sent_at;
+    $('regErr').textContent='✓ 注册成功！请去邮箱 ' + email + ' 点击验证链接完成注册，验证后即可登录。';
+    $('regErr').classList.add('show');
+    $('regErr').style.color='var(--brand)';
+    btn.textContent='已发送验证邮件';
   }catch(e){ $('regErr').textContent='⚠ 网络错误'; $('regErr').classList.add('show'); }
-  finally{ btn.disabled=false; btn.textContent='注册并开启创作'; }
+  finally{ btn.disabled=false; }
 }
 function logout(){ if(supabase) supabase.auth.signOut(); location.reload(); }
 
