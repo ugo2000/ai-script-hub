@@ -1213,22 +1213,20 @@ function updatePageContent(lang){
   if(step1Sub) step1Sub.textContent = t.step1_sub;
   const plotInput = document.getElementById('plotInput');
   if(plotInput) plotInput.placeholder = t.step1_placeholder;
-  const tryDemo = document.getElementById('tryDemo');
-  if(tryDemo) tryDemo.textContent = t.step1_tip;
   const step2Label = document.querySelector('.rhythm-section h3');
   if(step2Label) step2Label.textContent = t.step2_label;
   const step3Label = document.querySelector('.char-section h3');
   if(step3Label) step3Label.textContent = t.step3_label;
   const step3Sub = document.querySelector('.char-section .subtitle');
   if(step3Sub) step3Sub.textContent = t.step3_sub;
-  const charInput = document.getElementById('charInput');
+  const charInput = document.getElementById('charactersInput');
   if(charInput) charInput.placeholder = t.step3_placeholder;
   const step4Label = document.querySelector('.extra-section h3');
   if(step4Label) step4Label.textContent = t.step4_label;
-  const extraInput = document.getElementById('extraInput');
+  const extraInput = document.getElementById('specialInput');
   if(extraInput) extraInput.placeholder = t.step4_placeholder;
-  const genBtn = document.getElementById('genBtn');
-  if(genBtn) genBtn.textContent = t.gen_btn;
+  const submitBtn = document.getElementById('submitBtn');
+  if(submitBtn) submitBtn.textContent = t.gen_btn;
   // Rhythm cards - update both strong and p.desc
   const rhythmCards = document.querySelectorAll('.rhythm-card');
   const rhythms = [
