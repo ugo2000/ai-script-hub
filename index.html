@@ -10,7 +10,7 @@
 <meta name="robots" content="index, follow">
 <meta name="language" content="Chinese">
 <link rel="icon" type="image/png" href="app-icon-320.png">
-  <meta name="deploy-version" content="20260822-v4-fixed">
+  <meta name="deploy-version" content="20260822-v5-tdzfix">
 <link rel="alternate" hreflang="zh-CN" href="https://www.jugongchang.icu/">
 <link rel="alternate" hreflang="en" href="https://www.jugongchang.icu/?lang=en">
 <link rel="alternate" hreflang="x-default" href="https://www.jugongchang.icu/">
@@ -881,7 +881,6 @@ if(sbClient){
     if(e==='SIGNED_IN'&&s){ updateNav(s.user.user_metadata?.nickname||s.user.email?.split('@')[0]); loadUsage(); }
     if(e==='SIGNED_OUT') updateNav(null);
   });
-  initLang();
 }
 
 // ============ 国际化 i18n ============
@@ -1373,7 +1372,8 @@ downloadScript = function(){
   URL.revokeObjectURL(a.href);
   toast(I18N[getLang()].toast_downloaded);
 };
+initLang();
 </script>
-<!-- deploy:20260822-v4-fixed -->
+<!-- deploy:20260822-v5-tdzfix -->
 </body>
 </html>
