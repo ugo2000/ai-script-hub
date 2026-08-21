@@ -405,15 +405,11 @@
       <div class="pp" id="payName">专业版<small id="paySub">无限生成 · 自定义人物</small></div>
       <div class="amount" id="payAmount">¥39</div>
     </div>
-    <div class="qr-tabs">
-      <button id="qrAli" class="active" onclick="switchQr('ali')">💙 支付宝</button>
-      <button id="qrWx" onclick="switchQr('wx')">💚 微信</button>
-    </div>
     <div class="qr-wrap">
-      <img id="qrImg" src="qrcode.png" alt="扫码支付">
-      <div class="tip" id="qrTip">打开支付宝扫一扫，支付后联系客服开通</div>
+      <img id="qrImg" src="" alt="支付宝扫码支付">
+      <div class="tip" id="qrTip">正在生成支付宝收款码…</div>
     </div>
-    <div class="pay-note">⏱ 支付为人工开通：扫码付款后，把「订单号 + 你的注册邮箱」发送至 <b>hello@jugongchang.icu</b>，1 分钟内为你升级专业版会员。</div>
+    <div class="pay-note">? 用支付宝扫一扫，支付成功后会员自动开通。如遇问题请联系 <b>hello@jugongchang.icu</b>。</div>
   </div>
 </div>
 
@@ -424,6 +420,7 @@
 // ============ 配置 ============
 const SUPABASE_URL = 'https://mqvygeoqjfylgdmklvrb.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1xdnlnZW9xamZ5bGdkbWtsdnJiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcxNzYyNjcsImV4cCI6MjEwMjc1MjI2N30.cpKcwOSKzwz50eIcz-WIq6cmbXuQeNt3Q0Ao0CEJBPg';
+const PAY_WORKER = 'https://pay.jugongchang.icu'; // ← 改成你的 Cloudflare Worker 地址（在 Cloudflare 给 Worker 绑自定义域 pay.jugongchang.icu，或用 *.workers.dev 地址）
 let DEEPSEEK_API_KEY = '';
 async function loadApiKey() {
   if (DEEPSEEK_API_KEY) return DEEPSEEK_API_KEY;
@@ -698,17 +695,33 @@ function copyScript(){ const t=$('resultContent').textContent; navigator.clipboa
 function downloadScript(){ const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([$('resultContent').textContent],{type:'text/plain;charset=utf-8'})); a.download='短剧脚本_'+new Date().toISOString().slice(0,10)+'.txt'; a.click(); URL.revokeObjectURL(a.href); toast('✓ 已下载'); }
 
 // ============ 支付 ============
-function openPay(plan){
+async function openPay(plan){
+  if(plan!=='premium'){ return; }
+  const { data:{ user } } = await sbClient.auth.getUser();
+  if(!user){ openAuth('login'); toast('请先登录后再开通会员'); return; }
   const cfg={premium:{name:'专业版',sub:'无限生成 · 自定义人物',price:'¥39'}}[plan];
   $('payName').textContent=cfg.name; $('paySub').textContent=cfg.sub; $('payAmount').textContent=cfg.price;
   $('payModal').classList.add('show');
+  $('qrTip').textContent='正在生成支付宝收款码…';
+  try{
+    const r=await fetch(PAY_WORKER+'/create',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({uid:user.id,email:user.email,plan})});
+    const j=await r.json();
+    if(j.qr){ $('qrImg').src='https://api.qrserver.com/v1/create-qr-code/?size=240x240&data='+encodeURIComponent(j.qr); $('qrTip').textContent='打开支付宝扫一扫，支付后自动开通'; startPayPoll(user.id); }
+    else { $('qrTip').textContent='生成失败：'+(j.error||'未知错误'); }
+  }catch(e){ $('qrTip').textContent='网络错误，请刷新重试'; }
 }
 function closePay(){ $('payModal').classList.remove('show'); }
-function switchQr(type){
-  $('qrAli').classList.toggle('active',type==='ali');
-  $('qrWx').classList.toggle('active',type==='wx');
-  if(type==='ali'){ $('qrImg').src='qrcode.png'; $('qrTip').textContent='打开支付宝扫一扫，支付后联系客服开通'; }
-  else { $('qrImg').src='wechat.png'; $('qrTip').textContent='打开微信扫一扫，支付后联系客服开通'; }
+let _payTimer=null;
+function startPayPoll(uid){
+  clearInterval(_payTimer);
+  _payTimer=setInterval(async ()=>{
+    const { data } = await sbClient.from('profiles').select('plan').eq('id',uid).single();
+    if(data && data.plan==='premium'){
+      clearInterval(_payTimer);
+      toast('✅ 专业版已开通！正在刷新…');
+      setTimeout(()=>{ closePay(); loadUsage(); }, 1500);
+    }
+  },3000);
 }
 
 // ============ 初始化 ============
