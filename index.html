@@ -10,7 +10,7 @@
 <meta name="robots" content="index, follow">
 <meta name="language" content="Chinese">
 <link rel="icon" type="image/png" href="app-icon-320.png">
-  <meta name="deploy-version" content="20260822-v3-clean">
+  <meta name="deploy-version" content="20260822-v4-fixed">
 <link rel="alternate" hreflang="zh-CN" href="https://www.jugongchang.icu/">
 <link rel="alternate" hreflang="en" href="https://www.jugongchang.icu/?lang=en">
 <link rel="alternate" hreflang="x-default" href="https://www.jugongchang.icu/">
@@ -1303,7 +1303,8 @@ function updatePageContent(lang){
   const downBtn = document.querySelector('[onclick="downloadScript()"]');
   if(downBtn) downBtn.textContent = t.gen_download;
   // Demo try button
-  if(tryDemo) tryDemo.textContent = t.demo_try;
+  const demoLink = document.querySelector('.demo-link');
+  if(demoLink) demoLink.textContent = '💡 ' + t.step1_tip;
   // Footer
   const footerContact = document.querySelector('.footer .contact');
   if(footerContact) footerContact.textContent = t.footer_contact;
@@ -1373,6 +1374,6 @@ downloadScript = function(){
   toast(I18N[getLang()].toast_downloaded);
 };
 </script>
-<!-- deploy:20260822-v3-clean -->
+<!-- deploy:20260822-v4-fixed -->
 </body>
 </html>
