@@ -1161,15 +1161,22 @@ const I18N = {
 function getLang(){ return localStorage.getItem('lang')||'zh'; }
 
 function setLang(lang){
+  console.log('setLang called:', lang);
   localStorage.setItem('lang',lang);
   document.documentElement.lang = lang;
-  document.getElementById('langZh').classList.toggle('active',lang==='zh');
-  document.getElementById('langEn').classList.toggle('active',lang==='en');
+  const zhBtn = document.getElementById('langZh');
+  const enBtn = document.getElementById('langEn');
+  if(zhBtn) zhBtn.classList.toggle('active',lang==='zh');
+  if(enBtn) enBtn.classList.toggle('active',lang==='en');
+  console.log('I18N:', typeof I18N, I18N ? 'exists' : 'missing');
   updatePageContent(lang);
 }
 
 function updatePageContent(lang){
+  console.log('updatePageContent called, lang:', lang);
   const t = I18N[lang]||I18N.zh;
+  if(!t){ console.error('Translation not found for lang:', lang, 'I18N keys:', Object.keys(I18N)); return; }
+  console.log('Using translations, logo_text:', t.logo_text);
   // Logo
   const logoText = document.querySelector('.logo-text');
   if(logoText) logoText.textContent = t.logo_text;
@@ -1350,10 +1357,14 @@ function updatePageContent(lang){
 }
 
 function initLang(){
+  console.log('initLang called');
   const lang = getLang();
+  console.log('Initial lang:', lang);
   document.documentElement.lang = lang;
-  document.getElementById('langZh').classList.toggle('active',lang==='zh');
-  document.getElementById('langEn').classList.toggle('active',lang==='en');
+  const zhBtn = document.getElementById('langZh');
+  const enBtn = document.getElementById('langEn');
+  if(zhBtn) zhBtn.classList.toggle('active',lang==='zh');
+  if(enBtn) enBtn.classList.toggle('active',lang==='en');
   updatePageContent(lang);
 }
 
