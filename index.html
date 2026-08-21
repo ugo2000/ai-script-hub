@@ -173,13 +173,13 @@
   .nav-user{display:none;align-items:center;gap:10px}
   .nav-user .av{width:32px;height:32px;border-radius:50%;background:linear-gradient(120deg,var(--brand),var(--brand3));color:#fff;display:grid;place-items:center;font-size:14px;font-weight:700}
   .nav-login{display:inline-block}
-  
+
   /* Language Switcher */
   .lang-switch{display:flex;align-items:center;background:#f3f1fb;border-radius:8px;padding:2px;gap:2px}
   .lang-btn{background:none;border:none;padding:5px 10px;border-radius:6px;font-size:12px;font-weight:600;color:var(--sub);cursor:pointer;transition:.2s}
   .lang-btn:hover{color:var(--brand)}
   .lang-btn.active{background:#fff;color:var(--brand);box-shadow:0 1px 3px rgba(0,0,0,.1)}
-  
+
   /* Hero */
   header.hero{text-align:center;padding:64px 20px 40px;position:relative;overflow:hidden}
   header.hero::before{content:"";position:absolute;top:-120px;left:50%;transform:translateX(-50%);width:680px;height:420px;background:radial-gradient(closest-side,rircle,rgba(139,92,246,.18),transparent);background:radial-gradient(closest-side,rgba(139,92,246,.18),transparent);pointer-events:none}
@@ -493,16 +493,16 @@
 <div class="modal" id="authModal">
   <div class="modal-box">
     <span class="close" onclick="closeAuth()">×</span>
-    <h3>欢迎来到剧工厂</h3>
-    <p class="sub">登录后即可开始生成你的短剧</p>
+    <h3 id="authTitle">欢迎来到剧工厂</h3>
+    <p class="sub" id="authSubtitle">登录后即可开始生成你的短剧</p>
     <div class="modal-tabs">
       <button id="tabLogin" class="active" onclick="switchAuth('login')">登录</button>
       <button id="tabReg" onclick="switchAuth('register')">注册</button>
     </div>
     <div id="loginForm">
-      <label>邮箱</label>
+      <label id="loginEmailLabel">邮箱</label>
       <input type="email" id="loginEmail" placeholder="you@example.com">
-      <label>密码</label>
+      <label id="loginPwdLabel">密码</label>
       <input type="password" id="loginPassword" placeholder="请输入密码">
       <div class="auth-err" id="loginErr"></div>
       <button class="btn btn-primary btn-block" id="loginBtn" style="margin-top:18px" onclick="doLogin()">登录</button>
@@ -510,9 +510,9 @@
     <div id="registerForm" style="display:none">
       <label>昵称</label>
       <input type="text" id="regNick" placeholder="怎么称呼你?">
-      <label>邮箱</label>
+      <label id="regEmailLabel">邮箱</label>
       <input type="email" id="regEmail" placeholder="you@example.com">
-      <label>密码</label>
+      <label id="regPwdLabel">密码</label>
       <input type="password" id="regPassword" placeholder="至少6位">
       <div class="auth-err" id="regErr"></div>
       <button class="btn btn-primary btn-block" id="regBtn" style="margin-top:18px" onclick="doRegister()">注册并开启创作</button>
@@ -524,8 +524,8 @@
 <div class="modal" id="payModal">
   <div class="modal-box wide">
     <span class="close" onclick="closePay()">×</span>
-    <h3>开通会员</h3>
-    <p class="sub">扫码支付,秒开通</p>
+    <h3 id="payTitle">开通会员</h3>
+    <p class="sub pay-sub">扫码支付，秒开通</p>
     <div class="pay-plan">
       <div class="pp" id="payName">专业版<small id="paySub">无限生成 · 自定义人物</small></div>
       <div class="amount" id="payAmount">¥39</div>
@@ -534,7 +534,7 @@
       <img id="qrImg" src="" alt="支付宝扫码支付">
       <div class="tip" id="qrTip">正在生成支付宝收款码...</div>
     </div>
-    <div class="pay-note">? 用支付宝扫一扫,支付成功后会员自动开通。如遇问题请联系 <b>hello@jugongchang.icu</b>。</div>
+    <div class="pay-note" id="payNote">? 用支付宝扫一扫，支付成功后会员自动开通。如遇问题请联系 <b>hello@jugongchang.icu</b>。</div>
   </div>
 </div>
 
@@ -618,42 +618,45 @@ function switchAuth(tab){
 }
 async function doLogin(){
   const email=$('loginEmail').value.trim(), pwd=$('loginPassword').value;
-  const btn=$('loginBtn'); btn.disabled=true; btn.textContent='登录中...';
+  const btn=$('loginBtn'); const t=I18N[getLang()]||I18N.zh;
+  btn.disabled=true; btn.textContent=getLang()==='en'?'Logging in...':'登录中...';
   try{
     const {data,error}=await sbClient.auth.signInWithPassword({email,password:pwd});
     if(error){
       if(error.message.includes('not confirmed')||error.message.includes('未验证')){
-        $('loginErr').textContent='⚠ 邮箱尚未验证,请先点击注册邮件中的验证链接';
+        $('loginErr').textContent='⚠ '+t.login_email_pending;
+      }else if(error.message.includes('Invalid login credentials')){
+        $('loginErr').textContent='⚠ '+t.login_fail;
       }else{
         $('loginErr').textContent='⚠ '+error.message;
       }
       $('loginErr').classList.add('show'); return;
     }
-    closeAuth(); toast('✓ 登录成功,开始创作吧!');
-  }catch(e){ console.error('Login exception:', e); $('loginErr').textContent='⚠ 网络错误: '+(e.message||String(e)); $('loginErr').classList.add('show'); }
-  finally{ btn.disabled=false; btn.textContent='登录'; }
+    closeAuth(); toast('✓ '+t.login_success+'!');
+  }catch(e){ console.error('Login exception:', e); $('loginErr').textContent='⚠ '+e.message||String(e); $('loginErr').classList.add('show'); }
+  finally{ btn.disabled=false; btn.textContent=t.login_btn; }
 }
 async function doRegister(){
   const email=$('regEmail').value.trim(), pwd=$('regPassword').value, nick=$('regNick').value.trim()||email.split('@')[0];
-  const btn=$('regBtn'); btn.disabled=true; btn.textContent='注册中...';
+  const btn=$('regBtn'); const t=I18N[getLang()]||I18N.zh;
+  btn.disabled=true; btn.textContent=getLang()==='en'?'Registering...':'注册中...';
   try{
     const {data,error}=await sbClient.auth.signUp({email,password:pwd,options:{data:{nickname:nick}}});
     if(error){
       console.error('Signup error:', error);
       let msg = error.message||error.code||JSON.stringify(error);
       if(msg.includes('rate limit')||msg.includes('429')||msg.includes('over_email')){
-        msg='⚠ 注册太频繁了,请 '+(error.statusText||'1分钟后')+' 再试,或联系客服';
+        msg=getLang()==='en'?'Registration too frequent, please try again later':'⚠ 注册太频繁了,请稍后再试';
       }
-      $('regErr').textContent=msg;
+      $('regErr').textContent='⚠ '+msg;
       $('regErr').classList.add('show'); return;
     }
-    // 邮箱验证开启时,confirmation_sent_at 有值表示验证邮件已发送
     const confirmed = data?.user?.email_confirm_at || data?.confirmation_sent_at;
-    $('regErr').textContent='✓ 注册成功!请去邮箱 ' + email + ' 点击验证链接完成注册,验证后即可登录。';
+    $('regErr').textContent='✓ '+t.register_success+'! '+t.register_verify+' ('+email+')';
     $('regErr').classList.add('show');
     $('regErr').style.color='var(--brand)';
-    btn.textContent='已发送验证邮件';
-  }catch(e){ console.error('Signup exception:', e); $('regErr').textContent='⚠ 网络错误: '+(e.message||String(e)); $('regErr').classList.add('show'); }
+    btn.textContent=getLang()==='en'?'Verification email sent':'已发送验证邮件';
+  }catch(e){ console.error('Signup exception:', e); $('regErr').textContent='⚠ '+e.message||String(e); $('regErr').classList.add('show'); }
   finally{ btn.disabled=false; }
 }
 function logout(){ if(sbClient) sbClient.auth.signOut(); location.reload(); }
@@ -696,7 +699,7 @@ function renderUsage(plan,used,left,total){
   const pct = cfg.dailyLimit>=999 ? 100 : Math.min(100, Math.round(used/cfg.dailyLimit*100));
   $('usageFill').style.width=pct+'%';
   if(plan==='free'){ $('upgradeLine').style.display='block'; }
-  else { $('upgradeLine').innerHTML=(lang==='en'?'🎉 You\'re <b style="color:var(--brand)">'+cfg.name+'</b>, unlimited generations':'🎉 你是<b style="color:var(--brand)">'+cfg.name+'</b>，已享无限生成'); }
+  else { $('upgradeLine').innerHTML=(lang==='en'?'🎉 You\'re <b style="color:var(--brand)">'+cfg.name+'</b>, unlimited generations':'🎉 你是<b style="color:var(--brand)">'+cfg.name+'</b>,已享无限生成'); }
 }
 
 // ============ 生成 ============
@@ -884,79 +887,165 @@ if(sbClient){
 // ============ 国际化 i18n ============
 const I18N = {
   zh: {
+    // Nav
     nav_login: '登录 / 注册',
     nav_logout: '退出',
-    hero_title: '30秒，写出一部<span class="grad-text">爆款短剧</span>',
-    hero_desc: '输入一个灵感，AI 立刻生成专业级竖屏短剧剧本——分镜表、完整对白、人物设定全都有。手机也能拍，小白也能写。',
+    logo_text: '剧工厂',
+    nav_usage: '今日剩余 ',
+    // Hero
+    hero_title: '30秒,写出一部<span class="grad-text">爆款短剧</span>',
+    hero_desc: '输入一个灵感,AI 立刻生成专业级竖屏短剧剧本--分镜表、完整对白、人物设定全都有。手机也能拍,小白也能写。',
     hero_free: '🎬 免费开始创作',
     hero_pro: '💎 查看会员方案',
+    // Genres
     genre_label: '选择题材',
-    genre_sub: '想写哪种短剧？',
+    genre_sub: '想写哪种短剧?',
+    genre_niixi: '都市逆袭',
+    genre_niixi_desc: '草根打脸装逼',
+    genre_yanqing: '甜宠言情',
+    genre_yanqing_desc: '霸总高糖预警',
+    genre_xuanyi: '悬疑惊悚',
+    genre_xuanyi_desc: '反转烧脑',
+    genre_chuanyue: '穿越重生',
+    genre_chuanyue_desc: '重生复仇',
+    genre_tianchong: '先婚后爱',
+    genre_tianchong_desc: '契约甜宠',
+    // Generator steps
     step1_label: '核心梗概',
     step1_sub: '用一句话说清楚你想拍什么',
     step1_placeholder: '输入你的剧情灵感...',
-    step1_tip: '不会写？点这里填个示例',
+    step1_tip: '不会写?点这里填个示例',
     step2_label: '节奏风格',
     step3_label: '人物设定',
     step3_sub: '选填',
+    step3_placeholder: '如:男主角顾北城,女主角林小暖',
     step4_label: '特殊要求',
     step4_sub: '选填',
+    step4_placeholder: '如:要有反转结局',
     gen_btn: '一键生成短剧脚本',
-    gen_generating: 'AI 正在构思剧情结构…',
+    gen_generating: 'AI 正在构思剧情结构...',
     gen_done: '生成完成',
     gen_copy: '复制',
     gen_download: '下载',
     gen_next: '再写一集',
+    // Rhythm
     rhythm_hot: '爆款节奏',
     rhythm_hot_desc: '每15秒一个情绪引爆点',
     rhythm_fast: '快节奏',
-    rhythm_fast_desc: '极速切换，8-10秒一镜',
+    rhythm_fast_desc: '极速切换,8-10秒一镜',
     rhythm_deep: '深度剧情',
-    rhythm_deep_desc: '对白丰富，单集1200字+',
+    rhythm_deep_desc: '对白丰富,单集1200字+',
+    // Usage
     usage_title: '我的使用',
     usage_plan: '免费版',
     usage_today: '今日已用',
     usage_remaining: '今日剩余',
     usage_total: '累计已生成',
     usage_unit: '部短剧',
-    usage_upgrade: '想无限生成？',
+    usage_upgrade: '想无限生成?',
+    usage_upgrade_link: '升级专业版 →',
+    usage_unlimited: '🎉 你是{plan},已享无限生成',
+    // Pricing
     pricing_title: '选择你的方案',
-    pricing_sub: '从免费开始，随时升级，按月付费随时取消',
+    pricing_sub: '从免费开始,随时升级,按月付费随时取消',
     plan_free: '免费版',
     plan_free_price: '¥0 / 永久',
-    plan_free_desc: '先体验，看看 AI 写剧本有多快',
+    plan_free_desc: '先体验,看看 AI 写剧本有多快',
     plan_pro: '专业版',
     plan_pro_price: '¥39 / 月',
     plan_pro_desc: '认真做短剧的创作者首选',
     plan_free_btn: '免费注册',
     plan_pro_btn: '升级专业版',
+    // Pricing features
+    feat_daily_2: '每日 2 次生成',
+    feat_5_genres: '5 大热门题材',
+    feat_viral_rhythm: '爆款节奏模板',
+    feat_custom_char: '自定义人物设定',
+    feat_unlimited: '无限次生成',
+    feat_3_rhythms: '3 种节奏风格',
+    feat_full_script: '完整剧本 + 分镜表',
+    feat_priority: '优先生成速度',
+    feat_export: 'Word / PDF 导出',
+    feat_support: '专属邮箱客服支持',
+    feat_locked: '完整剧本 + 分镜表',
+    feat_unlock: 'Word / PDF 导出',
+    // Payment
     pay_title: '开通会员',
-    pay_sub: '扫码支付，秒开通',
-    pay_note: '用支付宝扫一扫，支付成功后会员自动开通。如遇问题请联系',
+    pay_sub: '扫码支付,秒开通',
+    pay_note: '用支付宝扫一扫,支付成功后会员自动开通。如遇问题请联系',
+    pay_generating: '正在生成支付宝收款码...',
+    pay_scan: '打开支付宝扫一扫,支付后自动开通',
+    pay_error: '生成失败',
+    pay_network: '网络错误,请刷新重试',
+    // Login modal
     login_title: '欢迎来到剧工厂',
     login_subtitle: '登录后即可开始生成你的短剧',
     login_tab: '登录',
     register_tab: '注册',
-    login_email: '邮箱',
-    login_password: '密码',
+    login_email_label: '邮箱',
+    login_email_placeholder: 'your@email.com',
+    login_password_label: '密码',
+    login_password_placeholder: '至少6位密码',
     login_btn: '登录',
     register_btn: '注册',
+    login_forgot: '忘记密码?',
+    login_noaccount: '没有账号?',
+    login_noaccount_link: '立即注册',
+    login_hasaccount: '已有账号?',
+    login_hasaccount_link: '立即登录',
+    login_invalid: '邮箱格式不正确',
+    login_short: '密码至少6位',
+    login_fail: '登录失败',
+    login_success: '登录成功',
+    register_success: '注册成功',
+    register_verify: '请去邮箱点击验证链接',
+    register_invalid: '邮箱格式不正确',
+    register_short: '密码至少6位',
+    register_fail: '注册失败',
+    login_email_pending: '邮箱尚未验证',
+    login_email_verified: '邮箱验证成功!请登录后使用',
+    // Toast messages
     toast_copied: '✓ 已复制',
     toast_downloaded: '✓ 已下载',
-    footer_contact: '合作 / 客服邮箱：',
+    toast_login_required: '请先登录后再开通会员',
+    toast_premium_activated: '专业版已开通!正在刷新...',
+    toast_limit_reached: '今日免费次数已用完',
+    toast_copy_fail: '复制失败',
+    // Demo
+    demo_title: '示例剧本',
+    demo_episode: '第',
+    demo_episode_unit: '集',
+    demo_next: '下集预告',
+    demo_try: '试试示例',
+    // Footer
+    footer_contact: '合作 / 客服邮箱:',
     footer_copyright: '仅供创作参考',
-    logo_text: '剧工厂',
-    nav_usage: '今日剩余 '
   },
   en: {
+    // Nav
     nav_login: 'Login',
     nav_logout: 'Logout',
+    logo_text: 'Drama Factory',
+    nav_usage: 'Remaining ',
+    // Hero
     hero_title: 'Write a <span class="grad-text">Viral Short Drama</span> in 30 Seconds',
     hero_desc: 'Enter an idea and AI instantly generates professional vertical short drama scripts - with storyboards, complete dialogue, and character settings.',
     hero_free: '🎬 Start Creating Free',
     hero_pro: '💎 View Plans',
+    // Genres
     genre_label: 'Choose Genre',
     genre_sub: 'What kind of short drama?',
+    genre_niixi: 'Urban Comeback',
+    genre_niixi_desc: 'Underdog redemption',
+    genre_yanqing: 'Sweet Romance',
+    genre_yanqing_desc: 'CEO sweet love',
+    genre_xuanyi: 'Thriller Mystery',
+    genre_xuanyi_desc: 'Plot twists',
+    genre_chuanyue: 'Rebirth Fantasy',
+    genre_chuanyue_desc: 'Revenge rebirth',
+    genre_tianchong: 'Contract Romance',
+    genre_tianchong_desc: 'Arranged marriage',
+    // Generator steps
     step1_label: 'Core Plot',
     step1_sub: 'Describe what you want to film in one sentence',
     step1_placeholder: 'Enter your story idea...',
@@ -964,20 +1053,24 @@ const I18N = {
     step2_label: 'Rhythm Style',
     step3_label: 'Character Settings',
     step3_sub: 'Optional',
+    step3_placeholder: 'e.g. Male lead: Gu Beichen, Female lead: Lin Xiaonuan',
     step4_label: 'Special Requirements',
     step4_sub: 'Optional',
+    step4_placeholder: 'e.g. Needs a twist ending',
     gen_btn: 'Generate Short Drama Script',
-    gen_generating: 'AI is crafting the storyline…',
+    gen_generating: 'AI is crafting the storyline...',
     gen_done: 'Generation Complete',
     gen_copy: 'Copy',
     gen_download: 'Download',
     gen_next: 'Next Episode',
+    // Rhythm
     rhythm_hot: 'Viral Rhythm',
     rhythm_hot_desc: 'One emotional hook every 15 seconds',
     rhythm_fast: 'Fast Pace',
     rhythm_fast_desc: 'Quick cuts, 8-10 seconds per shot',
     rhythm_deep: 'Deep Drama',
     rhythm_deep_desc: 'Rich dialogue, 1200+ words per episode',
+    // Usage
     usage_title: 'My Usage',
     usage_plan: 'Free Plan',
     usage_today: 'Used Today',
@@ -985,6 +1078,9 @@ const I18N = {
     usage_total: 'Total Generated',
     usage_unit: 'short dramas',
     usage_upgrade: 'Want unlimited?',
+    usage_upgrade_link: 'Upgrade to Pro →',
+    usage_unlimited: '🎉 You\'re {plan}, unlimited generations',
+    // Pricing
     pricing_title: 'Choose Your Plan',
     pricing_sub: 'Start free, upgrade anytime, cancel anytime',
     plan_free: 'Free',
@@ -995,23 +1091,70 @@ const I18N = {
     plan_pro_desc: 'Perfect for serious short drama creators',
     plan_free_btn: 'Sign Up Free',
     plan_pro_btn: 'Upgrade to Pro',
+    // Pricing features
+    feat_daily_2: '2 generations per day',
+    feat_5_genres: '5 popular genres',
+    feat_viral_rhythm: 'Viral rhythm templates',
+    feat_custom_char: 'Custom character settings',
+    feat_unlimited: 'Unlimited generations',
+    feat_3_rhythms: '3 rhythm styles',
+    feat_full_script: 'Full script + storyboard',
+    feat_priority: 'Priority generation speed',
+    feat_export: 'Word / PDF export',
+    feat_support: 'Dedicated email support',
+    feat_locked: 'Full script + storyboard',
+    feat_unlock: 'Word / PDF export',
+    // Payment
     pay_title: 'Upgrade Membership',
     pay_sub: 'Scan to pay, instant activation',
     pay_note: 'Scan with Alipay, membership auto-activates. Contact us at',
+    pay_generating: 'Generating Alipay QR code...',
+    pay_scan: 'Open Alipay and scan, auto-activates after payment',
+    pay_error: 'Generation failed',
+    pay_network: 'Network error, please refresh and try again',
+    // Login modal
     login_title: 'Welcome to Drama Factory',
     login_subtitle: 'Login to start generating your short dramas',
     login_tab: 'Login',
     register_tab: 'Register',
-    login_email: 'Email',
-    login_password: 'Password',
+    login_email_label: 'Email',
+    login_email_placeholder: 'your@email.com',
+    login_password_label: 'Password',
+    login_password_placeholder: 'Min 6 characters',
     login_btn: 'Login',
     register_btn: 'Register',
+    login_forgot: 'Forgot password?',
+    login_noaccount: "Don't have an account?",
+    login_noaccount_link: 'Sign up now',
+    login_hasaccount: 'Already have an account?',
+    login_hasaccount_link: 'Login now',
+    login_invalid: 'Invalid email format',
+    login_short: 'Password must be at least 6 characters',
+    login_fail: 'Login failed',
+    login_success: 'Login successful',
+    register_success: 'Registration successful',
+    register_verify: 'Please click the verification link in your email',
+    register_invalid: 'Invalid email format',
+    register_short: 'Password must be at least 6 characters',
+    register_fail: 'Registration failed',
+    login_email_pending: 'Email not verified yet',
+    login_email_verified: 'Email verified! Please login to continue',
+    // Toast messages
     toast_copied: '✓ Copied',
     toast_downloaded: '✓ Downloaded',
+    toast_login_required: 'Please login first to upgrade',
+    toast_premium_activated: 'Pro plan activated! Refreshing...',
+    toast_limit_reached: 'Daily free limit reached',
+    toast_copy_fail: 'Copy failed',
+    // Demo
+    demo_title: 'Sample Script',
+    demo_episode: 'Episode',
+    demo_episode_unit: '',
+    demo_next: 'Next Episode Preview',
+    demo_try: 'Try Example',
+    // Footer
     footer_contact: 'Business / Support: ',
     footer_copyright: 'For reference only',
-    logo_text: 'Drama Factory',
-    nav_usage: 'Remaining '
   }
 };
 
@@ -1038,11 +1181,30 @@ function updatePageContent(lang){
   const heroBtns = document.querySelectorAll('header.hero .cta .btn');
   if(heroBtns[0]) heroBtns[0].textContent = t.hero_free;
   if(heroBtns[1]) heroBtns[1].textContent = t.hero_pro;
-  // Genre
+  // Genre section
   const genreLabel = document.querySelector('.genre-section h2');
   if(genreLabel) genreLabel.textContent = t.genre_label;
   const genreSub = document.querySelector('.genre-section .subtitle');
   if(genreSub) genreSub.textContent = t.genre_sub;
+  // Genre buttons
+  const genreBtns = document.querySelectorAll('.genre-btn');
+  const genreMap = {
+    'niixi': {name: 'genre_niixi', desc: 'genre_niixi_desc'},
+    'yanqing': {name: 'genre_yanqing', desc: 'genre_yanqing_desc'},
+    'xuanyi': {name: 'genre_xuanyi', desc: 'genre_xuanyi_desc'},
+    'chuanyue': {name: 'genre_chuanyue', desc: 'genre_chuanyue_desc'},
+    'tianchong': {name: 'genre_tianchong', desc: 'genre_tianchong_desc'}
+  };
+  genreBtns.forEach(btn => {
+    const genre = btn.dataset.genre;
+    const map = genreMap[genre];
+    if(map){
+      const nm = btn.querySelector('.nm');
+      const ds = btn.querySelector('.ds');
+      if(nm) nm.textContent = t[map.name];
+      if(ds) ds.textContent = t[map.desc];
+    }
+  });
   // Generator labels
   const step1Label = document.querySelector('[for="plotInput"]');
   if(step1Label) step1Label.textContent = t.step1_label;
@@ -1058,33 +1220,131 @@ function updatePageContent(lang){
   if(step3Label) step3Label.textContent = t.step3_label;
   const step3Sub = document.querySelector('.char-section .subtitle');
   if(step3Sub) step3Sub.textContent = t.step3_sub;
+  const charInput = document.getElementById('charInput');
+  if(charInput) charInput.placeholder = t.step3_placeholder;
   const step4Label = document.querySelector('.extra-section h3');
   if(step4Label) step4Label.textContent = t.step4_label;
+  const extraInput = document.getElementById('extraInput');
+  if(extraInput) extraInput.placeholder = t.step4_placeholder;
   const genBtn = document.getElementById('genBtn');
   if(genBtn) genBtn.textContent = t.gen_btn;
-  // Rhythm cards
+  // Rhythm cards - update both strong and p.desc
   const rhythmCards = document.querySelectorAll('.rhythm-card');
-  if(rhythmCards[0]){ rhythmCards[0].querySelector('strong')?.remove(); rhythmCards[0].prepend(document.createElement('strong')).textContent = t.rhythm_hot; }
-  if(rhythmCards[1]){ rhythmCards[1].querySelector('strong')?.remove(); rhythmCards[1].prepend(document.createElement('strong')).textContent = t.rhythm_fast; }
-  if(rhythmCards[2]){ rhythmCards[2].querySelector('strong')?.remove(); rhythmCards[2].prepend(document.createElement('strong')).textContent = t.rhythm_deep; }
+  const rhythms = [
+    {title: 'rhythm_hot', desc: 'rhythm_hot_desc'},
+    {title: 'rhythm_fast', desc: 'rhythm_fast_desc'},
+    {title: 'rhythm_deep', desc: 'rhythm_deep_desc'}
+  ];
+  rhythmCards.forEach((card, i) => {
+    if(rhythms[i]){
+      const strong = card.querySelector('strong');
+      const p = card.querySelector('p:last-child');
+      if(strong) strong.textContent = t[rhythms[i].title];
+      if(p) p.textContent = t[rhythms[i].desc];
+    }
+  });
   // Usage
   const usageTitle = document.querySelector('.usage-section h3');
   if(usageTitle) usageTitle.textContent = t.usage_title;
+  const usageStats = document.querySelector('.usage-section .stats-grid');
+  if(usageStats){
+    const labels = usageStats.querySelectorAll('.stat-label');
+    if(labels[0]) labels[0].textContent = t.usage_plan;
+    if(labels[1]) labels[1].textContent = t.usage_today;
+    if(labels[2]) labels[2].textContent = t.usage_remaining;
+    if(labels[3]) labels[3].textContent = t.usage_total;
+    const unit = usageStats.querySelector('.stat-unit');
+    if(unit) unit.textContent = t.usage_unit;
+  }
+  const upgradeLine = document.getElementById('upgradeLine');
+  if(upgradeLine && upgradeLine.style.display !== 'none'){
+    upgradeLine.innerHTML = t.usage_upgrade + '<a href="#pricing">'+t.usage_upgrade_link+'</a>';
+  }
   // Pricing
   const pricingTitle = document.querySelector('.pricing h2');
   if(pricingTitle) pricingTitle.textContent = t.pricing_title;
   const pricingSub = document.querySelector('.pricing .subtitle');
   if(pricingSub) pricingSub.textContent = t.pricing_sub;
+  // Pricing cards
+  const pricingCards = document.querySelectorAll('.price-card');
+  const pricingMap = [
+    {name: 'plan_free', price: 'plan_free_price', desc: 'plan_free_desc', btn: 'plan_free_btn'},
+    {name: 'plan_pro', price: 'plan_pro_price', desc: 'plan_pro_desc', btn: 'plan_pro_btn'}
+  ];
+  pricingCards.forEach((card, i) => {
+    const map = pricingMap[i];
+    if(map){
+      const nm = card.querySelector('.pc-name');
+      const pr = card.querySelector('.pc-price');
+      const ds = card.querySelector('.pc-desc');
+      const btn = card.querySelector('.btn');
+      if(nm) nm.textContent = t[map.name];
+      if(pr) pr.textContent = t[map.price];
+      if(ds) ds.textContent = t[map.desc];
+      if(btn) btn.textContent = t[map.btn];
+    }
+  });
+  // Pricing features
+  const featAll = document.querySelectorAll('.feat-list li');
+  const featMap = ['feat_daily_2','feat_5_genres','feat_viral_rhythm','feat_custom_char','feat_unlimited','feat_3_rhythms','feat_full_script','feat_priority','feat_export','feat_support'];
+  featAll.forEach((li, i) => {
+    if(featMap[i]){
+      const span = li.querySelector('span:last-child') || li.lastChild;
+      if(span && span.nodeType === 3) {
+        li.lastChild.textContent = t[featMap[i]];
+      } else if(span) {
+        span.textContent = t[featMap[i]];
+      }
+    }
+  });
+  // Result buttons
+  const copyBtn = document.querySelector('[onclick="copyScript()"]');
+  if(copyBtn) copyBtn.textContent = t.gen_copy;
+  const downBtn = document.querySelector('[onclick="downloadScript()"]');
+  if(downBtn) downBtn.textContent = t.gen_download;
+  // Demo try button
+  if(tryDemo) tryDemo.textContent = t.demo_try;
   // Footer
   const footerContact = document.querySelector('.footer .contact');
   if(footerContact) footerContact.textContent = t.footer_contact;
   const footerCopy = document.querySelector('.footer .copy');
   if(footerCopy) footerCopy.textContent = '© 2026 '+t.footer_copyright;
   // Login modal
-  const loginTitle = document.querySelector('.auth-modal h3');
-  if(loginTitle) loginTitle.textContent = t.login_title;
-  const loginSubtitle = document.querySelector('.auth-modal .subtitle');
-  if(loginSubtitle) loginSubtitle.textContent = t.login_subtitle;
+  const authTitle = document.getElementById('authTitle');
+  if(authTitle) authTitle.textContent = t.login_title;
+  const authSubtitle = document.getElementById('authSubtitle');
+  if(authSubtitle) authSubtitle.textContent = t.login_subtitle;
+  const loginTab = document.getElementById('tabLogin');
+  const regTab = document.getElementById('tabReg');
+  if(loginTab) loginTab.textContent = t.login_tab;
+  if(regTab) regTab.textContent = t.register_tab;
+  const loginEmailLabel = document.getElementById('loginEmailLabel');
+  const loginPwdLabel = document.getElementById('loginPwdLabel');
+  const regEmailLabel = document.getElementById('regEmailLabel');
+  const regPwdLabel = document.getElementById('regPwdLabel');
+  if(loginEmailLabel) loginEmailLabel.textContent = t.login_email_label;
+  if(loginPwdLabel) loginPwdLabel.textContent = t.login_password_label;
+  if(regEmailLabel) regEmailLabel.textContent = t.login_email_label;
+  if(regPwdLabel) regPwdLabel.textContent = t.login_password_label;
+  const loginEmailInput = document.getElementById('loginEmail');
+  const loginPwdInput = document.getElementById('loginPassword');
+  const regEmailInput = document.getElementById('regEmail');
+  const regPwdInput = document.getElementById('regPassword');
+  if(loginEmailInput) loginEmailInput.placeholder = t.login_email_placeholder;
+  if(loginPwdInput) loginPwdInput.placeholder = t.login_password_placeholder;
+  if(regEmailInput) regEmailInput.placeholder = t.login_email_placeholder;
+  if(regPwdInput) regPwdInput.placeholder = t.login_password_placeholder;
+  const loginBtn = document.getElementById('loginBtn');
+  const regBtn = document.getElementById('regBtn');
+  if(loginBtn && !loginBtn.disabled) loginBtn.textContent = t.login_btn;
+  if(regBtn && !regBtn.disabled) regBtn.textContent = t.register_btn;
+  // Payment modal
+  const payTitle = document.getElementById('payTitle');
+  const paySub = document.querySelector('.pay-sub');
+  const payNote = document.getElementById('payNote');
+  if(payTitle) payTitle.textContent = t.pay_title;
+  if(paySub) paySub.textContent = t.pay_sub;
+  if(payNote) payNote.innerHTML = '? ' + t.pay_note + ' <b>hello@jugongchang.icu</b>';
   // Update document title
   document.title = lang==='en' ? 'Drama Factory · AI Short Drama Generator | Write Viral Content in 30 Seconds' : '剧工厂 · AI短剧脚本生成器 | 30秒写出爆款短剧';
 }
@@ -1098,11 +1358,9 @@ function initLang(){
 }
 
 // 修改 copyScript 和 downloadScript 支持 i18n
-const _copyScriptOrig = copyScript;
-const _downloadScriptOrig = downloadScript;
 copyScript = function(){
   const t=$('resultContent').textContent;
-  navigator.clipboard.writeText(t).then(()=>toast(I18N[getLang()].toast_copied),()=>toast('复制失败'));
+  navigator.clipboard.writeText(t).then(()=>toast(I18N[getLang()].toast_copied),()=>toast(I18N[getLang()].toast_copy_fail));
 };
 downloadScript = function(){
   const a=document.createElement('a');
@@ -1112,6 +1370,5 @@ downloadScript = function(){
   URL.revokeObjectURL(a.href);
   toast(I18N[getLang()].toast_downloaded);
 };
-</script>
 </body>
 </html>
