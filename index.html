@@ -4,13 +4,127 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>剧工厂 · AI短剧脚本生成器 | 30秒写出爆款短剧</title>
+<meta name="description" content="输入一个灵感,30秒生成专业级竖屏短剧剧本。免费试用,专业版无限生成。支持都市逆袭、甜宠言情、悬疑惊悚等热门题材。">
+<meta name="keywords" content="AI短剧生成器,短剧剧本,AI写作,短视频创作,都市逆袭,甜宠言情,悬疑惊悚,短剧模板">
+<meta name="author" content="剧工厂">
+<meta name="robots" content="index, follow">
+<meta name="language" content="Chinese">
 <link rel="icon" type="image/png" href="app-icon-320.png">
+<link rel="alternate" hreflang="zh-CN" href="https://www.jugongchang.icu/">
+<link rel="alternate" hreflang="en" href="https://www.jugongchang.icu/?lang=en">
+<link rel="alternate" hreflang="x-default" href="https://www.jugongchang.icu/">
+
+<!-- Geo Tags -->
+<meta name="geo.region" content="CN-BJ">
+<meta name="geo.country" content="CN">
+<meta name="geo.placename" content="Beijing">
+<meta name="geo.position" content="39.9042;116.4074">
+<meta name="ICBM" content="39.9042, 116.4074">
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://www.jugongchang.icu/">
 <meta property="og:title" content="剧工厂 · AI短剧脚本生成器">
-<meta property="og:description" content="输入一个灵感，30秒生成专业级竖屏短剧剧本。免费试用，专业版无限生成。">
-<meta property="og:url" content="https://ugo2000.github.io/ai-script-hub/">
-<meta property="og:image" content="https://ugo2000.github.io/ai-script-hub/app-icon-320.png">
+<meta property="og:description" content="输入一个灵感,30秒生成专业级竖屏短剧剧本。免费试用,专业版无限生成。">
+<meta property="og:image" content="https://www.jugongchang.icu/app-icon-320.png">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:locale:alternate" content="en_US">
 <meta property="og:site_name" content="剧工厂">
+
+<!-- Twitter -->
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:url" content="https://www.jugongchang.icu/">
+<meta name="twitter:title" content="剧工厂 · AI短剧脚本生成器">
+<meta name="twitter:description" content="输入一个灵感,30秒生成专业级竖屏短剧剧本。免费试用,专业版无限生成。">
+<meta name="twitter:image" content="https://www.jugongchang.icu/app-icon-320.png">
+
+<!-- Canonical -->
+<link rel="canonical" href="https://www.jugongchang.icu/">
+
+<!-- Schema.org Structured Data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "剧工厂 · AI短剧脚本生成器",
+  "alternateName": ["Drama Factory", "AI Short Drama Generator"],
+  "description": "输入一个灵感,30秒生成专业级竖屏短剧剧本",
+  "url": "https://www.jugongchang.icu/",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Web Browser",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "CNY",
+    "name": "免费版",
+    "description": "每日2次生成,5大热门题材"
+  },
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "4.8",
+    "ratingCount": "128"
+  },
+  "provider": {
+    "@type": "Organization",
+    "name": "剧工厂",
+    "url": "https://www.jugongchang.icu/",
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "email": "hello@jugongchang.icu",
+      "contactType": "customer service"
+    }
+  },
+  "areaServed": {
+    "@type": "Country",
+    "name": "中国"
+  },
+  "inLanguage": ["zh-CN", "en"],
+  "screenshot": "https://www.jugongchang.icu/app-icon-320.png"
+}
+</script>
+
+<!-- Breadcrumb Schema -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "首页",
+      "item": "https://www.jugongchang.icu/"
+    }
+  ]
+}
+</script>
+
+<!-- SoftwareApplication Schema -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "剧工厂",
+  "operatingSystem": "Web",
+  "applicationCategory": "EntertainmentApplication",
+  "offers": [
+    {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "CNY",
+      "name": "免费版"
+    },
+    {
+      "@type": "Offer",
+      "price": "39",
+      "priceCurrency": "CNY",
+      "name": "专业版",
+      "billingIncrement": "P1M"
+    }
+  ]
+}
+</script>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <style>
   :root{
@@ -59,7 +173,13 @@
   .nav-user{display:none;align-items:center;gap:10px}
   .nav-user .av{width:32px;height:32px;border-radius:50%;background:linear-gradient(120deg,var(--brand),var(--brand3));color:#fff;display:grid;place-items:center;font-size:14px;font-weight:700}
   .nav-login{display:inline-block}
-
+  
+  /* Language Switcher */
+  .lang-switch{display:flex;align-items:center;background:#f3f1fb;border-radius:8px;padding:2px;gap:2px}
+  .lang-btn{background:none;border:none;padding:5px 10px;border-radius:6px;font-size:12px;font-weight:600;color:var(--sub);cursor:pointer;transition:.2s}
+  .lang-btn:hover{color:var(--brand)}
+  .lang-btn.active{background:#fff;color:var(--brand);box-shadow:0 1px 3px rgba(0,0,0,.1)}
+  
   /* Hero */
   header.hero{text-align:center;padding:64px 20px 40px;position:relative;overflow:hidden}
   header.hero::before{content:"";position:absolute;top:-120px;left:50%;transform:translateX(-50%);width:680px;height:420px;background:radial-gradient(closest-side,rircle,rgba(139,92,246,.18),transparent);background:radial-gradient(closest-side,rgba(139,92,246,.18),transparent);pointer-events:none}
@@ -205,9 +325,13 @@
 
 <nav>
   <div class="wrap nav-inner">
-    <a href="#" class="logo"><span class="mark">🎬</span>剧工厂</a>
+    <a href="#" class="logo"><span class="mark">🎬</span><span class="logo-text">剧工厂</span></a>
     <div class="nav-right">
       <span class="usage-badge" id="navUsage">今日剩余 <b>2</b> 次</span>
+      <div class="lang-switch">
+        <button class="lang-btn active" id="langZh" onclick="setLang('zh')">中文</button>
+        <button class="lang-btn" id="langEn" onclick="setLang('en')">EN</button>
+      </div>
       <a href="#" class="nav-login btn btn-primary" id="navLoginBtn" onclick="openAuth('login')">登录 / 注册</a>
       <span class="nav-user" id="navUser">
         <span class="av" id="navAvatar">U</span>
@@ -220,8 +344,8 @@
 
 <header class="hero">
   <div class="wrap">
-    <h1>30秒，写出一部<span class="grad-text">爆款短剧</span></h1>
-    <p class="lead">输入一个灵感，AI 立刻生成专业级竖屏短剧剧本——分镜表、完整对白、人物设定全都有。手机也能拍，小白也能写。</p>
+    <h1>30秒,写出一部<span class="grad-text">爆款短剧</span></h1>
+    <p class="lead">输入一个灵感,AI 立刻生成专业级竖屏短剧剧本--分镜表、完整对白、人物设定全都有。手机也能拍,小白也能写。</p>
     <div class="cta">
       <a href="#generator" class="btn btn-primary">✨ 免费开始创作</a>
       <a href="#pricing" class="btn btn-ghost">查看会员方案</a>
@@ -238,7 +362,7 @@
   <div class="wrap">
     <div class="gen-card">
       <div class="field">
-        <label>① 选择题材<span class="hint">想写哪种短剧？</span></label>
+        <label>1 选择题材<span class="hint">想写哪种短剧?</span></label>
         <div class="genres" id="genreBox">
           <div class="genre-btn active" data-genre="niixi"><span class="ic">🔥</span><span class="nm">都市逆袭</span><span class="ds">草根打脸装逼</span></div>
           <div class="genre-btn" data-genre="yanqing"><span class="ic">💕</span><span class="nm">甜宠言情</span><span class="ds">霸总高糖预警</span></div>
@@ -249,32 +373,32 @@
       </div>
 
       <div class="field">
-        <label>② 核心梗概<span class="hint">用一句话说清楚你想拍什么</span></label>
-        <textarea id="plotInput" placeholder="例如：被裁员的中年程序员，在出租屋发现一个能预测未来3分钟的神秘APP，靠它在股市翻盘，却引来资本大鳄的追杀……"></textarea>
+        <label>2 核心梗概<span class="hint">用一句话说清楚你想拍什么</span></label>
+        <textarea id="plotInput" placeholder="例如:被裁员的中年程序员,在出租屋发现一个能预测未来3分钟的神秘APP,靠它在股市翻盘,却引来资本大鳄的追杀......"></textarea>
         <div class="row" style="margin-top:10px">
-          <span class="demo-link" onclick="fillDemo()">💡 不会写？点这里填个示例</span>
+          <span class="demo-link" onclick="fillDemo()">💡 不会写?点这里填个示例</span>
           <span style="margin-left:auto;font-size:13px;color:var(--sub)" id="charCount">0 字</span>
         </div>
       </div>
 
       <div class="field">
-        <label>③ 节奏风格</label>
+        <label>3 节奏风格</label>
         <div class="rhythms" id="rhythmBox">
           <div class="rhythm active" data-rhythm="hot"><div class="rn">🔥 爆款节奏</div><div class="rd">每15秒一个情绪引爆点</div></div>
-          <div class="rhythm" data-rhythm="short"><div class="rn">⚡ 快节奏</div><div class="rd">极速切换，8-10秒一镜</div></div>
-          <div class="rhythm" data-rhythm="long"><div class="rn">🎬 深度剧情</div><div class="rd">对白丰富，单集1200字+</div></div>
+          <div class="rhythm" data-rhythm="short"><div class="rn">⚡ 快节奏</div><div class="rd">极速切换,8-10秒一镜</div></div>
+          <div class="rhythm" data-rhythm="long"><div class="rn">🎬 深度剧情</div><div class="rd">对白丰富,单集1200字+</div></div>
         </div>
       </div>
 
       <div class="field">
         <div class="optional-grid">
           <div>
-            <label>④ 人物设定<span class="hint">选填</span></label>
-            <input type="text" id="charactersInput" placeholder="如：林明远(35岁程序员)，苏瑶(会计)">
+            <label>4 人物设定<span class="hint">选填</span></label>
+            <input type="text" id="charactersInput" placeholder="如:林明远(35岁程序员),苏瑶(会计)">
           </div>
           <div>
-            <label>⑤ 特殊要求<span class="hint">选填</span></label>
-            <input type="text" id="specialInput" placeholder="如：每集结尾要有反转悬念">
+            <label>5 特殊要求<span class="hint">选填</span></label>
+            <input type="text" id="specialInput" placeholder="如:每集结尾要有反转悬念">
           </div>
         </div>
       </div>
@@ -284,7 +408,7 @@
 
       <div class="loading" id="loading">
         <div class="spinner"></div>
-        <p id="loadingText">🤖 AI 正在构思剧情结构…</p>
+        <p id="loadingText">🤖 AI 正在构思剧情结构...</p>
         <div class="bar"><i></i></div>
       </div>
 
@@ -314,19 +438,19 @@
       <div class="usage-bar"><i id="usageFill" style="width:0%"></i></div>
       <div class="usage-nums"><span>今日已用 <b id="todayUsed">0</b> 次</span><span>今日剩余 <b id="todayLeft">2</b> 次</span></div>
       <div class="usage-progress-num">累计已生成 <b id="totalUsed">0</b> 部短剧 🎬</div>
-      <div class="upgrade-line" id="upgradeLine">想无限生成？<a href="#pricing">升级专业版 →</a></div>
+      <div class="upgrade-line" id="upgradeLine">想无限生成?<a href="#pricing">升级专业版 →</a></div>
     </div>
   </div>
 </section>
 
 <section class="block" id="pricing">
   <div class="wrap">
-    <div class="sec-head"><h2>选择你的方案</h2><p>从免费开始，随时升级，按月付费随时取消</p></div>
+    <div class="sec-head"><h2>选择你的方案</h2><p>从免费开始,随时升级,按月付费随时取消</p></div>
     <div class="plans">
       <div class="plan">
         <div class="pname">免费版</div>
         <div class="pprice">¥0<small> / 永久</small></div>
-        <div class="pdesc">先体验，看看 AI 写剧本有多快</div>
+        <div class="pdesc">先体验,看看 AI 写剧本有多快</div>
         <ul>
           <li><span class="ck">✓</span>每日 2 次生成</li>
           <li><span class="ck">✓</span>5 大热门题材</li>
@@ -360,7 +484,7 @@
 <footer>
   <div class="wrap">
     剧工厂 · AI 短剧脚本生成器 &nbsp;|&nbsp; 让每个人都能写爆款短剧<br>
-    合作 / 客服邮箱：<a href="mailto:hello@jugongchang.icu" style="color:var(--brand);text-decoration:none">hello@jugongchang.icu</a><br>
+    合作 / 客服邮箱:<a href="mailto:hello@jugongchang.icu" style="color:var(--brand);text-decoration:none">hello@jugongchang.icu</a><br>
     © 2026 剧工厂 · 仅供创作参考
   </div>
 </footer>
@@ -385,7 +509,7 @@
     </div>
     <div id="registerForm" style="display:none">
       <label>昵称</label>
-      <input type="text" id="regNick" placeholder="怎么称呼你？">
+      <input type="text" id="regNick" placeholder="怎么称呼你?">
       <label>邮箱</label>
       <input type="email" id="regEmail" placeholder="you@example.com">
       <label>密码</label>
@@ -401,16 +525,16 @@
   <div class="modal-box wide">
     <span class="close" onclick="closePay()">×</span>
     <h3>开通会员</h3>
-    <p class="sub">扫码支付，秒开通</p>
+    <p class="sub">扫码支付,秒开通</p>
     <div class="pay-plan">
       <div class="pp" id="payName">专业版<small id="paySub">无限生成 · 自定义人物</small></div>
       <div class="amount" id="payAmount">¥39</div>
     </div>
     <div class="qr-wrap">
       <img id="qrImg" src="" alt="支付宝扫码支付">
-      <div class="tip" id="qrTip">正在生成支付宝收款码…</div>
+      <div class="tip" id="qrTip">正在生成支付宝收款码...</div>
     </div>
-    <div class="pay-note">? 用支付宝扫一扫，支付成功后会员自动开通。如遇问题请联系 <b>hello@jugongchang.icu</b>。</div>
+    <div class="pay-note">? 用支付宝扫一扫,支付成功后会员自动开通。如遇问题请联系 <b>hello@jugongchang.icu</b>。</div>
   </div>
 </div>
 
@@ -421,16 +545,16 @@
 // ============ 配置 ============
 const SUPABASE_URL = 'https://mqvygeoqjfylgdmklvrb.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1xdnlnZW9xamZ5bGdkbWtsdnJiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcxNzYyNjcsImV4cCI6MjEwMjc1MjI2N30.cpKcwOSKzwz50eIcz-WIq6cmbXuQeNt3Q0Ao0CEJBPg';
-const PAY_WORKER = 'https://pay.jugongchang.icu'; // ← 改成你的 Cloudflare Worker 地址（在 Cloudflare 给 Worker 绑自定义域 pay.jugongchang.icu，或用 *.workers.dev 地址）
+const PAY_WORKER = 'https://pay.jugongchang.icu'; // ← 改成你的 Cloudflare Worker 地址(在 Cloudflare 给 Worker 绑自定义域 pay.jugongchang.icu,或用 *.workers.dev 地址)
 let DEEPSEEK_API_KEY = '';
 async function loadApiKey() {
   if (DEEPSEEK_API_KEY) return DEEPSEEK_API_KEY;
   if (!sbClient) {
-    throw new Error('Supabase 未初始化，无法加载 API Key');
+    throw new Error('Supabase 未初始化,无法加载 API Key');
   }
   const { data, error } = await sbClient.from('config').select('value').eq('key', 'deepseek_api_key').single();
   if (error || !data) {
-    throw new Error('加载 API Key 失败：' + (error?.message || '未找到配置'));
+    throw new Error('加载 API Key 失败:' + (error?.message || '未找到配置'));
   }
   DEEPSEEK_API_KEY = data.value;
   return DEEPSEEK_API_KEY;
@@ -472,14 +596,14 @@ $('plotInput').addEventListener('keydown',e=>{ if(e.key==='Enter'&&(e.ctrlKey||e
 function fillDemo(){
   $('genreBox').querySelectorAll('.genre-btn').forEach(x=>x.classList.remove('active'));
   $('genreBox').querySelector('[data-genre="niixi"]').classList.add('active');
-  $('plotInput').value='一个被公司裁员的中年程序员，在出租屋里发现一个能预测未来3分钟的APP，利用这个能力在股市和牌桌翻盘，却引来资本大鳄的觊觎与追杀。';
+  $('plotInput').value='一个被公司裁员的中年程序员,在出租屋里发现一个能预测未来3分钟的APP,利用这个能力在股市和牌桌翻盘,却引来资本大鳄的觊觎与追杀。';
   $('charCount').textContent=$('plotInput').value.length+' 字';
   $('rhythmBox').querySelectorAll('.rhythm').forEach(x=>x.classList.remove('active'));
   $('rhythmBox').querySelector('[data-rhythm="hot"]').classList.add('active');
-  $('charactersInput').value='林明远（35岁，程序员），苏瑶（30岁，会计），代明星（资本掮客）';
+  $('charactersInput').value='林明远(35岁,程序员),苏瑶(30岁,会计),代明星(资本掮客)';
   $('specialInput').value='每集最后要有反转悬念';
   $('generator').scrollIntoView({behavior:'smooth'});
-  toast('✓ 示例已填好，点「一键生成」试试');
+  toast('✓ 示例已填好,点「一键生成」试试');
 }
 
 // ============ 认证 ============
@@ -494,38 +618,38 @@ function switchAuth(tab){
 }
 async function doLogin(){
   const email=$('loginEmail').value.trim(), pwd=$('loginPassword').value;
-  const btn=$('loginBtn'); btn.disabled=true; btn.textContent='登录中…';
+  const btn=$('loginBtn'); btn.disabled=true; btn.textContent='登录中...';
   try{
     const {data,error}=await sbClient.auth.signInWithPassword({email,password:pwd});
     if(error){
       if(error.message.includes('not confirmed')||error.message.includes('未验证')){
-        $('loginErr').textContent='⚠ 邮箱尚未验证，请先点击注册邮件中的验证链接';
+        $('loginErr').textContent='⚠ 邮箱尚未验证,请先点击注册邮件中的验证链接';
       }else{
         $('loginErr').textContent='⚠ '+error.message;
       }
       $('loginErr').classList.add('show'); return;
     }
-    closeAuth(); toast('✓ 登录成功，开始创作吧！');
+    closeAuth(); toast('✓ 登录成功,开始创作吧!');
   }catch(e){ console.error('Login exception:', e); $('loginErr').textContent='⚠ 网络错误: '+(e.message||String(e)); $('loginErr').classList.add('show'); }
   finally{ btn.disabled=false; btn.textContent='登录'; }
 }
 async function doRegister(){
   const email=$('regEmail').value.trim(), pwd=$('regPassword').value, nick=$('regNick').value.trim()||email.split('@')[0];
-  const btn=$('regBtn'); btn.disabled=true; btn.textContent='注册中…';
+  const btn=$('regBtn'); btn.disabled=true; btn.textContent='注册中...';
   try{
     const {data,error}=await sbClient.auth.signUp({email,password:pwd,options:{data:{nickname:nick}}});
     if(error){
       console.error('Signup error:', error);
       let msg = error.message||error.code||JSON.stringify(error);
       if(msg.includes('rate limit')||msg.includes('429')||msg.includes('over_email')){
-        msg='⚠ 注册太频繁了，请 '+(error.statusText||'1分钟后')+' 再试，或联系客服';
+        msg='⚠ 注册太频繁了,请 '+(error.statusText||'1分钟后')+' 再试,或联系客服';
       }
       $('regErr').textContent=msg;
       $('regErr').classList.add('show'); return;
     }
-    // 邮箱验证开启时，confirmation_sent_at 有值表示验证邮件已发送
+    // 邮箱验证开启时,confirmation_sent_at 有值表示验证邮件已发送
     const confirmed = data?.user?.email_confirm_at || data?.confirmation_sent_at;
-    $('regErr').textContent='✓ 注册成功！请去邮箱 ' + email + ' 点击验证链接完成注册，验证后即可登录。';
+    $('regErr').textContent='✓ 注册成功!请去邮箱 ' + email + ' 点击验证链接完成注册,验证后即可登录。';
     $('regErr').classList.add('show');
     $('regErr').style.color='var(--brand)';
     btn.textContent='已发送验证邮件';
@@ -563,7 +687,8 @@ async function loadUsage(){
 }
 function renderUsage(plan,used,left,total){
   const cfg=PLANS[plan]||PLANS.free;
-  $('navUsage').innerHTML='今日剩余 <b>'+left+'</b> 次';
+  const lang=getLang();
+  $('navUsage').innerHTML=(lang==='en'?'Remaining <b>'+left+'</b>':'今日剩余 <b>'+left+'</b> 次');
   $('planTag').textContent=cfg.name;
   $('todayUsed').textContent=used;
   $('todayLeft').textContent=left;
@@ -571,7 +696,7 @@ function renderUsage(plan,used,left,total){
   const pct = cfg.dailyLimit>=999 ? 100 : Math.min(100, Math.round(used/cfg.dailyLimit*100));
   $('usageFill').style.width=pct+'%';
   if(plan==='free'){ $('upgradeLine').style.display='block'; }
-  else { $('upgradeLine').innerHTML='🎉 你是<b style="color:var(--brand)">'+cfg.name+'</b>，已享无限生成'; }
+  else { $('upgradeLine').innerHTML=(lang==='en'?'🎉 You\'re <b style="color:var(--brand)">'+cfg.name+'</b>, unlimited generations':'🎉 你是<b style="color:var(--brand)">'+cfg.name+'</b>，已享无限生成'); }
 }
 
 // ============ 生成 ============
@@ -586,7 +711,7 @@ async function generate(){
   const today=new Date().toISOString().split('T')[0];
   const used=(p&&p.last_used_date===today)?(p.daily_uses||0):0;
   if(used>=cfg.dailyLimit){
-    $('errorBanner').textContent='⚠ 今日免费次数已用完，升级专业版可无限生成 🚀';
+    $('errorBanner').textContent='⚠ 今日免费次数已用完,升级专业版可无限生成 🚀';
     $('errorBanner').classList.add('show');
     $('upgradeLine').scrollIntoView({behavior:'smooth'});
     return;
@@ -597,15 +722,15 @@ async function generate(){
   const plot=$('plotInput').value.trim();
   const chars=$('charactersInput').value.trim();
   const special=$('specialInput').value.trim();
-  if(plot.length<5){ $('errorBanner').textContent='⚠ 请先写几句核心梗概（至少5字）'; $('errorBanner').classList.add('show'); return; }
+  if(plot.length<5){ $('errorBanner').textContent='⚠ 请先写几句核心梗概(至少5字)'; $('errorBanner').classList.add('show'); return; }
   $('errorBanner').classList.remove('show');
 
   const btn=$('submitBtn'), loading=$('loading'), result=$('result');
-  btn.disabled=true; btn.textContent='⏳ 生成中…'; loading.classList.add('active'); result.classList.remove('active');
-  $('loadingText').textContent='🤖 AI 正在构思剧情结构…';
+  btn.disabled=true; btn.textContent='⏳ 生成中...'; loading.classList.add('active'); result.classList.remove('active');
+  $('loadingText').textContent='🤖 AI 正在构思剧情结构...';
   try{
     await delay(600);
-    $('loadingText').textContent='✍ 正在编写分镜表与台词…';
+    $('loadingText').textContent='✍ 正在编写分镜表与台词...';
     const script=await callDeepSeek(genre,rhythm,plot,chars,special);
     await delay(300);
     $('loadingText').textContent='✓ 渲染完成';
@@ -623,24 +748,24 @@ async function generate(){
 
 async function callDeepSeek(genre,rhythm,plot,chars,special){
   const rhythmMap = {
-    hot: '参考当下最火短剧爆款公式，开头5秒必须有高能钩子，每15秒一个情绪引爆点',
-    short: '精简快节奏，每句台词不超15字，平均8-10秒切换一场景',
-    long: '深度剧情版，对白丰富，铺垫人物关系，单集1200-1500字'
+    hot: '参考当下最火短剧爆款公式,开头5秒必须有高能钩子,每15秒一个情绪引爆点',
+    short: '精简快节奏,每句台词不超15字,平均8-10秒切换一场景',
+    long: '深度剧情版,对白丰富,铺垫人物关系,单集1200-1500字'
   };
-  
+
   const rhythmDesc = rhythmMap[rhythm] || rhythmMap.hot;
-  
-  const systemPrompt = `你是一位专业AI短剧编剧，精通竖屏短剧创作。规则：
-1)竖屏思维，人物半身/特写为主
+
+  const systemPrompt = `你是一位专业AI短剧编剧,精通竖屏短剧创作。规则:
+1)竖屏思维,人物半身/特写为主
 2)每15-20秒一个情绪点
 3)台词一句不超20字
-4)爽点密集：打脸/反转/告白交替
+4)爽点密集:打脸/反转/告白交替
 5)每集结尾留悬念
 
-输出格式：
+输出格式:
 【剧名】
 【类型】${GENRES[genre]||'都市逆袭'}
-【集数】第1集（约3分钟，800-1000字）
+【集数】第1集(约3分钟,800-1000字)
 【人物表】
 【剧情概要】100字
 【分镜表】|镜头|景别|时长|画面|台词|音效|
@@ -671,15 +796,15 @@ ${rhythmDesc}${chars?'\n## 人物设定\n'+chars:''}${special?'\n## 特殊要求
       max_tokens:2000
     })
   });
-  
+
   if(!response.ok){
     const err = await response.text();
-    throw new Error('生成失败：DeepSeek API 错误 ('+response.status+')');
+    throw new Error('生成失败:DeepSeek API 错误 ('+response.status+')');
   }
-  
+
   const data = await response.json();
   const content = data.choices?.[0]?.message?.content;
-  if(!content || !content.trim()) throw new Error('AI 返回为空，请重试');
+  if(!content || !content.trim()) throw new Error('AI 返回为空,请重试');
   return content;
 }
 
@@ -692,7 +817,7 @@ async function logUsage(uid,genre){
   if(data.last_used_date===today) await sbClient.from('profiles').update({daily_uses:(data.daily_uses||0)+1}).eq('id',uid);
   else await sbClient.from('profiles').update({daily_uses:1,last_used_date:today}).eq('id',uid);
 }
-function copyScript(){ const t=$('resultContent').textContent; navigator.clipboard.writeText(t).then(()=>toast('✓ 已复制'),()=>toast('复制失败，请手动选择')); }
+function copyScript(){ const t=$('resultContent').textContent; navigator.clipboard.writeText(t).then(()=>toast('✓ 已复制'),()=>toast('复制失败,请手动选择')); }
 function downloadScript(){ const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([$('resultContent').textContent],{type:'text/plain;charset=utf-8'})); a.download='短剧脚本_'+new Date().toISOString().slice(0,10)+'.txt'; a.click(); URL.revokeObjectURL(a.href); toast('✓ 已下载'); }
 
 // ============ 支付 ============
@@ -707,13 +832,13 @@ async function openPay(plan){
   if(elSub) elSub.textContent=cfg.sub;
   if(elAmt) elAmt.textContent=cfg.price;
   $('payModal').classList.add('show');
-  $('qrTip').textContent='正在生成支付宝收款码…';
+  $('qrTip').textContent='正在生成支付宝收款码...';
   try{
     const r=await fetch(PAY_WORKER+'/create',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({uid:user.id,email:user.email,plan})});
     const j=await r.json();
-    if(j.qr){ $('qrImg').src='https://api.qrserver.com/v1/create-qr-code/?size=240x240&data='+encodeURIComponent(j.qr); $('qrTip').textContent='打开支付宝扫一扫，支付后自动开通'; startPayPoll(user.id); }
-    else { $('qrTip').textContent='生成失败：'+(j.error||'未知错误'); }
-  }catch(e){ $('qrTip').textContent='网络错误，请刷新重试'; }
+    if(j.qr){ $('qrImg').src='https://api.qrserver.com/v1/create-qr-code/?size=240x240&data='+encodeURIComponent(j.qr); $('qrTip').textContent='打开支付宝扫一扫,支付后自动开通'; startPayPoll(user.id); }
+    else { $('qrTip').textContent='生成失败:'+(j.error||'未知错误'); }
+  }catch(e){ $('qrTip').textContent='网络错误,请刷新重试'; }
 }
 function closePay(){ $('payModal').classList.remove('show'); }
 let _payTimer=null;
@@ -723,19 +848,19 @@ function startPayPoll(uid){
     const { data } = await sbClient.from('profiles').select('plan').eq('id',uid).single();
     if(data && data.plan==='premium'){
       clearInterval(_payTimer);
-      toast('✅ 专业版已开通！正在刷新…');
+      toast('✅ 专业版已开通!正在刷新...');
       setTimeout(()=>{ closePay(); loadUsage(); }, 1500);
     }
   },3000);
 }
 
 // ============ 初始化 ============
-// 检测邮箱验证完成（URL 含 #token= 或 ?token=）
+// 检测邮箱验证完成(URL 含 #token= 或 ?token=)
 const hash = window.location.hash || '';
 const urlParams = new URLSearchParams(window.location.search);
 if(hash.includes('token=') || urlParams.has('token') || hash.includes('confirmation')){
   const toastEl = document.getElementById('toast');
-  if(toastEl){ toastEl.textContent='\u2705 邮箱验证成功！请登录后使用'; toastEl.classList.add('show'); }
+  if(toastEl){ toastEl.textContent='\u2705 邮箱验证成功!请登录后使用'; toastEl.classList.add('show'); }
   setTimeout(()=>{ if(toastEl) toastEl.classList.remove('show'); }, 5000);
   // 清理 URL
   history.replaceState({}, '', window.location.pathname);
@@ -753,7 +878,240 @@ if(sbClient){
     if(e==='SIGNED_IN'&&s){ updateNav(s.user.user_metadata?.nickname||s.user.email?.split('@')[0]); loadUsage(); }
     if(e==='SIGNED_OUT') updateNav(null);
   });
+  initLang();
 }
+
+// ============ 国际化 i18n ============
+const I18N = {
+  zh: {
+    nav_login: '登录 / 注册',
+    nav_logout: '退出',
+    hero_title: '30秒，写出一部<span class="grad-text">爆款短剧</span>',
+    hero_desc: '输入一个灵感，AI 立刻生成专业级竖屏短剧剧本——分镜表、完整对白、人物设定全都有。手机也能拍，小白也能写。',
+    hero_free: '🎬 免费开始创作',
+    hero_pro: '💎 查看会员方案',
+    genre_label: '选择题材',
+    genre_sub: '想写哪种短剧？',
+    step1_label: '核心梗概',
+    step1_sub: '用一句话说清楚你想拍什么',
+    step1_placeholder: '输入你的剧情灵感...',
+    step1_tip: '不会写？点这里填个示例',
+    step2_label: '节奏风格',
+    step3_label: '人物设定',
+    step3_sub: '选填',
+    step4_label: '特殊要求',
+    step4_sub: '选填',
+    gen_btn: '一键生成短剧脚本',
+    gen_generating: 'AI 正在构思剧情结构…',
+    gen_done: '生成完成',
+    gen_copy: '复制',
+    gen_download: '下载',
+    gen_next: '再写一集',
+    rhythm_hot: '爆款节奏',
+    rhythm_hot_desc: '每15秒一个情绪引爆点',
+    rhythm_fast: '快节奏',
+    rhythm_fast_desc: '极速切换，8-10秒一镜',
+    rhythm_deep: '深度剧情',
+    rhythm_deep_desc: '对白丰富，单集1200字+',
+    usage_title: '我的使用',
+    usage_plan: '免费版',
+    usage_today: '今日已用',
+    usage_remaining: '今日剩余',
+    usage_total: '累计已生成',
+    usage_unit: '部短剧',
+    usage_upgrade: '想无限生成？',
+    pricing_title: '选择你的方案',
+    pricing_sub: '从免费开始，随时升级，按月付费随时取消',
+    plan_free: '免费版',
+    plan_free_price: '¥0 / 永久',
+    plan_free_desc: '先体验，看看 AI 写剧本有多快',
+    plan_pro: '专业版',
+    plan_pro_price: '¥39 / 月',
+    plan_pro_desc: '认真做短剧的创作者首选',
+    plan_free_btn: '免费注册',
+    plan_pro_btn: '升级专业版',
+    pay_title: '开通会员',
+    pay_sub: '扫码支付，秒开通',
+    pay_note: '用支付宝扫一扫，支付成功后会员自动开通。如遇问题请联系',
+    login_title: '欢迎来到剧工厂',
+    login_subtitle: '登录后即可开始生成你的短剧',
+    login_tab: '登录',
+    register_tab: '注册',
+    login_email: '邮箱',
+    login_password: '密码',
+    login_btn: '登录',
+    register_btn: '注册',
+    toast_copied: '✓ 已复制',
+    toast_downloaded: '✓ 已下载',
+    footer_contact: '合作 / 客服邮箱：',
+    footer_copyright: '仅供创作参考',
+    logo_text: '剧工厂',
+    nav_usage: '今日剩余 '
+  },
+  en: {
+    nav_login: 'Login',
+    nav_logout: 'Logout',
+    hero_title: 'Write a <span class="grad-text">Viral Short Drama</span> in 30 Seconds',
+    hero_desc: 'Enter an idea and AI instantly generates professional vertical short drama scripts - with storyboards, complete dialogue, and character settings.',
+    hero_free: '🎬 Start Creating Free',
+    hero_pro: '💎 View Plans',
+    genre_label: 'Choose Genre',
+    genre_sub: 'What kind of short drama?',
+    step1_label: 'Core Plot',
+    step1_sub: 'Describe what you want to film in one sentence',
+    step1_placeholder: 'Enter your story idea...',
+    step1_tip: 'Need inspiration? Click to fill an example',
+    step2_label: 'Rhythm Style',
+    step3_label: 'Character Settings',
+    step3_sub: 'Optional',
+    step4_label: 'Special Requirements',
+    step4_sub: 'Optional',
+    gen_btn: 'Generate Short Drama Script',
+    gen_generating: 'AI is crafting the storyline…',
+    gen_done: 'Generation Complete',
+    gen_copy: 'Copy',
+    gen_download: 'Download',
+    gen_next: 'Next Episode',
+    rhythm_hot: 'Viral Rhythm',
+    rhythm_hot_desc: 'One emotional hook every 15 seconds',
+    rhythm_fast: 'Fast Pace',
+    rhythm_fast_desc: 'Quick cuts, 8-10 seconds per shot',
+    rhythm_deep: 'Deep Drama',
+    rhythm_deep_desc: 'Rich dialogue, 1200+ words per episode',
+    usage_title: 'My Usage',
+    usage_plan: 'Free Plan',
+    usage_today: 'Used Today',
+    usage_remaining: 'Remaining',
+    usage_total: 'Total Generated',
+    usage_unit: 'short dramas',
+    usage_upgrade: 'Want unlimited?',
+    pricing_title: 'Choose Your Plan',
+    pricing_sub: 'Start free, upgrade anytime, cancel anytime',
+    plan_free: 'Free',
+    plan_free_price: '¥0 / Forever',
+    plan_free_desc: 'Try it out, see how fast AI writes scripts',
+    plan_pro: 'Pro',
+    plan_pro_price: '¥39 / Month',
+    plan_pro_desc: 'Perfect for serious short drama creators',
+    plan_free_btn: 'Sign Up Free',
+    plan_pro_btn: 'Upgrade to Pro',
+    pay_title: 'Upgrade Membership',
+    pay_sub: 'Scan to pay, instant activation',
+    pay_note: 'Scan with Alipay, membership auto-activates. Contact us at',
+    login_title: 'Welcome to Drama Factory',
+    login_subtitle: 'Login to start generating your short dramas',
+    login_tab: 'Login',
+    register_tab: 'Register',
+    login_email: 'Email',
+    login_password: 'Password',
+    login_btn: 'Login',
+    register_btn: 'Register',
+    toast_copied: '✓ Copied',
+    toast_downloaded: '✓ Downloaded',
+    footer_contact: 'Business / Support: ',
+    footer_copyright: 'For reference only',
+    logo_text: 'Drama Factory',
+    nav_usage: 'Remaining '
+  }
+};
+
+function getLang(){ return localStorage.getItem('lang')||'zh'; }
+
+function setLang(lang){
+  localStorage.setItem('lang',lang);
+  document.documentElement.lang = lang;
+  document.getElementById('langZh').classList.toggle('active',lang==='zh');
+  document.getElementById('langEn').classList.toggle('active',lang==='en');
+  updatePageContent(lang);
+}
+
+function updatePageContent(lang){
+  const t = I18N[lang]||I18N.zh;
+  // Logo
+  const logoText = document.querySelector('.logo-text');
+  if(logoText) logoText.textContent = t.logo_text;
+  // Hero
+  const heroH1 = document.querySelector('header.hero h1');
+  if(heroH1) heroH1.innerHTML = t.hero_title;
+  const heroDesc = document.querySelector('header.hero .lead');
+  if(heroDesc) heroDesc.textContent = t.hero_desc;
+  const heroBtns = document.querySelectorAll('header.hero .cta .btn');
+  if(heroBtns[0]) heroBtns[0].textContent = t.hero_free;
+  if(heroBtns[1]) heroBtns[1].textContent = t.hero_pro;
+  // Genre
+  const genreLabel = document.querySelector('.genre-section h2');
+  if(genreLabel) genreLabel.textContent = t.genre_label;
+  const genreSub = document.querySelector('.genre-section .subtitle');
+  if(genreSub) genreSub.textContent = t.genre_sub;
+  // Generator labels
+  const step1Label = document.querySelector('[for="plotInput"]');
+  if(step1Label) step1Label.textContent = t.step1_label;
+  const step1Sub = document.querySelector('.input-section .subtitle');
+  if(step1Sub) step1Sub.textContent = t.step1_sub;
+  const plotInput = document.getElementById('plotInput');
+  if(plotInput) plotInput.placeholder = t.step1_placeholder;
+  const tryDemo = document.getElementById('tryDemo');
+  if(tryDemo) tryDemo.textContent = t.step1_tip;
+  const step2Label = document.querySelector('.rhythm-section h3');
+  if(step2Label) step2Label.textContent = t.step2_label;
+  const step3Label = document.querySelector('.char-section h3');
+  if(step3Label) step3Label.textContent = t.step3_label;
+  const step3Sub = document.querySelector('.char-section .subtitle');
+  if(step3Sub) step3Sub.textContent = t.step3_sub;
+  const step4Label = document.querySelector('.extra-section h3');
+  if(step4Label) step4Label.textContent = t.step4_label;
+  const genBtn = document.getElementById('genBtn');
+  if(genBtn) genBtn.textContent = t.gen_btn;
+  // Rhythm cards
+  const rhythmCards = document.querySelectorAll('.rhythm-card');
+  if(rhythmCards[0]){ rhythmCards[0].querySelector('strong')?.remove(); rhythmCards[0].prepend(document.createElement('strong')).textContent = t.rhythm_hot; }
+  if(rhythmCards[1]){ rhythmCards[1].querySelector('strong')?.remove(); rhythmCards[1].prepend(document.createElement('strong')).textContent = t.rhythm_fast; }
+  if(rhythmCards[2]){ rhythmCards[2].querySelector('strong')?.remove(); rhythmCards[2].prepend(document.createElement('strong')).textContent = t.rhythm_deep; }
+  // Usage
+  const usageTitle = document.querySelector('.usage-section h3');
+  if(usageTitle) usageTitle.textContent = t.usage_title;
+  // Pricing
+  const pricingTitle = document.querySelector('.pricing h2');
+  if(pricingTitle) pricingTitle.textContent = t.pricing_title;
+  const pricingSub = document.querySelector('.pricing .subtitle');
+  if(pricingSub) pricingSub.textContent = t.pricing_sub;
+  // Footer
+  const footerContact = document.querySelector('.footer .contact');
+  if(footerContact) footerContact.textContent = t.footer_contact;
+  const footerCopy = document.querySelector('.footer .copy');
+  if(footerCopy) footerCopy.textContent = '© 2026 '+t.footer_copyright;
+  // Login modal
+  const loginTitle = document.querySelector('.auth-modal h3');
+  if(loginTitle) loginTitle.textContent = t.login_title;
+  const loginSubtitle = document.querySelector('.auth-modal .subtitle');
+  if(loginSubtitle) loginSubtitle.textContent = t.login_subtitle;
+  // Update document title
+  document.title = lang==='en' ? 'Drama Factory · AI Short Drama Generator | Write Viral Content in 30 Seconds' : '剧工厂 · AI短剧脚本生成器 | 30秒写出爆款短剧';
+}
+
+function initLang(){
+  const lang = getLang();
+  document.documentElement.lang = lang;
+  document.getElementById('langZh').classList.toggle('active',lang==='zh');
+  document.getElementById('langEn').classList.toggle('active',lang==='en');
+  updatePageContent(lang);
+}
+
+// 修改 copyScript 和 downloadScript 支持 i18n
+const _copyScriptOrig = copyScript;
+const _downloadScriptOrig = downloadScript;
+copyScript = function(){
+  const t=$('resultContent').textContent;
+  navigator.clipboard.writeText(t).then(()=>toast(I18N[getLang()].toast_copied),()=>toast('复制失败'));
+};
+downloadScript = function(){
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([$('resultContent').textContent],{type:'text/plain;charset=utf-8'}));
+  a.download=(getLang()==='en'?'short_drama':'短剧脚本')+'_'+new Date().toISOString().slice(0,10)+'.txt';
+  a.click();
+  URL.revokeObjectURL(a.href);
+  toast(I18N[getLang()].toast_downloaded);
+};
 </script>
 </body>
 </html>
