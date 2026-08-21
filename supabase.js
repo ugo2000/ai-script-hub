@@ -39,16 +39,6 @@ const PLANS = {
     features: ['无限次生成', '5种题材模板', '4种节奏风格', '自定义人物设定', '完整剧本输出'],
     color: '#4f46e5',
     badge: 'PRO'
-  },
-  studio: {
-    name: 'studio',
-    nameCn: '工作室版',
-    price: 199,
-    period: '每月',
-    dailyLimit: 9999,
-    features: ['专业版全部功能', '批处理输出', 'Word/PDF导出', '高级Prompt配方', '更多题材持续更新'],
-    color: '#f59e0b',
-    badge: 'STUDIO'
   }
 };
 

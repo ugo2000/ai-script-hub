@@ -139,7 +139,7 @@
   .upgrade-line a{color:var(--brand);font-weight:700}
 
   /* Pricing */
-  .plans{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;align-items:stretch}
+  .plans{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;align-items:stretch;max-width:680px;margin:0 auto}
   .plan{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:26px;display:flex;flex-direction:column;position:relative;transition:.2s}
   .plan:hover{transform:translateY(-4px);box-shadow:var(--shadow)}
   .plan.featured{border-color:var(--brand);box-shadow:var(--shadow-lg)}
@@ -346,23 +346,12 @@
           <li><span class="ck">✓</span>3 种节奏风格</li>
           <li><span class="ck">✓</span>完整剧本 + 分镜表</li>
           <li><span class="ck">✓</span>优先生成速度</li>
+          <li><span class="ck">✓</span>Word / PDF 导出</li>
+          <li><span class="ck">✓</span>专属邮箱客服支持</li>
         </ul>
         <button class="btn btn-primary btn-block" onclick="openPay('premium')">升级专业版</button>
       </div>
 
-      <div class="plan">
-        <div class="pname">工作室版</div>
-        <div class="pprice">¥199<small> / 月</small></div>
-        <div class="pdesc">团队 / 矩阵号批量产出</div>
-        <ul>
-          <li><span class="ck">✓</span>专业版全部功能</li>
-          <li><span class="ck">✓</span>Word / PDF 导出</li>
-          <li><span class="ck">✓</span>高级 Prompt 配方</li>
-          <li><span class="ck">✓</span>更多题材持续更新</li>
-          <li><span class="ck">✓</span>批量生成</li>
-        </ul>
-        <button class="btn btn-ghost btn-block" onclick="openPay('studio')">升级工作室版</button>
-      </div>
     </div>
   </div>
 </section>
@@ -370,6 +359,7 @@
 <footer>
   <div class="wrap">
     剧工厂 · AI 短剧脚本生成器 &nbsp;|&nbsp; 让每个人都能写爆款短剧<br>
+    合作 / 客服邮箱：<a href="mailto:hello@jugongchang.icu" style="color:var(--brand);text-decoration:none">hello@jugongchang.icu</a><br>
     © 2026 剧工厂 · 仅供创作参考
   </div>
 </footer>
@@ -423,7 +413,7 @@
       <img id="qrImg" src="qrcode.png" alt="扫码支付">
       <div class="tip" id="qrTip">打开支付宝扫一扫，支付后联系客服开通</div>
     </div>
-    <div class="pay-note">⏱ 支付为人工开通：扫码付款后，把「订单号+你的注册邮箱」发给客服微信，1 分钟内为你升级会员。客服微信见付款页底部。</div>
+    <div class="pay-note">⏱ 支付为人工开通：扫码付款后，把「订单号 + 你的注册邮箱」发送至 <b>hello@jugongchang.icu</b>，1 分钟内为你升级专业版会员。</div>
   </div>
 </div>
 
@@ -461,7 +451,6 @@ try {
 const PLANS = {
   free:    { name:'免费版',   dailyLimit:2,   color:'#94a3b8' },
   premium: { name:'专业版',   dailyLimit:999, color:'#6366f1' },
-  studio:  { name:'工作室版', dailyLimit:9999,color:'#d97706' }
 };
 const GENRES = {
   niixi:'都市逆袭', yanqing:'甜宠言情', xuanyi:'悬疑惊悚', chuanyue:'穿越重生', tianchong:'先婚后爱'
@@ -710,7 +699,7 @@ function downloadScript(){ const a=document.createElement('a'); a.href=URL.creat
 
 // ============ 支付 ============
 function openPay(plan){
-  const cfg={premium:{name:'专业版',sub:'无限生成 · 自定义人物',price:'¥39'},studio:{name:'工作室版',sub:'团队批量产出 · 多格式导出',price:'¥199'}}[plan];
+  const cfg={premium:{name:'专业版',sub:'无限生成 · 自定义人物',price:'¥39'}}[plan];
   $('payName').textContent=cfg.name; $('paySub').textContent=cfg.sub; $('payAmount').textContent=cfg.price;
   $('payModal').classList.add('show');
 }
