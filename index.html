@@ -700,7 +700,11 @@ async function openPay(plan){
   const { data:{ user } } = await sbClient.auth.getUser();
   if(!user){ openAuth('login'); toast('请先登录后再开通会员'); return; }
   const cfg={premium:{name:'专业版',sub:'无限生成 · 自定义人物',price:'¥39'}}[plan];
-  $('payName').textContent=cfg.name; $('paySub').textContent=cfg.sub; $('payAmount').textContent=cfg.price;
+  // 防御性检查
+  const elName=$('payName'), elSub=$('paySub'), elAmt=$('payAmount');
+  if(elName) elName.textContent=cfg.name;
+  if(elSub) elSub.textContent=cfg.sub;
+  if(elAmt) elAmt.textContent=cfg.price;
   $('payModal').classList.add('show');
   $('qrTip').textContent='正在生成支付宝收款码…';
   try{
