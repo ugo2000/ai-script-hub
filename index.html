@@ -328,7 +328,7 @@
   <div class="wrap nav-inner">
     <a href="#" class="logo"><span class="mark">🎬</span><span class="logo-text">剧工厂</span></a>
     <div class="nav-right">
-      <span class="usage-badge" id="navUsage">今日剩余 <b>2</b> 次</span>
+      <span class="usage-badge" id="navUsage">今日剩余 <b id="nav-usage-num">2</b> <span id="nav-usage-unit">次</span></span>
       <div class="lang-switch">
         <button class="lang-btn active" id="langZh" onclick="setLang('zh')">中文</button>
         <button class="lang-btn" id="langEn" onclick="setLang('en')">EN</button>
@@ -363,7 +363,7 @@
   <div class="wrap">
     <div class="gen-card">
       <div class="field">
-        <label>1 选择题材<span class="hint">想写哪种短剧?</span></label>
+        <label id="lbl-genre">1 选择题材<span class="hint" id="lbl-genre-hint">想写哪种短剧?</span></label>
         <div class="genres" id="genreBox">
           <div class="genre-btn active" data-genre="niixi"><span class="ic">🔥</span><span class="nm">都市逆袭</span><span class="ds">草根打脸装逼</span></div>
           <div class="genre-btn" data-genre="yanqing"><span class="ic">💕</span><span class="nm">甜宠言情</span><span class="ds">霸总高糖预警</span></div>
@@ -374,7 +374,7 @@
       </div>
 
       <div class="field">
-        <label>2 核心梗概<span class="hint">用一句话说清楚你想拍什么</span></label>
+        <label id="lbl-plot">2 核心梗概<span class="hint" id="lbl-plot-hint">用一句话说清楚你想拍什么</span></label>
         <textarea id="plotInput" placeholder="例如:被裁员的中年程序员,在出租屋发现一个能预测未来3分钟的神秘APP,靠它在股市翻盘,却引来资本大鳄的追杀......"></textarea>
         <div class="row" style="margin-top:10px">
           <span class="demo-link" onclick="fillDemo()">💡 不会写?点这里填个示例</span>
@@ -383,7 +383,7 @@
       </div>
 
       <div class="field">
-        <label>3 节奏风格</label>
+        <label id="lbl-rhythm">3 节奏风格</label>
         <div class="rhythms" id="rhythmBox">
           <div class="rhythm active" data-rhythm="hot"><div class="rn">🔥 爆款节奏</div><div class="rd">每15秒一个情绪引爆点</div></div>
           <div class="rhythm" data-rhythm="short"><div class="rn">⚡ 快节奏</div><div class="rd">极速切换,8-10秒一镜</div></div>
@@ -394,11 +394,11 @@
       <div class="field">
         <div class="optional-grid">
           <div>
-            <label>4 人物设定<span class="hint">选填</span></label>
+            <label id="lbl-char">4 人物设定<span class="hint">选填</span></label>
             <input type="text" id="charactersInput" placeholder="如:林明远(35岁程序员),苏瑶(会计)">
           </div>
           <div>
-            <label>5 特殊要求<span class="hint">选填</span></label>
+            <label id="lbl-extra">5 特殊要求<span class="hint">选填</span></label>
             <input type="text" id="specialInput" placeholder="如:每集结尾要有反转悬念">
           </div>
         </div>
@@ -409,13 +409,13 @@
 
       <div class="loading" id="loading">
         <div class="spinner"></div>
-        <p id="loadingText">🤖 AI 正在构思剧情结构...</p>
+        <p id="loadingText" data-i18n="loading_text">🤖 AI 正在构思剧情结构...</p>
         <div class="bar"><i></i></div>
       </div>
 
       <div class="result" id="result">
         <div class="result-head">
-          <span class="meta" id="resultMeta">🎬 生成完成</span>
+          <span class="meta" id="resultMeta" data-i18n="result_meta">🎬 生成完成</span>
           <div class="result-actions">
             <button class="btn btn-ghost" onclick="copyScript()">📋 复制</button>
             <button class="btn btn-ghost" onclick="downloadScript()">⬇ 下载</button>
@@ -430,23 +430,23 @@
 
 <section class="block" id="usage">
   <div class="wrap" style="max-width:680px">
-    <div class="sec-head"><h2>我的使用</h2><p>登录后查看你的创作记录</p></div>
+    <div class="sec-head"><h2 id="usage-title">我的使用</h2><p id="usage-sub">登录后查看你的创作记录</p></div>
     <div class="usage-panel">
       <div class="usage-top">
-        <h3>📊 创作统计</h3>
+        <h3 id="usage-stat-title">📊 创作统计</h3>
         <span class="plan-tag" id="planTag">免费版</span>
       </div>
       <div class="usage-bar"><i id="usageFill" style="width:0%"></i></div>
       <div class="usage-nums"><span>今日已用 <b id="todayUsed">0</b> 次</span><span>今日剩余 <b id="todayLeft">2</b> 次</span></div>
       <div class="usage-progress-num">累计已生成 <b id="totalUsed">0</b> 部短剧 🎬</div>
-      <div class="upgrade-line" id="upgradeLine">想无限生成?<a href="#pricing">升级专业版 →</a></div>
+      <div class="upgrade-line" id="upgradeLine"><span id="upgrade-text">想无限生成?</span><a href="#pricing">升级专业版 →</a></div>
     </div>
   </div>
 </section>
 
 <section class="block" id="pricing">
   <div class="wrap">
-    <div class="sec-head"><h2>选择你的方案</h2><p>从免费开始,随时升级,按月付费随时取消</p></div>
+    <div class="sec-head"><h2 id="pricing-title">选择你的方案</h2><p id="pricing-sub">从免费开始,随时升级,按月付费随时取消</p></div>
     <div class="plans">
       <div class="plan">
         <div class="pname">免费版</div>
@@ -484,9 +484,9 @@
 
 <footer>
   <div class="wrap">
-    剧工厂 · AI 短剧脚本生成器 &nbsp;|&nbsp; 让每个人都能写爆款短剧<br>
+    <span id="footer-brand">剧工厂 · AI 短剧脚本生成器 &nbsp;|&nbsp; 让每个人都能写爆款短剧</span><br>
     合作 / 客服邮箱:<a href="mailto:hello@jugongchang.icu" style="color:var(--brand);text-decoration:none">hello@jugongchang.icu</a><br>
-    © 2026 剧工厂 · 仅供创作参考
+    <span id="footer-copy">© 2026 剧工厂 · 仅供创作参考</span>
   </div>
 </footer>
 
@@ -886,6 +886,33 @@ if(sbClient){
 // ============ 国际化 i18n ============
 const I18N = {
   zh: {
+    doc_title: '剧工厂 · AI短剧脚本生成器 | 30秒写出爆款短剧',
+    footer_brand: '剧工厂 · AI 短剧脚本生成器 | 让每个人都能写爆款短剧',
+    footer_copyright: '仅供创作参考',
+    gen_retry: '🔁 再写一集',
+    genre: '题材',
+    loading_text: '🤖 AI 正在构思剧情结构...',
+    login_btn: '登录',
+    login_email_label: '邮箱',
+    login_email_placeholder: 'your@email.com',
+    login_password_label: '密码',
+    login_password_placeholder: '输入密码',
+    login_subtitle: '登录后解锁无限创作',
+    login_tab: '登录',
+    login_title: '欢迎来到剧工厂',
+    nav_usage_unit: '次',
+    pay_note: '扫码付款后把订单号+注册邮箱发至',
+    pay_sub: '付款即表示同意服务条款',
+    pay_title: '开通会员',
+    plan_month: '月',
+    pricing_sub: '从免费开始,随时升级,按月付费随时取消',
+    pricing_title: '选择你的方案',
+    register_btn: '注册',
+    register_tab: '注册',
+    result_meta: '🎬 生成完成',
+    usage_section_sub: '登录后查看你的创作记录',
+    usage_section_title: '我的使用',
+  
     // Nav
     nav_login: '登录 / 注册',
     nav_logout: '退出',
@@ -1021,6 +1048,33 @@ const I18N = {
     footer_copyright: '仅供创作参考',
   },
   en: {
+    doc_title: 'Drama Factory · AI Short Drama Generator | Write Viral Content in 30 Seconds',
+    footer_brand: 'Drama Factory · AI Short Drama Generator | Everyone Can Write Hit Short Dramas',
+    footer_copyright: 'For creative reference only',
+    gen_retry: '🔁 Write Another Episode',
+    genre: 'Genre',
+    loading_text: '🤖 AI is structuring the plot...',
+    login_btn: 'Login',
+    login_email_label: 'Email',
+    login_email_placeholder: 'your@email.com',
+    login_password_label: 'Password',
+    login_password_placeholder: 'Enter password',
+    login_subtitle: 'Login to unlock unlimited creation',
+    login_tab: 'Login',
+    login_title: 'Welcome to Drama Factory',
+    nav_usage_unit: '',
+    pay_note: 'After payment, send order number + registered email to',
+    pay_sub: 'Payment means you agree to the terms of service',
+    pay_title: 'Upgrade Membership',
+    plan_month: '/month',
+    pricing_sub: 'Start free, upgrade anytime, cancel anytime',
+    pricing_title: 'Choose Your Plan',
+    register_btn: 'Register',
+    register_tab: 'Register',
+    result_meta: '🎬 Generation Complete',
+    usage_section_sub: 'Login to view your creation records',
+    usage_section_title: 'My Usage',
+  
     // Nav
     nav_login: 'Login',
     nav_logout: 'Logout',
@@ -1171,9 +1225,11 @@ function setLang(lang){
 
 function updatePageContent(lang){
   const t = I18N[lang]||I18N.zh;
+
   // Logo
   const logoText = document.querySelector('.logo-text');
   if(logoText) logoText.textContent = t.logo_text;
+
   // Hero
   const heroH1 = document.querySelector('header.hero h1');
   if(heroH1) heroH1.innerHTML = t.hero_title;
@@ -1182,12 +1238,13 @@ function updatePageContent(lang){
   const heroBtns = document.querySelectorAll('header.hero .cta .btn');
   if(heroBtns[0]) heroBtns[0].textContent = t.hero_free;
   if(heroBtns[1]) heroBtns[1].textContent = t.hero_pro;
-  // Genre section
-  const genreLabel = document.querySelector('.genre-section h2');
-  if(genreLabel) genreLabel.textContent = t.genre_label;
-  const genreSub = document.querySelector('.genre-section .subtitle');
-  if(genreSub) genreSub.textContent = t.genre_sub;
-  // Genre buttons
+
+  // Genre step label
+  const lblGenre = document.getElementById('lbl-genre');
+  if(lblGenre) lblGenre.firstChild.textContent = '1 '+t.genre_label;
+  const lblGenreHint = document.getElementById('lbl-genre-hint');
+  if(lblGenreHint) lblGenreHint.textContent = t.genre_sub;
+  // Genre buttons (nm + ds)
   const genreBtns = document.querySelectorAll('.genre-btn');
   const genreMap = {
     'niixi': {name: 'genre_niixi', desc: 'genre_niixi_desc'},
@@ -1206,29 +1263,25 @@ function updatePageContent(lang){
       if(ds) ds.textContent = t[map.desc];
     }
   });
-  // Generator labels
-  const step1Label = document.querySelector('[for="plotInput"]');
-  if(step1Label) step1Label.textContent = t.step1_label;
-  const step1Sub = document.querySelector('.input-section .subtitle');
-  if(step1Sub) step1Sub.textContent = t.step1_sub;
+
+  // Plot step label
+  const lblPlot = document.getElementById('lbl-plot');
+  if(lblPlot) lblPlot.firstChild.textContent = '2 '+t.step1_label;
+  const lblPlotHint = document.getElementById('lbl-plot-hint');
+  if(lblPlotHint) lblPlotHint.textContent = t.step1_sub;
+  // PlotInput placeholder
   const plotInput = document.getElementById('plotInput');
   if(plotInput) plotInput.placeholder = t.step1_placeholder;
-  const step2Label = document.querySelector('.rhythm-section h3');
-  if(step2Label) step2Label.textContent = t.step2_label;
-  const step3Label = document.querySelector('.char-section h3');
-  if(step3Label) step3Label.textContent = t.step3_label;
-  const step3Sub = document.querySelector('.char-section .subtitle');
-  if(step3Sub) step3Sub.textContent = t.step3_sub;
-  const charInput = document.getElementById('charactersInput');
-  if(charInput) charInput.placeholder = t.step3_placeholder;
-  const step4Label = document.querySelector('.extra-section h3');
-  if(step4Label) step4Label.textContent = t.step4_label;
-  const extraInput = document.getElementById('specialInput');
-  if(extraInput) extraInput.placeholder = t.step4_placeholder;
-  const submitBtn = document.getElementById('submitBtn');
-  if(submitBtn) submitBtn.textContent = t.gen_btn;
-  // Rhythm cards - update both strong and p.desc
-  const rhythmCards = document.querySelectorAll('.rhythm-card');
+
+  // Demo link
+  const demoLink = document.querySelector('.demo-link');
+  if(demoLink) demoLink.textContent = '\uD83D\uDCA1 ' + t.step1_tip;
+
+  // Rhythm step label
+  const lblRhythm = document.getElementById('lbl-rhythm');
+  if(lblRhythm) lblRhythm.firstChild.textContent = '3 '+t.step2_label;
+  // Rhythm cards (.rhythm, not .rhythm-card)
+  const rhythmCards = document.querySelectorAll('.rhythm');
   const rhythms = [
     {title: 'rhythm_hot', desc: 'rhythm_hot_desc'},
     {title: 'rhythm_fast', desc: 'rhythm_fast_desc'},
@@ -1236,36 +1289,63 @@ function updatePageContent(lang){
   ];
   rhythmCards.forEach((card, i) => {
     if(rhythms[i]){
-      const strong = card.querySelector('strong');
-      const p = card.querySelector('p:last-child');
-      if(strong) strong.textContent = t[rhythms[i].title];
-      if(p) p.textContent = t[rhythms[i].desc];
+      const rn = card.querySelector('.rn');
+      const rd = card.querySelector('.rd');
+      if(rn) rn.textContent = t[rhythms[i].title];
+      if(rd) rd.textContent = t[rhythms[i].desc];
     }
   });
-  // Usage
-  const usageTitle = document.querySelector('.usage-section h3');
-  if(usageTitle) usageTitle.textContent = t.usage_title;
-  const usageStats = document.querySelector('.usage-section .stats-grid');
-  if(usageStats){
-    const labels = usageStats.querySelectorAll('.stat-label');
-    if(labels[0]) labels[0].textContent = t.usage_plan;
-    if(labels[1]) labels[1].textContent = t.usage_today;
-    if(labels[2]) labels[2].textContent = t.usage_remaining;
-    if(labels[3]) labels[3].textContent = t.usage_total;
-    const unit = usageStats.querySelector('.stat-unit');
-    if(unit) unit.textContent = t.usage_unit;
-  }
-  const upgradeLine = document.getElementById('upgradeLine');
-  if(upgradeLine && upgradeLine.style.display !== 'none'){
-    upgradeLine.innerHTML = t.usage_upgrade + '<a href="#pricing">'+t.usage_upgrade_link+'</a>';
-  }
-  // Pricing
-  const pricingTitle = document.querySelector('.pricing h2');
+
+  // Char step label
+  const lblChar = document.getElementById('lbl-char');
+  if(lblChar) lblChar.firstChild.textContent = '4 '+t.step3_label;
+  const charInput = document.getElementById('charactersInput');
+  if(charInput) charInput.placeholder = t.step3_placeholder;
+
+  // Extra step label
+  const lblExtra = document.getElementById('lbl-extra');
+  if(lblExtra) lblExtra.firstChild.textContent = '5 '+t.step4_label;
+  const extraInput = document.getElementById('specialInput');
+  if(extraInput) extraInput.placeholder = t.step4_placeholder;
+
+  // Submit button
+  const submitBtn = document.getElementById('submitBtn');
+  if(submitBtn) submitBtn.textContent = t.gen_btn;
+
+  // Loading text
+  const loadingText = document.getElementById('loadingText');
+  if(loadingText) loadingText.textContent = t.loading_text;
+
+  // Result meta
+  const resultMeta = document.getElementById('resultMeta');
+  if(resultMeta) resultMeta.textContent = t.result_meta;
+  // Result action buttons
+  const copyBtn = document.querySelector('[onclick="copyScript()"]');
+  if(copyBtn) copyBtn.textContent = t.gen_copy;
+  const downBtn = document.querySelector('[onclick="downloadScript()"]');
+  if(downBtn) downBtn.textContent = t.gen_download;
+  const retryBtn = document.querySelector('[onclick="generate()"]');
+  if(retryBtn) retryBtn.textContent = t.gen_retry;
+
+  // Usage section
+  const usageTitle = document.getElementById('usage-title');
+  if(usageTitle) usageTitle.textContent = t.usage_section_title;
+  const usageSub = document.getElementById('usage-sub');
+  if(usageSub) usageSub.textContent = t.usage_section_sub;
+  const usageStatTitle = document.getElementById('usage-stat-title');
+  if(usageStatTitle) usageStatTitle.textContent = t.usage_title;
+  // Usage upgrade line
+  const upgradeText = document.getElementById('upgrade-text');
+  if(upgradeText) upgradeText.textContent = t.usage_upgrade;
+
+  // Pricing section
+  const pricingTitle = document.getElementById('pricing-title');
   if(pricingTitle) pricingTitle.textContent = t.pricing_title;
-  const pricingSub = document.querySelector('.pricing .subtitle');
+  const pricingSub = document.getElementById('pricing-sub');
   if(pricingSub) pricingSub.textContent = t.pricing_sub;
-  // Pricing cards
-  const pricingCards = document.querySelectorAll('.price-card');
+
+  // Pricing cards (.plan, not .price-card)
+  const pricingCards = document.querySelectorAll('.plan');
   const pricingMap = [
     {name: 'plan_free', price: 'plan_free_price', desc: 'plan_free_desc', btn: 'plan_free_btn'},
     {name: 'plan_pro', price: 'plan_pro_price', desc: 'plan_pro_desc', btn: 'plan_pro_btn'}
@@ -1273,43 +1353,41 @@ function updatePageContent(lang){
   pricingCards.forEach((card, i) => {
     const map = pricingMap[i];
     if(map){
-      const nm = card.querySelector('.pc-name');
-      const pr = card.querySelector('.pc-price');
-      const ds = card.querySelector('.pc-desc');
+      const nm = card.querySelector('.pname');
+      const pr = card.querySelector('.pprice');
+      const ds = card.querySelector('.pdesc');
       const btn = card.querySelector('.btn');
       if(nm) nm.textContent = t[map.name];
-      if(pr) pr.textContent = t[map.price];
+      if(pr) pr.innerHTML = t[map.price]+'<small> / '+t.plan_month+'</small>';
       if(ds) ds.textContent = t[map.desc];
       if(btn) btn.textContent = t[map.btn];
     }
   });
-  // Pricing features
-  const featAll = document.querySelectorAll('.feat-list li');
+
+  // Feature lists (within .plan)
   const featMap = ['feat_daily_2','feat_5_genres','feat_viral_rhythm','feat_custom_char','feat_unlimited','feat_3_rhythms','feat_full_script','feat_priority','feat_export','feat_support'];
+  const featAll = document.querySelectorAll('.plan li');
   featAll.forEach((li, i) => {
     if(featMap[i]){
-      const span = li.querySelector('span:last-child') || li.lastChild;
-      if(span && span.nodeType === 3) {
-        li.lastChild.textContent = t[featMap[i]];
-      } else if(span) {
-        span.textContent = t[featMap[i]];
-      }
+      // replace last text node or last-child span text
+      const spans = li.querySelectorAll('span');
+      const lastSpan = spans[spans.length-1];
+      if(lastSpan) lastSpan.textContent = t[featMap[i]];
     }
   });
-  // Result buttons
-  const copyBtn = document.querySelector('[onclick="copyScript()"]');
-  if(copyBtn) copyBtn.textContent = t.gen_copy;
-  const downBtn = document.querySelector('[onclick="downloadScript()"]');
-  if(downBtn) downBtn.textContent = t.gen_download;
-  // Demo try button
-  const demoLink = document.querySelector('.demo-link');
-  if(demoLink) demoLink.textContent = '💡 ' + t.step1_tip;
+
   // Footer
-  const footerContact = document.querySelector('.footer .contact');
-  if(footerContact) footerContact.textContent = t.footer_contact;
-  const footerCopy = document.querySelector('.footer .copy');
+  const footerBrand = document.getElementById('footer-brand');
+  if(footerBrand) footerBrand.textContent = t.footer_brand;
+  const footerCopy = document.getElementById('footer-copy');
   if(footerCopy) footerCopy.textContent = '© 2026 '+t.footer_copyright;
-  // Login modal
+
+  // Nav usage badge
+  const navUsageNum = document.getElementById('nav-usage-num');
+  const navUsageUnit = document.getElementById('nav-usage-unit');
+  if(navUsageUnit) navUsageUnit.textContent = t.nav_usage_unit;
+
+  // Auth modal
   const authTitle = document.getElementById('authTitle');
   if(authTitle) authTitle.textContent = t.login_title;
   const authSubtitle = document.getElementById('authSubtitle');
@@ -1338,15 +1416,19 @@ function updatePageContent(lang){
   const regBtn = document.getElementById('regBtn');
   if(loginBtn && !loginBtn.disabled) loginBtn.textContent = t.login_btn;
   if(regBtn && !regBtn.disabled) regBtn.textContent = t.register_btn;
+
   // Payment modal
   const payTitle = document.getElementById('payTitle');
   const paySub = document.querySelector('.pay-sub');
   const payNote = document.getElementById('payNote');
   if(payTitle) payTitle.textContent = t.pay_title;
   if(paySub) paySub.textContent = t.pay_sub;
-  if(payNote) payNote.innerHTML = '? ' + t.pay_note + ' <b>hello@jugongchang.icu</b>';
-  // Update document title
-  document.title = lang==='en' ? 'Drama Factory · AI Short Drama Generator | Write Viral Content in 30 Seconds' : '剧工厂 · AI短剧脚本生成器 | 30秒写出爆款短剧';
+  if(payNote) payNote.innerHTML = '\u2753 ' + t.pay_note + ' <b>hello@jugongchang.icu</b>';
+
+  // Document title
+  document.title = lang==='en'
+    ? 'Drama Factory \u00B7 AI Short Drama Generator | Write Viral Content in 30 Seconds'
+    : t.doc_title;
 }
 
 function initLang(){
