@@ -453,11 +453,11 @@
         <div class="pprice"><span id="plan-free-price">¥0</span><small> / 永久</small></div>
         <div class="pdesc">先体验,看看 AI 写剧本有多快</div>
         <ul>
-          <li><span class="ck">✓</span>每日 2 次生成</li>
-          <li><span class="ck">✓</span>5 大热门题材</li>
-          <li><span class="ck">✓</span>爆款节奏模板</li>
-          <li class="off"><span class="ck">✕</span>自定义人物设定</li>
-          <li class="off"><span class="ck">✕</span>无限生成</li>
+          <li data-feat="feat_daily_2"><span class="ck">✓</span>每日 2 次生成</li>
+          <li data-feat="feat_5_genres"><span class="ck">✓</span>5 大热门题材</li>
+          <li data-feat="feat_hot_rhythm"><span class="ck">✓</span>爆款节奏模板</li>
+          <li class="off" data-feat="feat_custom_char_off"><span class="ck">✕</span>自定义人物设定</li>
+          <li class="off" data-feat="feat_unlimited_off"><span class="ck">✕</span>无限生成</li>
         </ul>
         <button class="btn btn-ghost btn-block" onclick="openAuth('register')">免费注册</button>
       </div>
@@ -467,13 +467,13 @@
         <div class="pprice"><span id="plan-pro-price">¥39</span><small> / 月</small></div>
         <div class="pdesc">认真做短剧的创作者首选</div>
         <ul>
-          <li><span class="ck">✓</span><b>无限次</b>生成</li>
-          <li><span class="ck">✓</span>自定义人物设定</li>
-          <li><span class="ck">✓</span>3 种节奏风格</li>
-          <li><span class="ck">✓</span>完整剧本 + 分镜表</li>
-          <li><span class="ck">✓</span>优先生成速度</li>
-          <li><span class="ck">✓</span>Word / PDF 导出</li>
-          <li><span class="ck">✓</span>专属邮箱客服支持</li>
+          <li data-feat="feat_unlimited"><span class="ck">✓</span><b>无限次</b>生成</li>
+          <li data-feat="feat_custom_chars"><span class="ck">✓</span>自定义人物设定</li>
+          <li data-feat="feat_3_rhythms"><span class="ck">✓</span>3 种节奏风格</li>
+          <li data-feat="feat_full_script"><span class="ck">✓</span>完整剧本 + 分镜表</li>
+          <li data-feat="feat_priority"><span class="ck">✓</span>优先生成速度</li>
+          <li data-feat="feat_export"><span class="ck">✓</span>Word / PDF 导出</li>
+          <li data-feat="feat_support"><span class="ck">✓</span>专属邮箱客服支持</li>
         </ul>
         <button class="btn btn-primary btn-block" onclick="openPay('premium')">升级专业版</button>
       </div>
