@@ -449,8 +449,8 @@
     <div class="sec-head"><h2 id="pricing-title">选择你的方案</h2><p id="pricing-sub">从免费开始,随时升级,按月付费随时取消</p></div>
     <div class="plans">
       <div class="plan">
-        <div class="pname">免费版</div>
-        <div class="pprice">¥0<small> / 永久</small></div>
+        <div class="pname" id="plan-free-name" data-plan="free">免费版</div>
+        <div class="pprice"><span id="plan-free-price">¥0</span><small> / 永久</small></div>
         <div class="pdesc">先体验,看看 AI 写剧本有多快</div>
         <ul>
           <li><span class="ck">✓</span>每日 2 次生成</li>
@@ -463,8 +463,8 @@
       </div>
 
       <div class="plan featured">
-        <div class="pname">专业版</div>
-        <div class="pprice">¥39<small> / 月</small></div>
+        <div class="pname" id="plan-pro-name" data-plan="pro">专业版</div>
+        <div class="pprice"><span id="plan-pro-price">¥39</span><small> / 月</small></div>
         <div class="pdesc">认真做短剧的创作者首选</div>
         <ul>
           <li><span class="ck">✓</span><b>无限次</b>生成</li>
@@ -485,7 +485,7 @@
 <footer>
   <div class="wrap">
     <span id="footer-brand">剧工厂 · AI 短剧脚本生成器 &nbsp;|&nbsp; 让每个人都能写爆款短剧</span><br>
-    合作 / 客服邮箱:<a href="mailto:hello@jugongchang.icu" style="color:var(--brand);text-decoration:none">hello@jugongchang.icu</a><br>
+    <span id="footer-contact">合作 / 客服邮箱:</span><a href="mailto:hello@jugongchang.icu" style="color:var(--brand);text-decoration:none">hello@jugongchang.icu</a><br>
     <span id="footer-copy">© 2026 剧工厂 · 仅供创作参考</span>
   </div>
 </footer>
@@ -509,7 +509,7 @@
       <button class="btn btn-primary btn-block" id="loginBtn" style="margin-top:18px" onclick="doLogin()">登录</button>
     </div>
     <div id="registerForm" style="display:none">
-      <label>昵称</label>
+      <label id="regNickLabel">昵称</label>
       <input type="text" id="regNick" placeholder="怎么称呼你?">
       <label id="regEmailLabel">邮箱</label>
       <input type="email" id="regEmail" placeholder="you@example.com">
@@ -912,6 +912,56 @@ const I18N = {
     result_meta: '🎬 生成完成',
     usage_section_sub: '登录后查看你的创作记录',
     usage_section_title: '我的使用',
+    auth_subtitle: '登录后即可开始生成你的短剧',
+    auth_title: '欢迎来到剧工厂',
+    copy_fail: '复制失败,请手动选择',
+    copy_success: '✓ 已复制',
+    download_success: '✓ 已下载',
+    error_email_format: '邮箱格式不正确',
+    error_login_fail: '登录失败',
+    error_pwd_short: '密码至少6位',
+    error_reg_fail: '注册失败',
+    feat_compare_all: '查看全部功能 →',
+    feat_custom_char_off: '自定义人物设定',
+    feat_custom_chars: '自定义人物设定',
+    feat_locked: '完整剧本 + 分镜表',
+    feat_unlimited_off: '无限生成',
+    feat_unlock: 'Word / PDF 导出',
+    gen_api_error: '⚠ 生成失败:DeepSeek API 错误',
+    gen_btn_loading: '⏳ 生成中...',
+    gen_empty_error: '⚠ AI 返回为空,请重试',
+    gen_error_api: '生成失败',
+    gen_error_empty: 'AI 返回为空',
+    gen_error_limit: '⚠ 今日免费次数已用完,升级专业版可无限生成 🚀',
+    gen_error_plot: '⚠ 请先写几句核心梗概(至少5字)',
+    gen_loading1: '🤖 AI 正在构思剧情结构...',
+    gen_loading2: '✍ 正在编写分镜表与台词...',
+    gen_loading3: '✓ 渲染完成',
+    gen_retry_btn: '🔁 再写一集',
+    login_email_ph: 'you@example.com',
+    login_pwd_ph: '请输入密码',
+    nav_login_btn: '登录 / 注册',
+    pay_ali: '支付宝',
+    pay_manual: '人工开通',
+    pay_order_num: '请输入订单号',
+    pay_qr_error: '生成失败:未知错误',
+    pay_qr_generating: '正在生成支付宝收款码...',
+    pay_qr_neterror: '网络错误,请刷新重试',
+    pay_qr_ready: '打开支付宝扫一扫,支付后自动开通',
+    pay_success: '✅ 专业版已开通!正在刷新...',
+    pay_wx: '微信',
+    plan_pro_price: '¥39 / 月',
+    plan_pro_price_num: '¥39',
+    reg_btn_text: '注册并开启创作',
+    reg_nick_label: '昵称',
+    reg_nick_ph: '怎么称呼你?',
+    reg_pwd_label: '密码',
+    reg_pwd_ph: '至少6位',
+    success_reg: '注册成功!请去邮箱验证后登录',
+    tab_login: '登录',
+    tab_register: '注册',
+    verify_email_sent: '已发送验证邮件',
+  
   
     // Nav
     nav_login: '登录 / 注册',
@@ -1044,7 +1094,7 @@ const I18N = {
     demo_next: '下集预告',
     demo_try: '试试示例',
     // Footer
-    footer_contact: '合作 / 客服邮箱:',
+    footer_contact: '<span id="footer-contact">合作 / 客服邮箱:</span>',
     footer_copyright: '仅供创作参考',
   },
   en: {
@@ -1074,6 +1124,56 @@ const I18N = {
     result_meta: '🎬 Generation Complete',
     usage_section_sub: 'Login to view your creation records',
     usage_section_title: 'My Usage',
+    auth_subtitle: 'Login to start generating short dramas',
+    auth_title: 'Welcome to Drama Factory',
+    copy_fail: 'Copy failed. Please select manually.',
+    copy_success: '✓ Copied',
+    download_success: '✓ Downloaded',
+    error_email_format: 'Invalid email format',
+    error_login_fail: 'Login failed',
+    error_pwd_short: 'Password must be at least 6 characters',
+    error_reg_fail: 'Registration failed',
+    feat_compare_all: 'View all features →',
+    feat_custom_char_off: 'Custom character settings',
+    feat_custom_chars: 'Custom characters',
+    feat_locked: 'Full script + storyboard',
+    feat_unlimited_off: 'Unlimited generations',
+    feat_unlock: 'Word / PDF export',
+    gen_api_error: '⚠ Generation failed: DeepSeek API error',
+    gen_btn_loading: '⏳ Generating...',
+    gen_empty_error: '⚠ AI returned empty. Please try again.',
+    gen_error_api: 'Generation failed',
+    gen_error_empty: 'AI returned empty',
+    gen_error_limit: '⚠ Daily free limit reached. Upgrade to Pro for unlimited! 🚀',
+    gen_error_plot: '⚠ Please write a brief plot summary (at least 5 characters)',
+    gen_loading1: '🤖 AI is structuring the plot...',
+    gen_loading2: '✍ Writing storyboard and dialogue...',
+    gen_loading3: '✓ Rendering complete',
+    gen_retry_btn: '🔁 Write Another Episode',
+    login_email_ph: 'you@example.com',
+    login_pwd_ph: 'Enter password',
+    nav_login_btn: 'Login / Register',
+    pay_ali: 'Alipay',
+    pay_manual: 'Manual Activation',
+    pay_order_num: 'Order Number',
+    pay_qr_error: 'Generation failed',
+    pay_qr_generating: 'Generating Alipay QR code...',
+    pay_qr_neterror: 'Network error. Please refresh and try again.',
+    pay_qr_ready: 'Open Alipay and scan. Auto-activates after payment.',
+    pay_success: '✅ Pro plan activated! Refreshing...',
+    pay_wx: 'WeChat',
+    plan_pro_price: '¥39 / month',
+    plan_pro_price_num: '¥39',
+    reg_btn_text: 'Register & Start Creating',
+    reg_nick_label: 'Nickname',
+    reg_nick_ph: 'What should we call you?',
+    reg_pwd_label: 'Password',
+    reg_pwd_ph: 'Min 6 characters',
+    success_reg: 'Registration successful! Please verify your email, then login.',
+    tab_login: 'Login',
+    tab_register: 'Register',
+    verify_email_sent: 'Verification email sent',
+  
   
     // Nav
     nav_login: 'Login',
@@ -1429,6 +1529,95 @@ function updatePageContent(lang){
   document.title = lang==='en'
     ? 'Drama Factory \u00B7 AI Short Drama Generator | Write Viral Content in 30 Seconds'
     : t.doc_title;
+  // Translate pricing feature lists via data-feat attributes
+  document.querySelectorAll('.plan li[data-feat]').forEach(function(li){
+    var featKey = li.getAttribute('data-feat');
+    var tval = t[featKey];
+    if(tval){
+      // Find the last span (contains feature text)
+      var spans = li.querySelectorAll('span');
+      if(spans.length > 0){
+        spans[spans.length - 1].textContent = tval;
+      }
+    }
+  });
+
+  // Translate plan card texts (name, price, desc, button)
+  document.querySelectorAll('.plan').forEach(function(card){
+    var isPro = card.classList.contains('featured');
+    var nameEl = card.querySelector('.pname');
+    var priceEl = card.querySelector('.pprice');
+    var descEl = card.querySelector('.pdesc');
+    var btnEl = card.querySelector('.btn');
+    if(isPro){
+      if(nameEl) nameEl.textContent = t.plan_pro;
+      if(priceEl) priceEl.innerHTML = t.plan_pro_price_num + '<small> / ' + t.plan_month + '</small>';
+      if(descEl) descEl.textContent = t.plan_pro_desc;
+      if(btnEl) btnEl.textContent = t.plan_pro_btn;
+    } else {
+      if(nameEl) nameEl.textContent = t.plan_free;
+      if(priceEl) priceEl.innerHTML = t.plan_free_price_num + '<small> / ' + (getLang()==='en'?'Forever':'永久') + '</small>';
+      if(descEl) descEl.textContent = t.plan_free_desc;
+      if(btnEl) btnEl.textContent = t.plan_free_btn;
+    }
+  });
+
+  // Auth modal labels and placeholders
+  var elLoginEmailLbl = document.getElementById('loginEmailLabel');
+  var elLoginPwdLbl = document.getElementById('loginPwdLabel');
+  var elRegEmailLbl = document.getElementById('regEmailLabel');
+  var elRegPwdLbl = document.getElementById('regPwdLabel');
+  var elRegNickLbl = document.getElementById('regNickLabel');
+  if(elLoginEmailLbl) elLoginEmailLbl.textContent = t.login_email_label;
+  if(elLoginPwdLbl) elLoginPwdLbl.textContent = t.login_password_label;
+  if(elRegEmailLbl) elRegEmailLbl.textContent = t.login_email_label;
+  if(elRegPwdLbl) elRegPwdLbl.textContent = t.reg_pwd_label;
+  var loginEmailInput = document.getElementById('loginEmail');
+  var loginPwdInput = document.getElementById('loginPassword');
+  var regEmailInput = document.getElementById('regEmail');
+  var regPwdInput = document.getElementById('regPassword');
+  var regNickInput = document.getElementById('regNick');
+  if(loginEmailInput) loginEmailInput.placeholder = t.login_email_placeholder;
+  if(loginPwdInput) loginPwdInput.placeholder = t.login_password_placeholder;
+  if(regEmailInput) regEmailInput.placeholder = t.login_email_placeholder;
+  if(regPwdInput) regPwdInput.placeholder = t.reg_pwd_ph;
+  if(regNickInput) regNickInput.placeholder = t.reg_nick_ph;
+  var loginBtn = document.getElementById('loginBtn');
+  var regBtn = document.getElementById('regBtn');
+  if(loginBtn && !loginBtn.disabled) loginBtn.textContent = t.login_btn;
+  if(regBtn && !regBtn.disabled) regBtn.textContent = t.reg_btn_text;
+
+  // Auth tab buttons
+  var tabLogin = document.getElementById('tabLogin');
+  var tabReg = document.getElementById('tabReg');
+  if(tabLogin) tabLogin.textContent = t.tab_login;
+  if(tabReg) tabReg.textContent = t.tab_register;
+
+  // Auth title/subtitle
+  var authTitle = document.getElementById('authTitle');
+  var authSubtitle = document.getElementById('authSubtitle');
+  if(authTitle) authTitle.textContent = t.auth_title;
+  if(authSubtitle) authSubtitle.textContent = t.auth_subtitle;
+
+  // Pay modal
+  var payTitle = document.getElementById('payTitle');
+  if(payTitle) payTitle.textContent = t.pay_title;
+  var paySub = document.querySelector('.pay-sub');
+  if(paySub) paySub.textContent = t.pay_sub;
+  var payNote = document.getElementById('payNote');
+  if(payNote) payNote.innerHTML = '? ' + t.pay_note + ' <b>hello@jugongchang.icu</b>';
+  var qrTip = document.getElementById('qrTip');
+  if(qrTip) qrTip.textContent = t.pay_qr_generating;
+
+  // Nav login button
+  var navLoginBtn = document.getElementById('navLoginBtn');
+  if(navLoginBtn) navLoginBtn.textContent = t.nav_login_btn;
+
+  // Footer contact line
+  var footerContact = document.getElementById('footer-contact');
+  if(footerContact) footerContact.textContent = t.footer_contact;
+
+
 }
 
 function initLang(){
